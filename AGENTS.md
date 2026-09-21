@@ -154,6 +154,7 @@ src/
 - Use `forwardRef` for components that wrap native elements.
 - **DILARANG MENGGUNAKAN IKON MATA (`Eye`) UNTUK AKSI LIHAT/DETAIL**: Jangan pernah menggunakan ikon mata (`Eye`) untuk tombol aksi detail, view detail, atau navigasi ke halaman detail. Gunakan alternatif ikon yang lebih representatif dan kontekstual, seperti `ExternalLink`, `FileText`, `ChevronRight`, `ArrowRight`, `FolderOpen`, `Layers`, `Info`, atau ikon domain terkait. Ikon mata (`Eye` / `EyeOff`) **HANYA** diizinkan khusus untuk fitur toggle 'show/hide password' pada input password.
 - **DATA TABLE COLUMN SIZING, TRUNCATE, & TOOLTIP RULES**: Pada setiap implementasi tabel data (`DataTable`), tentukan ukuran kolom (`size` pada TanStack ColumnDef) secara proporsional. Kolom kode, tanggal, angka, status, dan aksi harus berukuran pas dan terukur (`size: 110` hingga `160`), sedangkan kolom utama seperti nama produk, nama modul addon, judul, atau deskripsi harus diberikan ruang lebar yang leluasa (`size: 300` sampai `380` atau lebih). Gunakan pemotongan teks (`truncate` / `line-clamp-1`) dan **selalu sertakan `Tooltip` (`@/components/ui/tooltip`)** untuk teks yang berpotensi panjang agar tabel tetap rapi, elegan, tidak melar berlebihan, dan pengguna dapat melihat rincian teks lengkap saat kursor di-hover.
+- **DATA TABLE ACTION BUTTONS (MAKSIMAL 5 BUTTON LANGSUNG)**: Pada kolom aksi tabel data (`DataTable`), jumlah tombol aksi yang ditampilkan langsung secara horizontal maksimal 5 tombol (`maxActionButtons = 5`). Jika total aksi lebih dari 5, maka tombol aksi ke-1 sampai ke-4 ditampilkan langsung, sedangkan tombol ke-5 otomatis menjadi tombol aksi lanjutan (dropdown menu dengan ikon `MoreHorizontal`) yang ketika diklik akan memunculkan sisa aksi-aksi lainnya dalam bentuk dropdown menu yang rapi lengkap dengan ikon, label, dan styling sesuai jenis aksi (misalnya warna merah untuk aksi hapus/destruktif).
 
 ---
 
@@ -256,5 +257,6 @@ import { PRODUCT_STATUS } from "./constants"
 - [ ] Extract feature orchestration and business logic into custom hooks (`features/[name]/hooks/`)
 - [ ] Tidak menggunakan ikon mata (`Eye`) untuk aksi detail (gunakan `ExternalLink`, `FileText`, `ChevronRight`, `ArrowRight`, atau ikon domain terkait)
 - [ ] Terapkan proporsionalitas ukuran kolom (`size`), `truncate`, dan `Tooltip` pada teks panjang di `DataTable`
+- [ ] Batasi tombol aksi di `DataTable` maksimal 5 button langsung (gunakan aksi lanjutan dropdown jika > 5 aksi)
 - [ ] Ensure no `any`, no unused imports, no god components
 - [ ] Run `bun run typecheck && bun run lint` after changes

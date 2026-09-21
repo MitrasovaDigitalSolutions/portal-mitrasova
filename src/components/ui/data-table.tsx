@@ -1,5 +1,12 @@
 "use client"
 
+import { DataGrid } from "@/components/ui/data-grid"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Pagination,
   PaginationContent,
@@ -17,20 +24,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table"
+import { useDeviceResponsive } from "@/hooks/use-device"
 import { cn } from "@/lib/utils"
-import { DataTableActionButton } from "./data-table-actions"
-export {
-  DataTableActionButton,
-  DataTableTextActionButton,
-} from "./data-table-actions"
-import type { ColumnDef, SortingState, Row } from "@tanstack/react-table"
+import type { ColumnDef, Row, SortingState } from "@tanstack/react-table"
 import {
   flexRender,
   getCoreRowModel,
@@ -49,12 +51,17 @@ import {
   InfoIcon,
   LayoutGrid,
   LayoutList,
+  MoreHorizontal,
   Pencil,
   Trash2,
 } from "lucide-react"
 import * as React from "react"
-import { useDeviceResponsive } from "@/hooks/use-device"
-import { DataGrid } from "@/components/ui/data-grid"
+import { DataTableActionButton, type DataTableActionVariant } from "./data-table-actions"
+export {
+  DataTableActionButton,
+  DataTableTextActionButton
+} from "./data-table-actions"
+export type { DataTableActionVariant } from "./data-table-actions"
 
 export interface DataTableProps<TData, TValue = unknown> {
   columns: ColumnDef<TData, TValue>[]
@@ -117,6 +124,7 @@ export interface DataTableProps<TData, TValue = unknown> {
   hideCheck?: boolean | ((row: TData) => boolean)
   disableCheck?: boolean | ((row: TData) => boolean)
   extraActions?: (row: TData) => React.ReactNode
+  maxActionButtons?: number
   viewActionClassName?: string
   actionColumnWidth?: string
   actionColumnSize?: number
@@ -173,6 +181,7 @@ export function DataTable<TData, TValue = unknown>({
   hideCheck,
   disableCheck,
   extraActions,
+  maxActionButtons = 5,
   actionColumnWidth,
   actionColumnSize,
   getRowClassName,
@@ -435,7 +444,8 @@ export function DataTable<TData, TValue = unknown>({
       }
     }
 
-    const autoActionWidth = Math.max(72, maxButtons * 36 + 24)
+    const effectiveButtons = Math.min(maxActionButtons, Math.max(1, maxButtons))
+    const autoActionWidth = Math.max(72, effectiveButtons * 36 + 24)
     const dynamicActionSize =
       actionColumnSize ||
       (actionColumnWidth
@@ -445,34 +455,36 @@ export function DataTable<TData, TValue = unknown>({
         : autoActionWidth)
     const actionColWidthClass =
       actionColumnWidth &&
-      typeof actionColumnWidth === "string" &&
-      isNaN(Number(actionColumnWidth))
+        typeof actionColumnWidth === "string" &&
+        isNaN(Number(actionColumnWidth))
         ? actionColumnWidth
-        : ""
+        : undefined
 
-    const actionColumn: ColumnDef<TData, unknown> = {
+    const actionColumn: ColumnDef<TData> = {
       id: "actions",
-      header: "Aksi",
-      enableSorting: false,
+      header: () => (
+        <div className="text-center font-bold text-foreground">Aksi</div>
+      ),
       size: dynamicActionSize,
       meta: {
         headerClassName: cn(
-          "sticky top-0 right-0 z-30 border-l border-border bg-muted/60 text-center shadow-[-1px_0_0_0_var(--border)] dark:bg-muted/30",
+          "sticky top-0 right-0 z-30 border-l border-b border-border bg-muted dark:bg-card text-center shadow-[-1px_0_0_0_var(--border),0_1px_0_0_var(--border)]",
           actionColWidthClass
         ),
         cellClassName:
-          "text-center sticky right-0 bg-background dark:bg-card group-hover:bg-muted/50 z-10 shadow-[-1px_0_0_0_var(--border)] border-l border-border transition-colors",
+          "text-center sticky right-0 bg-background dark:bg-card group-hover:bg-muted z-10 shadow-[-1px_0_0_0_var(--border)] border-l border-border transition-colors",
       },
       cell: ({ row }) => {
         const item = row.original
-        const isEditHidden =
-          typeof hideEdit === "function" ? hideEdit(item) : !!hideEdit
-        const isDeleteHidden =
-          typeof hideDelete === "function" ? hideDelete(item) : !!hideDelete
+
         const isViewHidden =
           typeof hideView === "function" ? hideView(item) : !!hideView
+        const isEditHidden =
+          typeof hideEdit === "function" ? hideEdit(item) : !!hideEdit
         const isCheckHidden =
           typeof hideCheck === "function" ? hideCheck(item) : !!hideCheck
+        const isDeleteHidden =
+          typeof hideDelete === "function" ? hideDelete(item) : !!hideDelete
 
         const isEditDisabled =
           typeof disableEdit === "function" ? disableEdit(item) : !!disableEdit
@@ -487,10 +499,30 @@ export function DataTable<TData, TValue = unknown>({
             ? disableCheck(item)
             : !!disableCheck
 
-        return (
-          <div className="flex items-center justify-center gap-1.5">
-            {onView && !isViewHidden && (
+        interface ParsedActionItem {
+          key: string
+          label: string
+          icon?: React.ReactNode
+          onClick?: () => void
+          disabled?: boolean
+          variant?: DataTableActionVariant
+          element: React.ReactNode
+          isDestructive?: boolean
+        }
+
+        const actionsList: ParsedActionItem[] = []
+
+        if (onView && !isViewHidden) {
+          actionsList.push({
+            key: "view",
+            label: "Lihat Detail",
+            icon: <InfoIcon size={16} />,
+            onClick: () => onView(item),
+            disabled: isViewDisabled,
+            variant: "primary",
+            element: (
               <DataTableActionButton
+                key="view"
                 variant="primary"
                 onClick={() => onView(item)}
                 disabled={isViewDisabled}
@@ -500,9 +532,21 @@ export function DataTable<TData, TValue = unknown>({
               >
                 <InfoIcon size={16} />
               </DataTableActionButton>
-            )}
-            {onEdit && !isEditHidden && (
+            ),
+          })
+        }
+
+        if (onEdit && !isEditHidden) {
+          actionsList.push({
+            key: "edit",
+            label: "Ubah",
+            icon: <Pencil size={16} />,
+            onClick: () => onEdit(item),
+            disabled: isEditDisabled,
+            variant: "amber",
+            element: (
               <DataTableActionButton
+                key="edit"
                 variant="amber"
                 onClick={() => onEdit(item)}
                 disabled={isEditDisabled}
@@ -512,9 +556,21 @@ export function DataTable<TData, TValue = unknown>({
               >
                 <Pencil size={16} />
               </DataTableActionButton>
-            )}
-            {onCheck && !isCheckHidden && (
+            ),
+          })
+        }
+
+        if (onCheck && !isCheckHidden) {
+          actionsList.push({
+            key: "check",
+            label: "Finalisasi",
+            icon: <Check size={16} />,
+            onClick: () => onCheck(item),
+            disabled: isCheckDisabled,
+            variant: "emerald",
+            element: (
               <DataTableActionButton
+                key="check"
                 variant="emerald"
                 onClick={() => onCheck(item)}
                 disabled={isCheckDisabled}
@@ -524,9 +580,62 @@ export function DataTable<TData, TValue = unknown>({
               >
                 <Check size={16} />
               </DataTableActionButton>
-            )}
-            {onDelete && !isDeleteHidden && (
+            ),
+          })
+        }
+
+        if (extraActions) {
+          const extra = extraActions(item)
+          if (extra) {
+            const flatten = (node: React.ReactNode) => {
+              if (!node) { return }
+              if (React.isValidElement(node) && node.type === React.Fragment) {
+                const fragProps = node.props as { children?: React.ReactNode }
+                React.Children.forEach(fragProps.children, flatten)
+              } else if (Array.isArray(node)) {
+                node.forEach(flatten)
+              } else if (React.isValidElement(node)) {
+                const p = node.props as {
+                  tooltip?: React.ReactNode
+                  title?: string
+                  onClick?: () => void
+                  disabled?: boolean
+                  children?: React.ReactNode
+                  variant?: DataTableActionVariant
+                  className?: string
+                }
+                const label =
+                  (typeof p.tooltip === "string" ? p.tooltip : "") ||
+                  p.title ||
+                  "Aksi Tambahan"
+
+                actionsList.push({
+                  key: node.key ? String(node.key) : `extra-${actionsList.length}`,
+                  label,
+                  icon: p.children,
+                  onClick: p.onClick,
+                  disabled: p.disabled,
+                  variant: p.variant,
+                  element: node,
+                })
+              }
+            }
+            flatten(extra)
+          }
+        }
+
+        if (onDelete && !isDeleteHidden) {
+          actionsList.push({
+            key: "delete",
+            label: "Hapus",
+            icon: <Trash2 size={16} />,
+            onClick: () => onDelete(item),
+            disabled: isDeleteDisabled,
+            variant: "rose",
+            isDestructive: true,
+            element: (
               <DataTableActionButton
+                key="delete"
                 variant="rose"
                 onClick={() => onDelete(item)}
                 disabled={isDeleteDisabled}
@@ -536,8 +645,63 @@ export function DataTable<TData, TValue = unknown>({
               >
                 <Trash2 size={16} />
               </DataTableActionButton>
-            )}
-            {extraActions?.(item)}
+            ),
+          })
+        }
+
+        if (actionsList.length <= maxActionButtons) {
+          return (
+            <div className="flex items-center justify-center gap-1.5">
+              {actionsList.map((action) => (
+                <React.Fragment key={action.key}>{action.element}</React.Fragment>
+              ))}
+            </div>
+          )
+        }
+
+        const directActions = actionsList.slice(0, maxActionButtons - 1)
+        const overflowActions = actionsList.slice(maxActionButtons - 1)
+
+        return (
+          <div className="flex items-center justify-center gap-1.5">
+            {directActions.map((action) => (
+              <React.Fragment key={action.key}>{action.element}</React.Fragment>
+            ))}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-border bg-muted/70 text-muted-foreground transition-all hover:bg-foreground hover:text-background dark:hover:bg-foreground dark:hover:text-background"
+                  title="Aksi Lanjutan"
+                  data-action="more-actions"
+                >
+                  <MoreHorizontal size={15} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 p-1.5 text-xs">
+                {overflowActions.map((action) => (
+                  <DropdownMenuItem
+                    key={action.key}
+                    onClick={action.onClick}
+                    disabled={action.disabled}
+                    className={cn(
+                      "flex items-center gap-2.5 px-2.5 py-2 cursor-pointer rounded-lg text-xs transition-colors",
+                      action.isDestructive
+                        ? "text-destructive focus:bg-destructive/10 focus:text-destructive"
+                        : "text-foreground hover:bg-muted"
+                    )}
+                  >
+                    {action.icon && (
+                      <span className="size-4 shrink-0 flex items-center justify-center text-muted-foreground [&>svg]:size-3.5">
+                        {action.icon}
+                      </span>
+                    )}
+                    <span className="truncate font-medium">{action.label}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )
       },
@@ -563,6 +727,7 @@ export function DataTable<TData, TValue = unknown>({
     hideCheck,
     disableCheck,
     extraActions,
+    maxActionButtons,
     viewActionClassName,
     actionColumnWidth,
     actionColumnSize,
@@ -606,13 +771,13 @@ export function DataTable<TData, TValue = unknown>({
   const [paddingTop, paddingBottom] =
     virtualize && virtualItems.length > 0
       ? [
-          Math.max(0, virtualItems[0].start),
-          Math.max(
-            0,
-            rowVirtualizer.getTotalSize() -
-              virtualItems[virtualItems.length - 1].end
-          ),
-        ]
+        Math.max(0, virtualItems[0].start),
+        Math.max(
+          0,
+          rowVirtualizer.getTotalSize() -
+          virtualItems[virtualItems.length - 1].end
+        ),
+      ]
       : [0, 0]
 
   const renderPaginationItems = () => {
@@ -747,16 +912,16 @@ export function DataTable<TData, TValue = unknown>({
         <div
           ref={parentRef}
           className="max-h-[450px] w-full scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent overflow-auto"
-          style={virtualize ? { maxHeight } : undefined}
+          style={{ maxHeight: maxHeight ?? "450px" }}
         >
-          <Table
-            className={cn("relative w-full border-collapse", tableClassName)}
+          <table
+            className={cn("relative w-full border-separate border-spacing-0 caption-bottom text-sm", tableClassName)}
           >
-            <TableHeader className="sticky top-0 z-20 bg-muted/50 shadow-[0_1px_0_0_var(--border)]">
+            <TableHeader className="sticky top-0 z-20">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className="border-b border-border bg-muted/50 hover:bg-transparent"
+                  className="hover:bg-transparent"
                 >
                   {headerGroup.headers.map((header) => {
                     const isSortable = header.column.getCanSort()
@@ -766,7 +931,7 @@ export function DataTable<TData, TValue = unknown>({
                       <TableHead
                         key={header.id}
                         className={cn(
-                          "bg-muted/50 py-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase",
+                          "sticky top-0 z-20 bg-muted dark:bg-card py-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase border-b border-border shadow-[0_1px_0_0_var(--border)]",
                           header.column.columnDef.meta?.headerClassName
                         )}
                         style={{
@@ -786,7 +951,7 @@ export function DataTable<TData, TValue = unknown>({
                                 "text-right"
                               ) && "justify-end",
                               isSortable &&
-                                "cursor-pointer transition-colors select-none hover:text-foreground"
+                              "cursor-pointer transition-colors select-none hover:text-foreground"
                             )}
                             onClick={
                               isSortable
@@ -904,7 +1069,7 @@ export function DataTable<TData, TValue = unknown>({
                           <TableCell
                             key={cell.id}
                             className={cn(
-                              "px-4 py-3.5 text-xs font-medium text-foreground",
+                              "px-4 py-3.5 text-xs font-medium text-foreground border-b border-border",
                               cell.column.columnDef.meta?.cellClassName
                             )}
                             style={{
@@ -948,7 +1113,7 @@ export function DataTable<TData, TValue = unknown>({
                         <TableCell
                           key={cell.id}
                           className={cn(
-                            "px-4 py-3.5 text-xs font-medium text-foreground",
+                            "px-4 py-3.5 text-xs font-medium text-foreground border-b border-border",
                             cell.column.columnDef.meta?.cellClassName
                           )}
                           style={{
@@ -968,7 +1133,7 @@ export function DataTable<TData, TValue = unknown>({
                 })
               )}
             </TableBody>
-          </Table>
+          </table>
         </div>
       )}
 
