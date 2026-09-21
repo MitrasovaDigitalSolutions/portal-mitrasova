@@ -45,8 +45,16 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
     if (axios.isAxiosError<ApiErrorResponse>(error)) {
-      const message =
-        error.response?.data?.message ?? "Terjadi kesalahan pada server."
+      const errorData = error.response?.data
+      let message = errorData?.message ?? "Terjadi kesalahan pada server."
+
+      // Extract first validation error if present (e.g. 422 Unprocessable Entity)
+      if (errorData?.errors && typeof errorData.errors === "object") {
+        const firstKey = Object.keys(errorData.errors)[0]
+        if (firstKey && errorData.errors[firstKey]?.[0]) {
+          message = errorData.errors[firstKey][0]
+        }
+      }
 
       // Handle 401 Unauthorized globally
       if (error.response?.status === 401 && typeof window !== "undefined") {
