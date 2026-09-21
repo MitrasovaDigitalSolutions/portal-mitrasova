@@ -22,21 +22,23 @@ export type DataTableActionVariant =
 
 const ACTION_VARIANT_CLASSES: Record<DataTableActionVariant, string> = {
   primary:
-    "text-primary bg-primary/10 border-primary/20 hover:bg-primary hover:text-primary-foreground",
+    "text-primary bg-primary/10 border-primary/20 hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground hover:border-primary dark:hover:border-primary",
   solidPrimary:
     "text-primary-foreground bg-primary border-primary hover:bg-primary/90 shadow-2xs font-bold",
   emerald:
-    "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-600 hover:text-white",
+    "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white hover:border-emerald-600 dark:hover:border-emerald-600",
   amber:
-    "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20 hover:bg-amber-500 hover:text-white",
-  rose: "text-rose-600 dark:text-rose-400 bg-destructive/10 border-destructive/20 hover:bg-destructive hover:text-white",
+    "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-600 dark:hover:text-white hover:border-amber-600 dark:hover:border-amber-600",
+  rose:
+    "text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white hover:border-rose-600 dark:hover:border-rose-600",
   solidRose:
     "text-white bg-destructive border-destructive hover:bg-destructive/90 shadow-2xs font-bold",
-  sky: "text-sky-600 dark:text-sky-400 bg-sky-500/10 border-sky-500/20 hover:bg-sky-600 hover:text-white",
+  sky:
+    "text-sky-600 dark:text-sky-400 bg-sky-500/10 border-sky-500/20 hover:bg-sky-600 hover:text-white dark:hover:bg-sky-600 dark:hover:text-white hover:border-sky-600 dark:hover:border-sky-600",
   indigo:
-    "text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-600 hover:text-white",
+    "text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-indigo-600",
   slate:
-    "text-muted-foreground bg-muted border-border hover:bg-foreground hover:text-background",
+    "text-muted-foreground bg-muted border-border hover:bg-foreground hover:text-background dark:hover:bg-foreground dark:hover:text-background hover:border-foreground dark:hover:border-foreground",
 }
 
 export interface DataTableActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -68,7 +70,7 @@ export const DataTableActionButton = React.forwardRef<
         disabled={disabled}
         onClick={onClick}
         className={cn(
-          "flex shrink-0 cursor-pointer items-center justify-center rounded-xl border p-1.5 shadow-2xs transition-all active:scale-95",
+          "flex shrink-0 cursor-pointer items-center justify-center rounded-xl border p-1.5 shadow-2xs transition-all active:scale-95 [&>svg]:text-current [&>svg]:transition-colors",
           ACTION_VARIANT_CLASSES[variant],
           disabled &&
             "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-current active:scale-100",

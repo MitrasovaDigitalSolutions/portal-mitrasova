@@ -1,0 +1,16 @@
+import { z } from "zod"
+
+export const productSchema = z.object({
+  code: z
+    .string()
+    .min(2, "Kode produk minimal 2 karakter")
+    .max(50, "Kode produk maksimal 50 karakter"),
+  nama: z
+    .string()
+    .min(2, "Nama produk minimal 2 karakter")
+    .max(150, "Nama produk maksimal 150 karakter"),
+  description: z.string().optional().nullable(),
+  is_active: z.boolean(),
+})
+
+export type ProductFormValues = z.infer<typeof productSchema>

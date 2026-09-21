@@ -152,6 +152,8 @@ src/
 - Prefer composition over prop drilling. Use React Context or Zustand for deeply shared state.
 - All props must be typed via an `interface` or `type`, defined in the feature's `@types/` folder.
 - Use `forwardRef` for components that wrap native elements.
+- **DILARANG MENGGUNAKAN IKON MATA (`Eye`) UNTUK AKSI LIHAT/DETAIL**: Jangan pernah menggunakan ikon mata (`Eye`) untuk tombol aksi detail, view detail, atau navigasi ke halaman detail. Gunakan alternatif ikon yang lebih representatif dan kontekstual, seperti `ExternalLink`, `FileText`, `ChevronRight`, `ArrowRight`, `FolderOpen`, `Layers`, `Info`, atau ikon domain terkait. Ikon mata (`Eye` / `EyeOff`) **HANYA** diizinkan khusus untuk fitur toggle 'show/hide password' pada input password.
+- **DATA TABLE COLUMN SIZING, TRUNCATE, & TOOLTIP RULES**: Pada setiap implementasi tabel data (`DataTable`), tentukan ukuran kolom (`size` pada TanStack ColumnDef) secara proporsional. Kolom kode, tanggal, angka, status, dan aksi harus berukuran pas dan terukur (`size: 110` hingga `160`), sedangkan kolom utama seperti nama produk, nama modul addon, judul, atau deskripsi harus diberikan ruang lebar yang leluasa (`size: 300` sampai `380` atau lebih). Gunakan pemotongan teks (`truncate` / `line-clamp-1`) dan **selalu sertakan `Tooltip` (`@/components/ui/tooltip`)** untuk teks yang berpotensi panjang agar tabel tetap rapi, elegan, tidak melar berlebihan, dan pengguna dapat melihat rincian teks lengkap saat kursor di-hover.
 
 ---
 
@@ -173,6 +175,7 @@ src/
 - **Local UI state** → `useState` / `useReducer` inside the component.
 - **Form state** → React Hook Form + Zod validation.
 - **NEVER** duplicate server state into client state.
+- **Prioritize Custom Hooks for Feature Logic & Orchestration**: Jika memungkinkan dan relevan, selalu pisahkan logika bisnis, orkestasi query/mutasi, pagination, filter, debounce, kalkulasi metrik, dan manajemen modal/dialog ke dalam custom hook (misal: `features/[name]/hooks/use-[feature].ts`). Komponen UI harus tetap ramping, deklaratif, dan fokus pada tampilan. Ini memastikan kode modular, bersih, testable, terhindar dari god components, dan mengikuti best practice standar industri modern serta lebih scalable.
 
 ---
 
@@ -250,5 +253,8 @@ import { PRODUCT_STATUS } from "./constants"
 - [ ] Write Zod schemas for any data validation
 - [ ] Use `useWatch` instead of `watch` for observing form field values
 - [ ] Create query key factory before writing query hooks
+- [ ] Extract feature orchestration and business logic into custom hooks (`features/[name]/hooks/`)
+- [ ] Tidak menggunakan ikon mata (`Eye`) untuk aksi detail (gunakan `ExternalLink`, `FileText`, `ChevronRight`, `ArrowRight`, atau ikon domain terkait)
+- [ ] Terapkan proporsionalitas ukuran kolom (`size`), `truncate`, dan `Tooltip` pada teks panjang di `DataTable`
 - [ ] Ensure no `any`, no unused imports, no god components
 - [ ] Run `bun run typecheck && bun run lint` after changes

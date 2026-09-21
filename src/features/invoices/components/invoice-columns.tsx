@@ -7,7 +7,7 @@ import { InvoiceStatusBadge } from "./invoice-status-badge"
 import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { formatCurrency, formatDate } from "@/utils"
 import {
-  Eye,
+  FileText,
   CheckCircle2,
   Pencil,
   Trash2,
@@ -164,7 +164,7 @@ export function getInvoiceColumns({
               tooltip="Lihat Detail"
               onClick={() => onViewDetail(inv)}
             >
-              <Eye className="size-3.5" />
+              <FileText className="size-3.5" />
             </DataTableActionButton>
 
             {/* Mark as Paid (if not paid) */}
