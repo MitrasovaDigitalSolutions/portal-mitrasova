@@ -22,14 +22,6 @@ export function DashboardView() {
     setTimeout(() => setIsManualRefreshing(false), 500)
   }
 
-  // Indonesian Date
-  const todayFormatted = new Intl.DateTimeFormat("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date())
-
   if (isLoading) {
     return <DashboardSkeleton />
   }

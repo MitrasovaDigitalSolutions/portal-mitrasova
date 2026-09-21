@@ -147,6 +147,7 @@ src/
 
 - **No god components.** If a component exceeds ~150 lines, decompose it.
 - Every component must have a clear, single responsibility.
+- **Always prioritize Reusable Components**: Selalu gunakan komponen reusable yang sudah tersedia di `@/components/forms/`, `@/components/ui/`, atau `@/components/shared/` (seperti `FormInput`, `FormSelect`, `FormDatePicker`, `FormNominalInput`, `FormTextarea`, `FormSwitch`, `BaseDialog`, `ConfirmDialog`, `DataTable`, `NominalInput`, dll.) daripada menggunakan HTML primitives (`<input>`, `<select>`, dll.) atau membuat komponen ad-hoc baru. Komponen baru hanya dibuat jika memang tidak ada abstraksi reusable yang sesuai.
 - **Server Components** are the default in Next.js App Router. Only add `"use client"` when the component genuinely needs client-side interactivity (hooks, event handlers, browser APIs).
 - Prefer composition over prop drilling. Use React Context or Zustand for deeply shared state.
 - All props must be typed via an `interface` or `type`, defined in the feature's `@types/` folder.
@@ -178,8 +179,10 @@ src/
 ## 8. Form & Validation Rules
 
 - All forms use `react-hook-form` with `zodResolver`.
+- Wrap forms in `<FormProvider>` when utilizing reusable form inputs (`FormInput`, `FormSelect`, `FormDatePicker`, `FormNominalInput`, `FormTextarea`, `FormSwitch`).
+- **Use `useWatch` instead of `watch`**: Selalu gunakan `useWatch({ control, name })` untuk mengamati nilai field alih-alih `watch(...)` di root form. Ini meminimalkan re-render komponen induk dan mencegah masalah dependency referensi pada hook `useMemo` / `useEffect`.
 - Zod schemas live in `features/[name]/validations/` or `lib/validations/` for shared schemas.
-- Form types are inferred from Zod schemas using `z.infer<typeof schema>`.
+- Form types are inferred from Zod schemas using `z.infer<typeof schema>`. Pastikan tipe input dan output Zod selaras agar tidak terjadi error generic pada resolver.
 - Validation error messages must be user-friendly and in Bahasa Indonesia when user-facing.
 
 ---
@@ -242,8 +245,10 @@ import { PRODUCT_STATUS } from "./constants"
 - [ ] Read this `AGENTS.md` file
 - [ ] Check `node_modules/next/dist/docs/` for Next.js API guidance
 - [ ] Identify which feature folder the code belongs to
+- [ ] Check for existing reusable components in `components/forms/`, `components/ui/`, `components/shared/` before creating new ones
 - [ ] Define types in `@types/` first
 - [ ] Write Zod schemas for any data validation
+- [ ] Use `useWatch` instead of `watch` for observing form field values
 - [ ] Create query key factory before writing query hooks
 - [ ] Ensure no `any`, no unused imports, no god components
 - [ ] Run `bun run typecheck && bun run lint` after changes

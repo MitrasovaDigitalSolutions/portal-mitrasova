@@ -42,7 +42,9 @@ export function ExpiringLicensesTable({
   // Calculate days remaining
   const getDaysRemaining = (expiresAtStr: string) => {
     const expiresDate = parseToDate(expiresAtStr)
-    if (!expiresDate) return null
+    if (!expiresDate) {
+      return null
+    }
     const diffTime = expiresDate.getTime() - new Date().getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays
