@@ -13,36 +13,36 @@ export function ClientsMetricsGrid({
 }: ClientsMetricsGridProps): React.JSX.Element {
   const cards = [
     {
-      title: "Total Klien Terdaftar",
+      title: "Total Klien",
       value: metrics.totalClients,
-      description: "Pelanggan & mitra sistem",
+      description: "Pelanggan terdaftar",
       icon: Users,
       iconColor: "text-primary",
       bgColor: "bg-primary/10",
       borderColor: "border-primary/20",
     },
     {
-      title: "Klien Lisensi Aktif",
+      title: "Klien Aktif",
       value: metrics.activeClients,
-      description: "Memiliki lisensi berjalan",
+      description: "Lisensi berjalan",
       icon: CheckCircle2,
       iconColor: "text-emerald-500",
       bgColor: "bg-emerald-500/10",
       borderColor: "border-emerald-500/20",
     },
     {
-      title: "Total Lisensi Instance",
+      title: "Total Lisensi",
       value: metrics.totalLicenses,
-      description: "Instance aplikasi terbit",
+      description: "Instance terbit",
       icon: KeyRound,
       iconColor: "text-indigo-500",
       bgColor: "bg-indigo-500/10",
       borderColor: "border-indigo-500/20",
     },
     {
-      title: "Lisensi Expired / Habis",
+      title: "Lisensi Expired",
       value: metrics.expiredLicenses,
-      description: "Perlu perpanjangan masa aktif",
+      description: "Perlu perpanjangan",
       icon: AlertCircle,
       iconColor: "text-amber-500",
       bgColor: "bg-amber-500/10",
@@ -51,29 +51,29 @@ export function ClientsMetricsGrid({
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
       {cards.map((card) => {
         const Icon = card.icon
         return (
           <div
             key={card.title}
-            className="rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:shadow-md"
+            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-medium text-muted-foreground truncate">
                 {card.title}
               </span>
               <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl border ${card.bgColor} ${card.borderColor} ${card.iconColor}`}
+                className={`flex size-7 shrink-0 items-center justify-center rounded-lg border ${card.bgColor} ${card.borderColor} ${card.iconColor}`}
               >
-                <Icon size={18} />
+                <Icon size={14} />
               </div>
             </div>
-            <div className="mt-3">
-              <div className="text-2xl font-bold tracking-tight text-foreground">
+            <div className="mt-2 flex items-baseline justify-between gap-2">
+              <div className="text-lg sm:text-xl font-bold tracking-tight text-foreground font-mono">
                 {card.value}
               </div>
-              <p className="text-[11px] text-muted-foreground mt-1">
+              <p className="text-[10px] text-muted-foreground truncate">
                 {card.description}
               </p>
             </div>

@@ -91,24 +91,25 @@ export function useLicenseOrder({
   }, [license, product?.addons])
 
   const availableAddons = useMemo(() => {
-    return (product?.addons ?? []).filter(
-      (a) => a.is_active && !currentSubscribedAddonIds.has(a.id)
-    )
-  }, [product?.addons, currentSubscribedAddonIds])
+    return (product?.addons ?? []).filter((a) => a.is_active)
+  }, [product?.addons])
 
-  const validInitialAddon = useMemo(() => {
-    return initialAddonId && !currentSubscribedAddonIds.has(initialAddonId)
-      ? [initialAddonId]
-      : []
-  }, [initialAddonId, currentSubscribedAddonIds])
+  const defaultSelectedAddonIds = useMemo(() => {
+    const ids = new Set<string>()
+    currentSubscribedAddonIds.forEach((id) => ids.add(id))
+    if (initialAddonId) {
+      ids.add(initialAddonId)
+    }
+    return Array.from(ids)
+  }, [currentSubscribedAddonIds, initialAddonId])
 
   const methods = useForm<LicenseOrderValues>({
     resolver: zodResolver(licenseOrderSchema),
     defaultValues: {
       license_key: license?.license_key ?? "",
       billing_period: "annual",
-      include_base_product: validInitialAddon.length === 0,
-      addon_ids: validInitialAddon,
+      include_base_product: true,
+      addon_ids: defaultSelectedAddonIds,
     },
   })
 
@@ -126,19 +127,25 @@ export function useLicenseOrder({
 
   useEffect(() => {
     if (open && license) {
-      const initAddons =
-        initialAddonId && !currentSubscribedAddonIds.has(initialAddonId)
-          ? [initialAddonId]
-          : []
+      const ids = new Set<string>()
+      const list = license.licenseAddons ?? license.license_addons ?? []
+      list.forEach((item) => {
+        if (!item.status || item.status === "active") {
+          ids.add(item.product_addon_id)
+        }
+      })
+      if (initialAddonId) {
+        ids.add(initialAddonId)
+      }
 
       reset({
         license_key: license.license_key,
         billing_period: "annual",
-        include_base_product: initAddons.length === 0,
-        addon_ids: initAddons,
+        include_base_product: true,
+        addon_ids: Array.from(ids),
       })
     }
-  }, [open, license, initialAddonId, currentSubscribedAddonIds, reset])
+  }, [open, license, initialAddonId, reset])
 
   const currentActiveAddonsMap = useMemo(() => {
     const list = license?.licenseAddons ?? license?.license_addons ?? []
@@ -250,6 +257,7 @@ export function useLicenseOrder({
     isAnnual,
     product,
     availableAddons,
+    currentSubscribedAddonIds,
     subscribedAddonsList,
     isLoadingProduct,
     currentActiveAddonsMap,

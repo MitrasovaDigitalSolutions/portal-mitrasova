@@ -1,19 +1,19 @@
 "use client"
 
 import type { JSX } from "react"
-import { CheckCircle2, Loader2, Puzzle } from "lucide-react"
+import { Loader2, Puzzle } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { formatCurrency } from "@/utils"
 import type { ProductAddon } from "@/features/products/@types/product"
-import type { SubscribedAddonItem } from "../hooks/use-license-order"
 
 interface LicenseOrderAddonsListProps {
   addons: ProductAddon[]
   isLoading: boolean
   selectedAddonIds: string[]
   isAnnual: boolean
-  subscribedAddons?: SubscribedAddonItem[]
+  currentSubscribedAddonIds: Set<string>
   onToggleAddon: (addonId: string) => void
 }
 
@@ -22,74 +22,41 @@ export function LicenseOrderAddonsList({
   isLoading,
   selectedAddonIds,
   isAnnual,
-  subscribedAddons,
+  currentSubscribedAddonIds,
   onToggleAddon,
 }: LicenseOrderAddonsListProps): JSX.Element {
   return (
-    <div className="space-y-2.5 pt-1">
-      {/* 1. Show already subscribed/active addons info if any */}
-      {subscribedAddons && subscribedAddons.length > 0 && (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-2.5 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-            <CheckCircle2 size={13} className="shrink-0" />
-            <span>Modul Add-on yang Sudah Aktif pada Lisensi ini:</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {subscribedAddons.map((item) => (
-              <span
-                key={item.id}
-                className="inline-flex items-center gap-1 rounded-md bg-card/80 px-2 py-0.5 text-[10px] font-medium text-foreground border border-emerald-500/30 shadow-2xs"
-              >
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                <span>{item.name}</span>
-                {item.code && (
-                  <span className="font-mono text-[9px] text-muted-foreground">
-                    ({item.code})
-                  </span>
-                )}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 2. Header for unowned/additional addons */}
+    <div className="space-y-2">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
           <Puzzle size={13} className="text-primary" />
-          <span>Pilih Modul Add-on Tambahan</span>
+          <span>Pilihan Modul Add-on</span>
         </label>
-        {selectedAddonIds.length > 0 && (
-          <span className="text-[11px] font-medium text-primary">
-            {selectedAddonIds.length} modul dipilih
-          </span>
+        {addons.length > 0 && (
+          <Badge variant="secondary" className="text-[10px] font-mono font-medium px-2 py-0.5">
+            {selectedAddonIds.length} dari {addons.length} dipilih
+          </Badge>
         )}
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-6 text-muted-foreground">
+        <div className="flex items-center justify-center py-10 text-muted-foreground">
           <Loader2 size={16} className="animate-spin mr-2" />
           <span className="text-xs">Memuat katalog modul add-on...</span>
         </div>
       ) : addons.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground space-y-1">
-          {subscribedAddons && subscribedAddons.length > 0 ? (
-            <>
-              <p className="font-medium text-foreground">
-                Seluruh Modul Add-on Sudah Aktif
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                Semua modul add-on yang tersedia untuk produk ini sudah aktif pada lisensi Anda.
-              </p>
-            </>
-          ) : (
-            <p>Tidak ada modul add-on yang tersedia untuk produk ini.</p>
-          )}
+        <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground space-y-1">
+          <p className="font-medium text-foreground">Tidak Ada Modul Add-on</p>
+          <p className="text-[11px] text-muted-foreground">
+            Produk software ini belum memiliki modul add-on terdaftar di sistem.
+          </p>
         </div>
       ) : (
-        <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+        <div className="space-y-2">
           {addons.map((addon) => {
             const isChecked = selectedAddonIds.includes(addon.id)
+            const isAlreadySubscribed = currentSubscribedAddonIds.has(addon.id)
             const price = isAnnual
               ? addon.harga_tahunan
               : addon.harga_bulanan
@@ -99,29 +66,36 @@ export function LicenseOrderAddonsList({
                 key={addon.id}
                 onClick={() => onToggleAddon(addon.id)}
                 className={cn(
-                  "flex items-center justify-between rounded-xl border p-3 transition-all cursor-pointer",
+                  "flex items-start justify-between rounded-xl border p-3 transition-all cursor-pointer",
                   isChecked
-                    ? "border-primary/50 bg-primary/5 ring-1 ring-primary/30"
-                    : "border-border bg-card hover:bg-muted/30"
+                    ? "border-primary/50 bg-primary/5 ring-1 ring-primary/25 shadow-2xs"
+                    : "border-border bg-card/60 hover:bg-muted/30 opacity-75 hover:opacity-100"
                 )}
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-start gap-2.5 min-w-0 flex-1 pr-2">
                   <Checkbox
                     checked={isChecked}
                     onCheckedChange={() => onToggleAddon(addon.id)}
                     onClick={(e) => e.stopPropagation()}
+                    className="mt-0.5 shrink-0"
                   />
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-xs text-foreground">
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-semibold text-xs text-foreground truncate">
                         {addon.nama}
                       </span>
                       <span className="font-mono text-[10px] text-muted-foreground">
                         ({addon.code})
                       </span>
+                      {isAlreadySubscribed && (
+                        <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.2 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          <span className="size-1 rounded-full bg-emerald-500" />
+                          Aktif di Lisensi
+                        </span>
+                      )}
                     </div>
                     {addon.description && (
-                      <p className="text-[11px] text-muted-foreground line-clamp-1">
+                      <p className="text-[11px] text-muted-foreground line-clamp-2 leading-tight">
                         {addon.description}
                       </p>
                     )}

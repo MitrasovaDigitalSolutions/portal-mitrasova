@@ -216,11 +216,11 @@ export function LicenseDetailAddonsCard({
                       type="button"
                       variant={isActive ? "outline" : "default"}
                       size="sm"
-                      onClick={() => onOrderAddon(isActive ? undefined : addon.id)}
+                      onClick={() => onOrderAddon(addon.id)}
                       className="h-7 px-2.5 text-xs cursor-pointer gap-1"
                     >
                       <CreditCard size={12} />
-                      <span>{isActive ? "Perpanjang Lisensi" : "Beli Addon"}</span>
+                      <span>{isActive ? "Perpanjang" : "Beli Addon"}</span>
                     </Button>
                   </div>
                 )}

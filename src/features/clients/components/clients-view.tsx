@@ -61,19 +61,21 @@ export function ClientsView(): JSX.Element {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-3.5 sm:space-y-4"
     >
       {/* Page Header */}
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Klien & Pelanggan
-        </h1>
-        <p className="text-xs text-muted-foreground">
-          Kelola data mitra, pelanggan, dan keterikatan lisensi software Portal Mitrasova.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            Klien & Pelanggan
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            Kelola data mitra, pelanggan, dan keterikatan lisensi software Portal Mitrasova.
+          </p>
+        </div>
       </div>
 
-      {/* KPI Metrics Summary */}
+      {/* KPI Metrics Summary (Compact & Informative) */}
       <ClientsMetricsGrid metrics={metrics} />
 
       {/* Search & Actions Toolbar */}
@@ -90,6 +92,9 @@ export function ClientsView(): JSX.Element {
         columns={columns}
         data={clients}
         isLoading={isLoading}
+        isFetching={isFetching}
+        actionColumnSize={110}
+        entityName="Klien"
         renderCardItem={(row) => (
           <ClientMobileCard
             client={row.original}

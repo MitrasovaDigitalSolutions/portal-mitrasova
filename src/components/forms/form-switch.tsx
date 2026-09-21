@@ -1,5 +1,6 @@
 "use client"
 
+import type * as React from "react"
 import {
   useFormContext,
   Controller,
@@ -11,10 +12,11 @@ import { cn } from "@/lib/utils"
 
 interface FormSwitchProps<T extends FieldValues> {
   name: FieldPath<T>
-  label: string
-  description?: string
+  label: React.ReactNode
+  description?: React.ReactNode
   className?: string
   disabled?: boolean
+  rightElement?: React.ReactNode
 }
 
 export function FormSwitch<T extends FieldValues>({
@@ -23,6 +25,7 @@ export function FormSwitch<T extends FieldValues>({
   description,
   className,
   disabled,
+  rightElement,
 }: FormSwitchProps<T>) {
   const { control } = useFormContext<T>()
 
@@ -33,7 +36,7 @@ export function FormSwitch<T extends FieldValues>({
         className
       )}
     >
-      <div className="space-y-0.5 pr-4">
+      <div className="space-y-0.5 pr-4 min-w-0 flex-1">
         <label
           htmlFor={`switch-${name}`}
           className="block cursor-pointer text-xs font-bold text-foreground select-none"
@@ -41,23 +44,26 @@ export function FormSwitch<T extends FieldValues>({
           {label}
         </label>
         {description && (
-          <p className="text-[10px] leading-snug text-muted-foreground">
+          <div className="text-[10px] leading-snug text-muted-foreground">
             {description}
-          </p>
+          </div>
         )}
       </div>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <Switch
-            checked={field.value}
-            onCheckedChange={field.onChange}
-            disabled={disabled}
-            id={`switch-${name}`}
-          />
-        )}
-      />
+      <div className="flex items-center gap-3 shrink-0">
+        {rightElement}
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
+            <Switch
+              checked={Boolean(field.value)}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+              id={`switch-${name}`}
+            />
+          )}
+        />
+      </div>
     </div>
   )
 }

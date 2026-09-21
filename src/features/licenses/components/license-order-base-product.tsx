@@ -3,28 +3,24 @@
 import type { JSX } from "react"
 import { CalendarClock, Package } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
+import { FormSwitch } from "@/components/forms/form-switch"
 import { formatCurrency } from "@/utils"
 import {
   BASE_PRODUCT_ANNUAL_PRICE,
   BASE_PRODUCT_MONTHLY_PRICE,
 } from "../hooks/use-license-order"
+import type { LicenseOrderValues } from "../validations/license-order.schema"
 
 interface LicenseOrderBaseProductProps {
   productName: string
   currentExpiryText: string
   isAnnual: boolean
-  includeBase: boolean
-  onToggleIncludeBase: (val: boolean) => void
 }
 
 export function LicenseOrderBaseProduct({
   productName,
   currentExpiryText,
   isAnnual,
-  includeBase,
-  onToggleIncludeBase,
 }: LicenseOrderBaseProductProps): JSX.Element {
   const price = isAnnual
     ? BASE_PRODUCT_ANNUAL_PRICE
@@ -35,39 +31,31 @@ export function LicenseOrderBaseProduct({
       <label className="text-xs font-semibold text-foreground">
         Paket Lisensi Pokok
       </label>
-      <div
-        onClick={() => onToggleIncludeBase(!includeBase)}
-        className={cn(
-          "flex items-center justify-between rounded-xl border p-3.5 transition-all cursor-pointer",
-          includeBase
-            ? "border-primary/50 bg-primary/5 ring-1 ring-primary/30"
-            : "border-border bg-card hover:bg-muted/30"
-        )}
-      >
-        <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
-            <Package size={16} />
-          </div>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-xs text-foreground">
-                {productName}
-              </span>
-              <Badge variant="outline" className="text-[10px] font-mono">
-                {isAnnual ? "+12 Bulan" : "+1 Bulan"}
-              </Badge>
+      <FormSwitch<LicenseOrderValues>
+        name="include_base_product"
+        label={
+          <div className="flex items-center gap-2">
+            <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-foreground">
+              <Package size={13} />
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <CalendarClock size={12} className="text-muted-foreground" />
-              <span>Masa aktif saat ini:</span>
-              <span className="font-mono font-medium text-foreground">
-                {currentExpiryText}
-              </span>
-            </div>
+            <span className="font-semibold text-xs text-foreground truncate">
+              {productName}
+            </span>
+            <Badge variant="outline" className="text-[10px] font-mono shrink-0">
+              {isAnnual ? "+12 Bulan" : "+1 Bulan"}
+            </Badge>
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
+        }
+        description={
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-0.5">
+            <CalendarClock size={12} className="text-muted-foreground shrink-0" />
+            <span>Masa aktif:</span>
+            <span className="font-mono font-medium text-foreground">
+              {currentExpiryText}
+            </span>
+          </div>
+        }
+        rightElement={
           <div className="text-right">
             <div className="font-bold text-xs text-primary font-mono">
               {formatCurrency(price)}
@@ -76,13 +64,9 @@ export function LicenseOrderBaseProduct({
               /{isAnnual ? "tahun" : "bulan"}
             </div>
           </div>
-          <Switch
-            checked={includeBase}
-            onCheckedChange={onToggleIncludeBase}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      </div>
+        }
+        className="bg-card hover:bg-muted/30 transition-colors"
+      />
     </div>
   )
 }

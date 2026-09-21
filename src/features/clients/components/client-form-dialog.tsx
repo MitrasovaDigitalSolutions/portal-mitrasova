@@ -96,8 +96,8 @@ export function ClientFormDialog({
       className="max-w-md"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormInput
               name="nama_pemilik"
               label="Nama Pemilik / Kontak"
@@ -113,7 +113,7 @@ export function ClientFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormInput
               name="telepon"
               label="Nomor Telepon / WhatsApp"
@@ -132,7 +132,7 @@ export function ClientFormDialog({
             name="alamat"
             label="Alamat Lengkap"
             placeholder="Alamat kantor atau domisili usaha..."
-            rows={3}
+            rows={2}
             required
           />
 
