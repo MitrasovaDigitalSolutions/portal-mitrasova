@@ -14,8 +14,10 @@ import {
   type CreateInvoiceFormValues,
 } from "../validations/invoice.schema"
 import type { InvoiceItem } from "../@types/invoice"
+import { useClient } from "@/features/clients"
 import { InvoiceFormHeader } from "./invoice-form-header"
 import { InvoiceFormClientFields } from "./invoice-form-client-fields"
+import { InvoiceClientInfoCard } from "./invoice-client-info-card"
 import { InvoiceFormItemsTable } from "./invoice-form-items-table"
 import { InvoiceFormSummary } from "./invoice-form-summary"
 
@@ -71,8 +73,16 @@ export function InvoiceFormView({ invoiceId }: InvoiceFormViewProps): React.JSX.
   const watchedDueDate = useWatch({ control, name: "due_date" }) || ""
   const watchedStatus = useWatch({ control, name: "status" }) || "unpaid"
   const watchedClientId = useWatch({ control, name: "client_id" }) || ""
+  const watchedLicenseId = useWatch({ control, name: "license_id" }) || ""
 
   const watchedItems = React.useMemo(() => rawItems || [], [rawItems])
+
+  // Fetch selected client & license for the sidebar info card
+  const { data: selectedClient } = useClient(watchedClientId, Boolean(watchedClientId))
+  const selectedLicense = React.useMemo(() => {
+    if (!watchedLicenseId || !selectedClient?.licenses) { return null }
+    return selectedClient.licenses.find((l) => l.id === watchedLicenseId) ?? null
+  }, [watchedLicenseId, selectedClient])
 
   // Populate form when existing invoice is loaded
   React.useEffect(() => {
@@ -94,6 +104,15 @@ export function InvoiceFormView({ invoiceId }: InvoiceFormViewProps): React.JSX.
       })
     }
   }, [isEdit, existingInvoice, reset])
+
+  // Auto-reset license_id when client_id changes (prevent stale selection)
+  const prevClientIdRef = React.useRef(watchedClientId)
+  React.useEffect(() => {
+    if (!isEdit && prevClientIdRef.current !== watchedClientId) {
+      setValue("license_id", "", { shouldValidate: false })
+      prevClientIdRef.current = watchedClientId
+    }
+  }, [watchedClientId, isEdit, setValue])
 
   // Calculate totals directly from items
   const itemsTotal = React.useMemo(() => {
@@ -225,7 +244,6 @@ export function InvoiceFormView({ invoiceId }: InvoiceFormViewProps): React.JSX.
             {/* Customer & Relation Fields */}
             <InvoiceFormClientFields
               isEdit={isEdit}
-              clientRelation={existingInvoice?.client}
             />
 
             {/* Line Items Table */}
@@ -251,17 +269,26 @@ export function InvoiceFormView({ invoiceId }: InvoiceFormViewProps): React.JSX.
 
           {/* Right Sticky Column (4 cols) */}
           <div className="lg:col-span-4">
-            <InvoiceFormSummary
-              itemCount={watchedItems.length}
-              totalQuantity={totalQuantity}
-              dueDate={watchedDueDate}
-              status={watchedStatus}
-              totalAmount={itemsTotal}
-              isSubmitting={isSubmitting}
-              canSubmit={canSubmit}
-              isEdit={isEdit}
-              onCancel={() => router.push("/invoices")}
-            />
+            <div className="sticky top-6 space-y-4">
+              {/* Client & License Info Card */}
+              <InvoiceClientInfoCard
+                client={selectedClient}
+                license={selectedLicense}
+              />
+
+              {/* Invoice Summary */}
+              <InvoiceFormSummary
+                itemCount={watchedItems.length}
+                totalQuantity={totalQuantity}
+                dueDate={watchedDueDate}
+                status={watchedStatus}
+                totalAmount={itemsTotal}
+                isSubmitting={isSubmitting}
+                canSubmit={canSubmit}
+                isEdit={isEdit}
+                onCancel={() => router.push("/invoices")}
+              />
+            </div>
           </div>
         </div>
       </form>

@@ -30,8 +30,7 @@ export function InvoiceFormSummary({
   onCancel,
 }: InvoiceFormSummaryProps): React.JSX.Element {
   return (
-    <div className="sticky top-6 space-y-4">
-      <Card className="rounded-2xl border-border bg-card p-5 space-y-4 shadow-xs">
+    <Card className="rounded-2xl border-border bg-card p-5 space-y-4 shadow-xs">
         <div className="text-sm font-bold text-foreground border-b border-border pb-3">
           Ringkasan Faktur
         </div>
@@ -103,6 +102,5 @@ export function InvoiceFormSummary({
           </Button>
         </div>
       </Card>
-    </div>
   )
 }

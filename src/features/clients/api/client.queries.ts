@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
 import { clientApi } from "./client.api"
@@ -24,6 +24,24 @@ export function useClients(params?: ClientQueryParams) {
   return useQuery<PaginatedResponse<Client>>({
     queryKey: clientKeys.list(params),
     queryFn: () => clientApi.getClients(params),
+  })
+}
+
+/** Hook for infinite scrolling client list (used in FormSelect async dropdowns) */
+export function useInfiniteClients(params?: Omit<ClientQueryParams, "page">) {
+  return useInfiniteQuery<PaginatedResponse<Client>>({
+    queryKey: [...clientKeys.lists(), "infinite", params ?? {}] as const,
+    queryFn: ({ pageParam }) =>
+      clientApi.getClients({
+        ...params,
+        page: pageParam as number,
+        per_page: params?.per_page ?? 8,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, last_page } = lastPage.meta
+      return current_page < last_page ? current_page + 1 : undefined
+    },
   })
 }
 

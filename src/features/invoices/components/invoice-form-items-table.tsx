@@ -1,20 +1,24 @@
 "use client"
 
 import type React from "react"
-import { FileText, Plus, Sparkles, Trash2 } from "lucide-react"
+import { useState } from "react"
+import {
+  FileText,
+  Package,
+  Plus,
+  Puzzle,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { NominalInput } from "@/components/ui/nominal-input"
-import type { InvoiceItem } from "../@types/invoice"
+import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
+import { useProducts } from "@/features/products"
 import { formatCurrency } from "@/utils"
-
-const QUICK_SERVICE_PRESETS: { description: string; price: number }[] = [
-  { description: "Langganan Lisensi Bulanan POS", price: 150000 },
-  { description: "Langganan Lisensi Tahunan POS", price: 1500000 },
-  { description: "Setup Instance Domain & Server", price: 500000 },
-  { description: "Biaya Maintenance & Support Addon", price: 100000 },
-]
+import type { InvoiceItem } from "../@types/invoice"
 
 interface InvoiceFormItemsTableProps {
   items: InvoiceItem[]
@@ -33,46 +37,183 @@ export function InvoiceFormItemsTable({
   onRemoveItem,
   onItemChange,
 }: InvoiceFormItemsTableProps): React.JSX.Element {
+  const [catalogOpen, setCatalogOpen] = useState(false)
+
+  // Fetch active products with their addons for the catalog picker
+  const { data: productsData, isLoading: isLoadingProducts } = useProducts({
+    status: "active",
+    per_page: 100,
+  })
+
+  const products = productsData?.data ?? []
+
   return (
     <Card className="rounded-2xl border-border bg-card p-5 space-y-4 shadow-xs">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-3">
         <div>
           <div className="flex items-center gap-2 text-sm font-bold text-foreground">
             <FileText className="size-4 text-primary" />
-            <span>Rincian Layanan & Item Tagihan</span>
+            <span>Rincian Layanan &amp; Item Tagihan</span>
           </div>
           <p className="text-xs text-muted-foreground">
             Daftar layanan atau produk yang ditagihkan kepada pelanggan
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => onAddItem()}
-          className="h-8 text-xs gap-1.5 px-3 cursor-pointer self-start sm:self-auto"
-        >
-          <Plus className="size-3.5" />
-          <span>Tambah Baris</span>
-        </Button>
-      </div>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {/* Catalog picker button */}
+          <PopoverPrimitive.Root open={catalogOpen} onOpenChange={setCatalogOpen}>
+            <PopoverPrimitive.Trigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 px-3 cursor-pointer border-primary/40 text-primary hover:bg-primary/5"
+                >
+                  <Sparkles className="size-3.5" />
+                  <span>Dari Katalog</span>
+                </Button>
+              }
+            />
 
-      {/* Quick Presets Pills */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-          <Sparkles className="size-3 text-primary" /> Preset Cepat:
-        </span>
-        {QUICK_SERVICE_PRESETS.map((preset) => (
-          <button
-            key={preset.description}
+            <PopoverPrimitive.Portal>
+              <PopoverPrimitive.Positioner
+                align="end"
+                side="bottom"
+                sideOffset={4}
+                className="isolate z-[100000]"
+              >
+                <PopoverPrimitive.Popup className="w-80 max-h-[380px] overflow-hidden rounded-xl border border-border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-100 outline-none">
+                  {/* Header */}
+                  <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3 py-2">
+                    <div className="flex items-center gap-1.5">
+                      <Sparkles className="size-3.5 text-primary" />
+                      <span className="text-xs font-semibold text-foreground">
+                        Katalog Produk &amp; Addon
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCatalogOpen(false)}
+                      className="rounded p-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Catalog list */}
+                  <div className="overflow-y-auto max-h-[320px] p-2 space-y-1.5">
+                    {isLoadingProducts && (
+                      <div className="py-6 text-center text-xs text-muted-foreground">
+                        Memuat katalog...
+                      </div>
+                    )}
+                    {!isLoadingProducts && products.length === 0 && (
+                      <div className="py-6 text-center text-xs text-muted-foreground">
+                        Belum ada produk aktif.
+                      </div>
+                    )}
+                    {products.map((product) => (
+                      <div key={product.id} className="space-y-1">
+                        {/* Product header */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onAddItem({
+                              description: `${product.nama} (${product.code})`,
+                              price: 0,
+                            })
+                            setCatalogOpen(false)
+                          }}
+                          className="w-full flex items-start gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-accent transition-colors cursor-pointer"
+                        >
+                          <Package className="size-3.5 mt-0.5 shrink-0 text-primary" />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-semibold text-foreground truncate">
+                                {product.nama}
+                              </span>
+                              <span className="shrink-0 rounded border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[9px] leading-none font-bold text-primary uppercase">
+                                {product.code}
+                              </span>
+                            </div>
+                            {product.description && (
+                              <p className="text-[10px] text-muted-foreground truncate mt-0.5">
+                                {product.description}
+                              </p>
+                            )}
+                          </div>
+                        </button>
+
+                        {/* Product addons */}
+                        {product.addons && product.addons.length > 0 && (
+                          <div className="ml-5 space-y-0.5">
+                            {product.addons
+                              .filter((a) => a.is_active)
+                              .map((addon) => (
+                                <div
+                                  key={addon.id}
+                                  className="flex items-center gap-1.5"
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      onAddItem({
+                                        description: `${addon.nama} – ${product.nama}`,
+                                        price: addon.harga_bulanan,
+                                      })
+                                      setCatalogOpen(false)
+                                    }}
+                                    title={`Bulanan: ${formatCurrency(addon.harga_bulanan)}`}
+                                    className="flex min-w-0 flex-1 items-center gap-1.5 rounded-lg px-2 py-1 text-left hover:bg-accent transition-colors cursor-pointer"
+                                  >
+                                    <Puzzle className="size-3 shrink-0 text-muted-foreground" />
+                                    <span className="text-[11px] text-foreground truncate">
+                                      {addon.nama}
+                                    </span>
+                                    <span className="ml-auto shrink-0 text-[10px] text-muted-foreground font-mono">
+                                      {formatCurrency(addon.harga_bulanan)}/bln
+                                    </span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      onAddItem({
+                                        description: `${addon.nama} – ${product.nama} (Tahunan)`,
+                                        price: addon.harga_tahunan,
+                                      })
+                                      setCatalogOpen(false)
+                                    }}
+                                    title={`Tahunan: ${formatCurrency(addon.harga_tahunan)}`}
+                                    className="shrink-0 rounded-lg border border-border px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground hover:bg-accent hover:text-foreground transition-colors cursor-pointer"
+                                  >
+                                    {formatCurrency(addon.harga_tahunan)}/thn
+                                  </button>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </PopoverPrimitive.Popup>
+              </PopoverPrimitive.Positioner>
+            </PopoverPrimitive.Portal>
+          </PopoverPrimitive.Root>
+
+          {/* Manual row button */}
+          <Button
             type="button"
-            onClick={() => onAddItem(preset)}
-            className="px-2.5 py-1 rounded-lg text-[11px] font-medium border border-border/80 bg-muted/40 hover:bg-muted text-foreground transition-colors cursor-pointer"
+            variant="outline"
+            size="sm"
+            onClick={() => onAddItem()}
+            className="h-8 text-xs gap-1.5 px-3 cursor-pointer"
           >
-            + {preset.description} ({formatCurrency(preset.price)})
-          </button>
-        ))}
+            <Plus className="size-3.5" />
+            <span>Tambah Baris</span>
+          </Button>
+        </div>
       </div>
 
       {/* Table */}
@@ -156,19 +297,32 @@ export function InvoiceFormItemsTable({
               Belum ada baris item tagihan
             </p>
             <p className="text-[11px] text-muted-foreground max-w-sm mx-auto">
-              Klik tombol &ldquo;Tambah Baris&rdquo; di atas atau pilih salah satu preset cepat untuk menambahkan layanan.
+              Klik &ldquo;Dari Katalog&rdquo; untuk menambahkan produk/addon,
+              atau &ldquo;Tambah Baris&rdquo; untuk entri manual.
             </p>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => onAddItem()}
-            className="h-8 text-xs gap-1.5 px-3 cursor-pointer"
-          >
-            <Plus className="size-3.5" />
-            <span>Tambah Item Pertama</span>
-          </Button>
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setCatalogOpen(true)}
+              className="h-8 text-xs gap-1.5 px-3 cursor-pointer border-primary/40 text-primary hover:bg-primary/5"
+            >
+              <Sparkles className="size-3.5" />
+              <span>Dari Katalog</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onAddItem()}
+              className="h-8 text-xs gap-1.5 px-3 cursor-pointer"
+            >
+              <Plus className="size-3.5" />
+              <span>Tambah Manual</span>
+            </Button>
+          </div>
         </div>
       )}
     </Card>

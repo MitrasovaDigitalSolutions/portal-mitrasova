@@ -7,7 +7,9 @@ import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BaseDialog } from "@/components/ui/base-dialog"
 import { FormDatePicker, FormInput, FormSelect } from "@/components/forms"
-import { useProducts } from "@/features/products"
+import type { AsyncQueryParams, AsyncQueryResult } from "@/components/forms/form-select"
+import { useInfiniteProducts } from "@/features/products"
+import type { Product } from "@/features/products"
 import { useCreateLicense, useUpdateLicense } from "../api/license.queries"
 import {
   licenseFormSchema,
@@ -46,18 +48,20 @@ export function LicenseFormDialog({
   const updateMutation = useUpdateLicense()
   const isPending = createMutation.isPending || updateMutation.isPending
 
-  // Fetch available products
-  const { data: productsData, isLoading: isLoadingProducts } = useProducts({
-    per_page: 100,
-    status: "active",
-  })
+  // ─── Infinite products query adapter for async FormSelect ────────────────
+  function useInfiniteProductsQuery(
+    params: AsyncQueryParams
+  ): AsyncQueryResult<Product> {
+    return useInfiniteProducts({
+      search: params.search,
+      per_page: params.per_page ?? 8,
+      status: "active",
+    }) as AsyncQueryResult<Product>
+  }
 
-  const productOptions = useMemo(() => {
-    return (productsData?.data ?? []).map((p) => ({
-      value: p.id,
-      label: `${p.nama} (${p.code})`,
-    }))
-  }, [productsData?.data])
+  function mapProductOption(p: Product) {
+    return { value: p.id, label: `${p.nama} (${p.code})` }
+  }
 
   const subscriptionOptions = useMemo(
     () =>
@@ -156,12 +160,14 @@ export function LicenseFormDialog({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormSelect
+            <FormSelect<LicenseFormValues, Product>
               name="product_id"
               label="Produk Software"
-              placeholder="Pilih produk software..."
-              options={productOptions}
-              isLoading={isLoadingProducts}
+              placeholder="Cari & pilih produk software..."
+              searchPlaceholder="Ketik nama atau kode produk..."
+              emptyMessage="Produk tidak ditemukan."
+              useAsyncQuery={useInfiniteProductsQuery}
+              mapOption={mapProductOption}
             />
             <FormInput
               name="nama_instance"

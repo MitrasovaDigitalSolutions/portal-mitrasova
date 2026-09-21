@@ -182,6 +182,12 @@ export const CommandList = React.forwardRef<
         {...props}
       >
         {children}
+        {isLoadingMore && (
+          <div className="flex items-center justify-center gap-1.5 py-2 text-xs text-muted-foreground">
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+            <span>Memuat lebih banyak...</span>
+          </div>
+        )}
       </Scrollable>
     )
   }

@@ -104,7 +104,7 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
   const queryHook = useAsyncQuery || defaultAsyncHook
   const asyncResult = queryHook({
     search: debouncedSearch || undefined,
-    per_page: 10,
+    per_page: 8,
   })
 
   const asyncData = asyncResult?.data

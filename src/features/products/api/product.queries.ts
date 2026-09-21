@@ -1,13 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { productApi } from "./product.api"
 import type {
+  Product,
   ProductQueryParams,
   CreateProductPayload,
   UpdateProductPayload,
   CreateAddonPayload,
   UpdateAddonPayload,
 } from "../@types/product"
+import type { PaginatedResponse } from "@/@types/api"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
 
 export const productKeys = {
@@ -25,6 +27,25 @@ export function useProducts(params?: ProductQueryParams) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () => productApi.getProducts(params),
+    staleTime: 30_000,
+  })
+}
+
+/** Hook for infinite scrolling product list (used in FormSelect async dropdowns) */
+export function useInfiniteProducts(params?: Omit<ProductQueryParams, "page">) {
+  return useInfiniteQuery<PaginatedResponse<Product>>({
+    queryKey: [...productKeys.lists(), "infinite", params ?? {}] as const,
+    queryFn: ({ pageParam }) =>
+      productApi.getProducts({
+        ...params,
+        page: pageParam as number,
+        per_page: params?.per_page ?? 8,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, last_page } = lastPage.meta
+      return current_page < last_page ? current_page + 1 : undefined
+    },
     staleTime: 30_000,
   })
 }
