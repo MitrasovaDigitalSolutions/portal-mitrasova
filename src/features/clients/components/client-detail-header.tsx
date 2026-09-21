@@ -2,9 +2,17 @@
 
 import type React from "react"
 import Link from "next/link"
-import { ArrowLeft, Building2, Pencil, RefreshCw, Trash2 } from "lucide-react"
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  Pencil,
+  RefreshCw,
+  Trash2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { formatDate } from "@/utils"
 import type { Client } from "../@types/client"
 
 interface ClientDetailHeaderProps {
@@ -23,40 +31,52 @@ export function ClientDetailHeader({
   onDelete,
 }: ClientDetailHeaderProps): React.JSX.Element {
   return (
-    <div className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-      {/* Left: Back button & Title */}
-      <div className="flex items-start gap-3 sm:items-center">
-        <Link href="/clients">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 shrink-0 cursor-pointer rounded-xl"
-            title="Kembali ke Daftar Klien"
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
+      {/* Left: Breadcrumbs & Client Identity */}
+      <div className="space-y-1.5 min-w-0">
+        {/* Breadcrumb back link */}
+        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+          <Link
+            href="/clients"
+            className="flex items-center gap-1 hover:text-foreground transition-colors font-medium"
           >
-            <ArrowLeft size={16} />
-          </Button>
-        </Link>
-        <div className="min-w-0 space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="truncate text-xl font-bold tracking-tight text-foreground">
-              {client?.nama_pemilik || "Detail Klien"}
-            </h1>
-            {client?.nama_perusahaan && (
-              <Badge variant="outline" className="gap-1 text-xs font-normal">
-                <Building2 size={11} className="text-muted-foreground" />
-                <span>{client.nama_perusahaan}</span>
-              </Badge>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Pusat data profil klien dan manajemen lisensi perangkat terpasang.
-          </p>
+            <ArrowLeft size={12} />
+            <span>Kembali ke Daftar Klien</span>
+          </Link>
+        </div>
+
+        {/* Client Title & Badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="truncate text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            {client?.nama_pemilik || "Detail Klien"}
+          </h1>
+
+          {client?.nama_perusahaan && (
+            <Badge
+              variant="outline"
+              className="gap-1 text-xs font-normal bg-background/50 text-foreground border-border/80"
+            >
+              <Building2 size={11} className="text-muted-foreground" />
+              <span className="truncate max-w-[200px]">
+                {client.nama_perusahaan}
+              </span>
+            </Badge>
+          )}
+
+          {client?.created_at && (
+            <Badge
+              variant="secondary"
+              className="gap-1 text-[11px] font-normal text-muted-foreground hidden md:inline-flex"
+            >
+              <Calendar size={11} className="text-muted-foreground" />
+              <span>Sejak {formatDate(client.created_at)}</span>
+            </Badge>
+          )}
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+      <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0">
         {onRefresh && (
           <Button
             type="button"
@@ -64,11 +84,14 @@ export function ClientDetailHeader({
             size="sm"
             onClick={onRefresh}
             disabled={isFetching}
-            className="h-9 cursor-pointer gap-2 rounded-xl px-3"
-            title="Muat ulang data"
+            className="h-8 px-2.5 rounded-lg gap-1.5 cursor-pointer text-xs font-medium"
+            title="Muat ulang data klien"
           >
-            <RefreshCw size={13} className={isFetching ? "animate-spin" : ""} />
-            <span className="hidden text-xs sm:inline">Refresh</span>
+            <RefreshCw
+              size={12}
+              className={isFetching ? "animate-spin text-primary" : ""}
+            />
+            <span className="hidden sm:inline">Refresh</span>
           </Button>
         )}
 
@@ -77,9 +100,9 @@ export function ClientDetailHeader({
           variant="outline"
           size="sm"
           onClick={onEdit}
-          className="h-9 cursor-pointer gap-1.5 rounded-xl px-3 text-xs"
+          className="h-8 px-3 rounded-lg gap-1.5 cursor-pointer text-xs font-medium"
         >
-          <Pencil size={13} />
+          <Pencil size={12} />
           <span>Edit Klien</span>
         </Button>
 
@@ -88,9 +111,10 @@ export function ClientDetailHeader({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="h-9 cursor-pointer gap-1.5 rounded-xl px-3 text-xs text-destructive hover:bg-destructive/10"
+          className="h-8 px-2.5 rounded-lg gap-1.5 cursor-pointer text-xs font-medium text-destructive hover:bg-destructive/10 hover:border-destructive/30"
+          title="Hapus data klien"
         >
-          <Trash2 size={13} />
+          <Trash2 size={12} />
           <span>Hapus</span>
         </Button>
       </div>

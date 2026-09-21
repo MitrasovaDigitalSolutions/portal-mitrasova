@@ -1,11 +1,13 @@
 import { apiClient } from "@/lib/axios"
 import type { ApiResponse, PaginatedResponse } from "@/@types/api"
+import type { Invoice } from "@/features/invoices/@types/invoice"
 import type {
   License,
   LicenseQueryParams,
   CreateLicensePayload,
   UpdateLicensePayload,
   ExtendLicensePayload,
+  CreateLicenseOrderPayload,
   SyncLicenseAddonsPayload,
   RegenerateSecretResponse,
 } from "../@types/license"
@@ -114,6 +116,17 @@ export const licenseApi = {
   ): Promise<License> => {
     const response = await apiClient.post<ApiResponse<License>>(
       `/api/v1/admin/licenses/${id}/extend`,
+      payload
+    )
+    return response.data.data
+  },
+
+  /** Create order / renew license or purchase addons via billing endpoint */
+  createLicenseOrder: async (
+    payload: CreateLicenseOrderPayload
+  ): Promise<Invoice> => {
+    const response = await apiClient.post<ApiResponse<Invoice>>(
+      "/api/v1/license/orders",
       payload
     )
     return response.data.data

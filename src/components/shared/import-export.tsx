@@ -470,8 +470,7 @@ export function ImportExport({
             <Button
               type="button"
               variant="outline"
-              size="sm"
-              className="cursor-pointer text-xs"
+              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
               onClick={handleCloseDialog}
               disabled={isImporting}
             >
@@ -479,19 +478,18 @@ export function ImportExport({
             </Button>
             <Button
               type="button"
-              size="sm"
-              className="cursor-pointer gap-1.5 text-xs font-medium"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
               onClick={onImportConfirm}
               disabled={!selectedFile || isImporting}
             >
               {isImporting ? (
                 <>
-                  <Loader2 size={13} className="animate-spin" />
+                  <Loader2 size={14} className="animate-spin" />
                   <span>Mengimpor...</span>
                 </>
               ) : (
                 <>
-                  <Check size={13} />
+                  <Check size={14} />
                   <span>Import Sekarang</span>
                 </>
               )}

@@ -42,19 +42,33 @@ export const authConfig = {
             errors?: Record<string, string[]>
           }
 
-          if (!res.ok || !data.token) {
+          // Extract token from root or nested data payload
+          const token =
+            data.token ||
+            data.access_token ||
+            data.data?.token ||
+            data.data?.access_token
+
+          // Extract user from root or nested data payload
+          const user = data.user || data.data?.user
+
+          if (!res.ok || !token) {
             const errorMessage =
               data.errors?.email?.[0] ||
-              data.message ||
-              "Kredensial yang diberikan tidak valid."
+              (data.message && data.message !== "Login berhasil"
+                ? data.message
+                : undefined) ||
+              "Kredensial yang diberikan tidak valid atau token autentikasi tidak ditemukan."
             throw new Error(errorMessage)
           }
 
+          const emailStr = String(credentials.email)
+
           return {
-            id: String(data.user.id),
-            name: data.user.name,
-            email: data.user.email,
-            accessToken: data.token,
+            id: String(user?.id ?? "1"),
+            name: user?.name || emailStr.split("@")[0] || "Admin",
+            email: user?.email || emailStr,
+            accessToken: token,
           }
         } catch (error) {
           if (error instanceof Error) {

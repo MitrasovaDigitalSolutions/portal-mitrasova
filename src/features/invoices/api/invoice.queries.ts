@@ -1,3 +1,5 @@
+"use client"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { invoiceApi } from "./invoice.api"
@@ -6,8 +8,8 @@ import type {
   MarkPaidPayload,
 } from "../@types/invoice"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
-import { licenseKeys } from "@/features/clients/api/license.queries"
 import { clientKeys } from "@/features/clients/api/client.queries"
+import { licenseKeys } from "@/features/licenses/api/license.queries"
 
 export const invoiceKeys = {
   all: ["invoices"] as const,

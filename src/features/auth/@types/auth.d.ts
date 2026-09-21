@@ -1,5 +1,5 @@
 export interface AuthUser {
-  id: number
+  id: number | string
   name: string
   email: string
   email_verified_at?: string | null
@@ -14,12 +14,21 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   message: string
-  token: string
-  user: AuthUser
+  token?: string
+  access_token?: string
+  user?: AuthUser
+  data?: {
+    token?: string
+    access_token?: string
+    user?: AuthUser
+  }
 }
 
 export interface MeResponse {
-  user: AuthUser
+  user?: AuthUser
+  data?: {
+    user?: AuthUser
+  }
 }
 
 export interface LogoutResponse {

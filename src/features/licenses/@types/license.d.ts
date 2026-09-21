@@ -145,3 +145,10 @@ export interface SyncLicenseAddonsPayload {
 export interface RegenerateSecretResponse {
   license_secret: string
 }
+
+export interface CreateLicenseOrderPayload {
+  license_key: string
+  billing_period: "monthly" | "annual"
+  include_base_product?: boolean
+  addon_ids?: string[]
+}

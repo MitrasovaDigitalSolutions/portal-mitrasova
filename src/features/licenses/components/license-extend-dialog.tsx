@@ -1,12 +1,18 @@
 "use client"
 
-import { useState, type JSX } from "react"
+import { useEffect, type JSX } from "react"
+import { useForm, FormProvider, useWatch } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { CalendarClock, Loader2 } from "lucide-react"
 import { BaseDialog } from "@/components/ui/base-dialog"
 import { Button } from "@/components/ui/button"
-import { DatePicker } from "@/components/ui/date-picker"
+import { FormDatePicker } from "@/components/forms/form-date-picker"
 import { useExtendLicense } from "../api/license.queries"
 import { QUICK_EXTEND_OPTIONS } from "../constants"
+import {
+  licenseExtendSchema,
+  type LicenseExtendValues,
+} from "../validations/license-extend.schema"
 import type { License } from "../@types/license"
 
 interface LicenseExtendDialogProps {
@@ -20,9 +26,39 @@ export function LicenseExtendDialog({
   onOpenChange,
   license,
 }: LicenseExtendDialogProps): JSX.Element {
-  const [selectedDays, setSelectedDays] = useState<number | null>(30)
-  const [customDate, setCustomDate] = useState<string>("")
   const extendMutation = useExtendLicense()
+
+  const methods = useForm<LicenseExtendValues>({
+    resolver: zodResolver(licenseExtendSchema),
+    defaultValues: {
+      extend_mode: "days",
+      days: 30,
+      expires_at: "",
+    },
+  })
+
+  const { handleSubmit, setValue, reset, control } = methods
+
+  const currentMode = useWatch({ control, name: "extend_mode" })
+  const selectedDays = useWatch({ control, name: "days" })
+  const customDate = useWatch({ control, name: "expires_at" })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        extend_mode: "days",
+        days: 30,
+        expires_at: "",
+      })
+    }
+  }, [open, reset])
+
+  useEffect(() => {
+    if (customDate) {
+      setValue("extend_mode", "custom_date")
+      setValue("days", undefined)
+    }
+  }, [customDate, setValue])
 
   if (!license) {
     return <></>
@@ -36,32 +72,35 @@ export function LicenseExtendDialog({
       })
     : "Lifetime (Tidak ada kedaluwarsa)"
 
-  const handleQuickExtend = async (days: number) => {
+  const onSubmit = async (values: LicenseExtendValues) => {
     try {
-      await extendMutation.mutateAsync({
-        id: license.id,
-        payload: { days },
-      })
+      if (values.extend_mode === "custom_date" && values.expires_at) {
+        await extendMutation.mutateAsync({
+          id: license.id,
+          payload: { expires_at: values.expires_at },
+        })
+      } else if (values.days) {
+        await extendMutation.mutateAsync({
+          id: license.id,
+          payload: { days: values.days },
+        })
+      }
       onOpenChange(false)
     } catch {
       // Toast handled by mutation hook
     }
   }
 
-  const handleCustomExtend = async () => {
-    if (!customDate) {
-      return
-    }
-    try {
-      await extendMutation.mutateAsync({
-        id: license.id,
-        payload: { expires_at: customDate },
-      })
-      onOpenChange(false)
-    } catch {
-      // Toast handled by mutation hook
-    }
+  const handleQuickSelect = (days: number) => {
+    setValue("extend_mode", "days")
+    setValue("days", days)
+    setValue("expires_at", "")
   }
+
+  const isSubmitDisabled =
+    extendMutation.isPending ||
+    (currentMode === "custom_date" && !customDate) ||
+    (currentMode === "days" && !selectedDays)
 
   return (
     <BaseDialog
@@ -79,71 +118,80 @@ export function LicenseExtendDialog({
       }
       className="max-w-md"
     >
-      <div className="space-y-4 text-xs">
-        {/* Current status */}
-        <div className="p-3 rounded-xl border border-border bg-muted/30 flex items-center justify-between">
-          <span className="text-muted-foreground">Masa Aktif Saat Ini:</span>
-          <span className="font-semibold text-foreground font-mono">{currentExpiry}</span>
-        </div>
-
-        {/* Quick Extend Options */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-foreground">
-            Opsi Cepat Perpanjangan
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {QUICK_EXTEND_OPTIONS.map((opt) => (
-              <Button
-                key={opt.days}
-                type="button"
-                variant={selectedDays === opt.days ? "default" : "outline"}
-                size="sm"
-                disabled={extendMutation.isPending}
-                onClick={() => {
-                  setSelectedDays(opt.days)
-                  setCustomDate("")
-                  void handleQuickExtend(opt.days)
-                }}
-                className="h-8 text-xs justify-center cursor-pointer gap-1.5 font-medium"
-              >
-                <CalendarClock size={13} />
-                <span>{opt.label}</span>
-              </Button>
-            ))}
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs">
+          {/* Current status */}
+          <div className="p-3 rounded-xl border border-border bg-muted/30 flex items-center justify-between">
+            <span className="text-muted-foreground">Masa Aktif Saat Ini:</span>
+            <span className="font-semibold text-foreground font-mono">
+              {currentExpiry}
+            </span>
           </div>
-        </div>
 
-        {/* Custom Date Option */}
-        <div className="space-y-2 pt-2 border-t border-border">
-          <label className="text-xs font-semibold text-foreground">
-            Atau Tentukan Tanggal Kedaluwarsa Baru
-          </label>
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
-              <DatePicker
-                value={customDate}
-                onChange={(date) => {
-                  setCustomDate(date)
-                  setSelectedDays(null)
-                }}
-                placeholder="Pilih tanggal baru..."
-              />
+          {/* Quick Extend Options */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-foreground">
+              Opsi Cepat Perpanjangan
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {QUICK_EXTEND_OPTIONS.map((opt) => (
+                <Button
+                  key={opt.days}
+                  type="button"
+                  variant={
+                    currentMode === "days" && selectedDays === opt.days
+                      ? "default"
+                      : "outline"
+                  }
+                  size="sm"
+                  disabled={extendMutation.isPending}
+                  onClick={() => handleQuickSelect(opt.days)}
+                  className="h-8 text-xs justify-center cursor-pointer gap-1.5 font-medium"
+                >
+                  <CalendarClock size={13} />
+                  <span>{opt.label}</span>
+                </Button>
+              ))}
             </div>
+          </div>
+
+          {/* Custom Date Option */}
+          <div className="space-y-2 pt-2 border-t border-border">
+            <label className="text-xs font-semibold text-foreground">
+              Atau Tentukan Tanggal Kedaluwarsa Baru
+            </label>
+            <FormDatePicker<LicenseExtendValues>
+              name="expires_at"
+              placeholder="Pilih tanggal kedaluwarsa baru..."
+              size="sm"
+              captionLayout="dropdown"
+            />
+          </div>
+
+          {/* Dialog Action Buttons */}
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
             <Button
               type="button"
-              size="sm"
-              disabled={!customDate || extendMutation.isPending}
-              onClick={handleCustomExtend}
-              className="cursor-pointer gap-1.5 text-xs font-medium"
+              variant="outline"
+              disabled={extendMutation.isPending}
+              onClick={() => onOpenChange(false)}
+              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+            >
+              Batal
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitDisabled}
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
             >
               {extendMutation.isPending && (
-                <Loader2 size={13} className="animate-spin" />
+                <Loader2 size={14} className="animate-spin" />
               )}
-              <span>Terapkan</span>
+              <span>Terapkan Perpanjangan</span>
             </Button>
           </div>
-        </div>
-      </div>
+        </form>
+      </FormProvider>
     </BaseDialog>
   )
 }

@@ -3,8 +3,8 @@
 import { useEffect, useMemo, type JSX } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import {
-  Boxes,
   CalendarClock,
+  CreditCard,
   Plus,
   RefreshCw,
   Search,
@@ -56,9 +56,12 @@ const STATUS_FILTER_OPTIONS: CommandOption[] = [
 
 const SUBSCRIPTION_FILTER_OPTIONS: CommandOption[] = [
   { value: "all", label: "Semua Paket" },
-  { value: "monthly", label: "Bulanan" },
-  { value: "yearly", label: "Tahunan" },
+  { value: "monthly", label: "Bulanan (Monthly)" },
+  { value: "yearly", label: "Tahunan (Yearly)" },
+  { value: "multi_store", label: "Multi-Store" },
+  { value: "single_store", label: "Single-Store" },
   { value: "lifetime", label: "Lifetime" },
+  { value: "enterprise", label: "Enterprise" },
   { value: "trial", label: "Trial" },
 ]
 
@@ -94,91 +97,93 @@ export function ClientDetailLicensesSection({
   }, [subscriptionFilter, filterMethods])
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-foreground">
-              Lisensi Instance & Aplikasi
-            </h2>
-            <Badge variant="secondary" className="font-mono text-xs">
-              {licenses.length} Terdaftar
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Daftar lisensi software, kredensial key, binding domain, dan addons klien ini.
-          </p>
+    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
+      {/* Unified Section Header & Filter Toolbar */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        {/* Left: Title & Count Badge */}
+        <div className="flex items-center gap-2 shrink-0">
+          <h2 className="text-sm font-bold text-foreground">
+            Lisensi Instance & Aplikasi
+          </h2>
+          <Badge
+            variant="secondary"
+            className="font-mono text-xs px-2 py-0.5 rounded-md"
+          >
+            {licenses.length} Terdaftar
+          </Badge>
         </div>
 
-        <Button
-          type="button"
-          onClick={onCreateLicense}
-          className="h-9 px-3.5 rounded-xl gap-1.5 cursor-pointer text-xs font-medium self-start sm:self-auto shadow-xs"
-        >
-          <Plus size={14} />
-          <span>Tambah Lisensi Baru</span>
-        </Button>
-      </div>
-
-      {/* Toolbar Filters using reusable FormSelect */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-          />
-          <Input
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Cari instance, domain, key..."
-            className="pl-8 pr-8 h-9 text-xs rounded-xl"
-          />
-          {search && (
-            <button
-              type="button"
-              onClick={() => onSearchChange("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-            >
-              <X size={13} />
-            </button>
-          )}
-        </div>
-
-        <FormProvider {...filterMethods}>
-          <div className="flex items-center gap-2">
-            {/* Reusable Status Filter using FormSelect */}
-            <div className="w-[145px]">
-              <FormSelect<LicenseFilterFormValues>
-                name="status"
-                options={STATUS_FILTER_OPTIONS}
-                placeholder="Pilih Status"
-                size="sm"
-                onChange={(val) =>
-                  onStatusFilterChange(val as LicenseStatus | "all")
-                }
-              />
-            </div>
-
-            {/* Reusable Subscription Filter using FormSelect */}
-            <div className="w-[145px]">
-              <FormSelect<LicenseFilterFormValues>
-                name="subscription"
-                options={SUBSCRIPTION_FILTER_OPTIONS}
-                placeholder="Pilih Paket"
-                size="sm"
-                onChange={(val) =>
-                  onSubscriptionFilterChange(
-                    val as LicenseSubscriptionType | "all"
-                  )
-                }
-              />
-            </div>
+        {/* Right: Search, Filters, and Add Button in single ergonomic flow */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Search Input */}
+          <div className="relative w-full sm:w-48 md:w-56">
+            <Search
+              size={13}
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+            />
+            <Input
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Cari instance, domain, key..."
+              className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => onSearchChange("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <X size={12} />
+              </button>
+            )}
           </div>
-        </FormProvider>
+
+          {/* FormSelect Filters */}
+          <FormProvider {...filterMethods}>
+            <div className="flex items-center gap-2">
+              <div className="w-32">
+                <FormSelect<LicenseFilterFormValues>
+                  name="status"
+                  options={STATUS_FILTER_OPTIONS}
+                  placeholder="Semua Status"
+                  size="sm"
+                  onChange={(val) =>
+                    onStatusFilterChange(val as LicenseStatus | "all")
+                  }
+                />
+              </div>
+
+              <div className="w-36">
+                <FormSelect<LicenseFilterFormValues>
+                  name="subscription"
+                  options={SUBSCRIPTION_FILTER_OPTIONS}
+                  placeholder="Semua Paket"
+                  size="sm"
+                  onChange={(val) =>
+                    onSubscriptionFilterChange(
+                      val as LicenseSubscriptionType | "all"
+                    )
+                  }
+                />
+              </div>
+            </div>
+          </FormProvider>
+
+          {/* Add License Button */}
+          <Button
+            type="button"
+            size="sm"
+            onClick={onCreateLicense}
+            className="h-8 px-3 rounded-lg gap-1.5 cursor-pointer text-xs font-medium shadow-xs"
+          >
+            <Plus size={13} />
+            <span>Tambah Lisensi</span>
+          </Button>
+        </div>
       </div>
 
-      {/* Licenses DataTable using built-in action props with max 5 action buttons */}
+      {/* Licenses DataTable using TanStack Table with max 5 action buttons */}
       <DataTable
         columns={columns}
         data={filteredLicenses}
@@ -189,21 +194,23 @@ export function ClientDetailLicensesSection({
         onDelete={(license) => actions.onDelete(license)}
         extraActions={(license) => (
           <>
-            <DataTableActionButton
-              variant="emerald"
-              onClick={() => actions.onExtend(license)}
-              tooltip="Perpanjang Masa Aktif"
-            >
-              <CalendarClock size={16} />
-            </DataTableActionButton>
-
-            <DataTableActionButton
-              variant="indigo"
-              onClick={() => actions.onSyncAddons(license)}
-              tooltip="Kelola Modul Addon"
-            >
-              <Boxes size={16} />
-            </DataTableActionButton>
+            {actions.onOrder ? (
+              <DataTableActionButton
+                variant="emerald"
+                onClick={() => actions.onOrder?.(license)}
+                tooltip="Beli Perpanjangan & Add-on"
+              >
+                <CreditCard size={16} />
+              </DataTableActionButton>
+            ) : actions.onExtend ? (
+              <DataTableActionButton
+                variant="emerald"
+                onClick={() => actions.onExtend?.(license)}
+                tooltip="Perpanjang Masa Aktif"
+              >
+                <CalendarClock size={16} />
+              </DataTableActionButton>
+            ) : null}
 
             <DataTableActionButton
               variant="sky"
@@ -229,4 +236,3 @@ export function ClientDetailLicensesSection({
     </div>
   )
 }
-

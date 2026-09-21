@@ -87,12 +87,11 @@ export function ProductAddonsDialog({
 
             <Button
               type="button"
-              size="sm"
               onClick={handleCreate}
-              className="w-full sm:w-auto cursor-pointer gap-1.5 text-xs font-medium"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs w-full sm:w-auto"
             >
               <Plus className="size-3.5" />
-              Tambah Addon
+              <span>Tambah Addon</span>
             </Button>
           </div>
 

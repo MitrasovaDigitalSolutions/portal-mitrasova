@@ -24,8 +24,9 @@ import type { License } from "../@types/license"
 export interface LicenseColumnActions {
   onInspectDetail: (license: License) => void
   onEdit: (license: License) => void
-  onExtend: (license: License) => void
-  onSyncAddons: (license: License) => void
+  onOrder?: (license: License) => void
+  onExtend?: (license: License) => void
+  onSyncAddons?: (license: License) => void
   onResetDomain: (license: License) => void
   onRegenerateSecret: (license: License) => void
   onDelete: (license: License) => void

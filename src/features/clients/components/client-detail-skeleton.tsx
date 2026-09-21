@@ -5,92 +5,83 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function ClientDetailSkeleton(): React.JSX.Element {
   return (
-    <div className="space-y-6">
-      {/* Header Skeleton */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-border gap-3">
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-9 w-9 rounded-xl" />
-          <div className="space-y-1.5">
-            <Skeleton className="h-6 w-48 rounded-md" />
-            <Skeleton className="h-4 w-64 rounded-md" />
+    <div className="space-y-3.5 animate-pulse">
+      {/* 1. Header Skeleton */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-border gap-3">
+        <div className="space-y-1.5 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-3 w-3.5 rounded" />
+            <Skeleton className="h-3 w-32 rounded" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-6 w-48 rounded-lg" />
+            <Skeleton className="h-5 w-28 rounded-md" />
+            <Skeleton className="h-5 w-24 rounded-md hidden md:inline-flex" />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-20 rounded-xl" />
-          <Skeleton className="h-9 w-20 rounded-xl" />
-          <Skeleton className="h-9 w-28 rounded-xl" />
+
+        <div className="flex items-center gap-1.5 self-start sm:self-auto">
+          <Skeleton className="h-8 w-18 rounded-lg" />
+          <Skeleton className="h-8 w-24 rounded-lg" />
+          <Skeleton className="h-8 w-18 rounded-lg" />
         </div>
       </div>
 
-      {/* Info & Metrics 3-Grid Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-        {/* Grid 1: Profil Klien */}
-        <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+      {/* 2. Compact Profile & Metrics Card Skeleton */}
+      <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+        {/* Profile Contacts Row */}
+        <div className="p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Skeleton className="h-11 w-11 rounded-xl" />
-            <div className="space-y-1.5 flex-1">
-              <Skeleton className="h-4 w-32 rounded-md" />
-              <Skeleton className="h-3 w-40 rounded-md" />
+            <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-36 rounded" />
+              <Skeleton className="h-3 w-28 rounded" />
             </div>
           </div>
-          <div className="space-y-2.5 pt-2 border-t border-border/60">
-            <Skeleton className="h-3.5 w-48 rounded-md" />
-            <Skeleton className="h-3.5 w-36 rounded-md" />
-            <Skeleton className="h-3.5 w-44 rounded-md" />
-            <Skeleton className="h-3.5 w-56 rounded-md" />
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Skeleton className="h-7 w-36 rounded-lg" />
+            <Skeleton className="h-7 w-28 rounded-lg" />
+            <Skeleton className="h-7 w-44 rounded-lg" />
           </div>
         </div>
 
-        {/* Grid 2: 2 Cards (Atas & Bawah) */}
-        <div className="flex flex-col gap-4 justify-between">
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-28 rounded-md" />
-              <Skeleton className="h-9 w-9 rounded-xl" />
+        {/* 4-Column Metric Ribbon */}
+        <div className="border-t border-border/70 bg-muted/15 grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="p-3 sm:px-4 flex items-center gap-3">
+              <Skeleton className="h-9 w-9 rounded-lg shrink-0" />
+              <div className="space-y-1 min-w-0">
+                <Skeleton className="h-5 w-10 rounded" />
+                <Skeleton className="h-3 w-20 rounded" />
+                <Skeleton className="h-2.5 w-16 rounded" />
+              </div>
             </div>
-            <Skeleton className="h-7 w-14 rounded-md" />
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-28 rounded-md" />
-              <Skeleton className="h-9 w-9 rounded-xl" />
-            </div>
-            <Skeleton className="h-7 w-14 rounded-md" />
-          </div>
-        </div>
-
-        {/* Grid 3: 2 Cards (Atas & Bawah) */}
-        <div className="flex flex-col gap-4 justify-between">
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-28 rounded-md" />
-              <Skeleton className="h-9 w-9 rounded-xl" />
-            </div>
-            <Skeleton className="h-7 w-14 rounded-md" />
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-28 rounded-md" />
-              <Skeleton className="h-9 w-9 rounded-xl" />
-            </div>
-            <Skeleton className="h-7 w-14 rounded-md" />
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Licenses Section Skeleton */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-5 w-48 rounded-md" />
-          <Skeleton className="h-9 w-36 rounded-xl" />
+      {/* 3. Licenses Section Skeleton */}
+      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
+        {/* Toolbar Skeleton */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-5 w-44 rounded" />
+            <Skeleton className="h-5 w-20 rounded-md" />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Skeleton className="h-8 w-48 rounded-lg" />
+            <Skeleton className="h-8 w-32 rounded-lg" />
+            <Skeleton className="h-8 w-36 rounded-lg" />
+            <Skeleton className="h-8 w-28 rounded-lg" />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-60 rounded-xl" />
-          <Skeleton className="h-9 w-28 rounded-xl" />
-        </div>
-        <div className="space-y-2">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full rounded-xl" />
+
+        {/* Table Rows Skeleton */}
+        <div className="space-y-2 pt-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-11 w-full rounded-lg" />
           ))}
         </div>
       </div>

@@ -4,9 +4,9 @@ import type { JSX } from "react"
 import Link from "next/link"
 import {
   ArrowLeft,
-  Boxes,
   CalendarClock,
   ChevronRight,
+  CreditCard,
   MoreHorizontal,
   Pencil,
   RefreshCw,
@@ -33,8 +33,8 @@ interface LicenseDetailHeaderProps {
   clientName?: string
   isFetching?: boolean
   onEdit: () => void
-  onExtend: () => void
-  onSyncAddons: () => void
+  onOrder?: () => void
+  onExtend?: () => void
   onResetDomain: () => void
   onRegenerateSecret: () => void
   onDelete: () => void
@@ -46,8 +46,8 @@ export function LicenseDetailHeader({
   clientName,
   isFetching,
   onEdit,
+  onOrder,
   onExtend,
-  onSyncAddons,
   onResetDomain,
   onRegenerateSecret,
   onDelete,
@@ -127,33 +127,34 @@ export function LicenseDetailHeader({
             variant="outline"
             size="sm"
             onClick={onEdit}
-            className="h-8 px-2.5 text-xs gap-1.5"
+            className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
           >
             <Pencil size={13} />
             <span>Edit</span>
           </Button>
 
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onExtend}
-            className="h-8 px-2.5 text-xs gap-1.5"
-          >
-            <CalendarClock size={13} />
-            <span>Perpanjang</span>
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onSyncAddons}
-            className="h-8 px-2.5 text-xs gap-1.5"
-          >
-            <Boxes size={13} />
-            <span>Addon</span>
-          </Button>
+          {onOrder ? (
+            <Button
+              type="button"
+              size="sm"
+              onClick={onOrder}
+              className="h-8 px-3 text-xs gap-1.5 cursor-pointer font-medium shadow-xs"
+            >
+              <CreditCard size={13} />
+              <span>Beli / Perpanjang</span>
+            </Button>
+          ) : onExtend ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onExtend}
+              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
+            >
+              <CalendarClock size={13} />
+              <span>Perpanjang</span>
+            </Button>
+          ) : null}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

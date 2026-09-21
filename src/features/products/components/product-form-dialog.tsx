@@ -139,21 +139,19 @@ export function ProductFormDialog({
             <Button
               type="button"
               variant="outline"
-              size="sm"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
-              className="cursor-pointer text-xs"
+              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
             >
               Batal
             </Button>
             <Button
               type="submit"
-              size="sm"
               disabled={isPending}
-              className="cursor-pointer gap-1.5 text-xs font-medium"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
             >
               {isPending && <Loader2 className="size-3.5 animate-spin" />}
-              {isEdit ? "Simpan Perubahan" : "Buat Produk"}
+              <span>{isEdit ? "Simpan Perubahan" : "Buat Produk"}</span>
             </Button>
           </div>
         </form>

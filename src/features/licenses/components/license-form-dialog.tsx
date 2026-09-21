@@ -258,21 +258,19 @@ export function LicenseFormDialog({
             <Button
               type="button"
               variant="outline"
-              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="cursor-pointer text-xs"
+              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
             >
               Batal
             </Button>
             <Button
               type="submit"
-              size="sm"
               disabled={isPending}
-              className="cursor-pointer gap-1.5 text-xs font-medium"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
             >
-              {isPending && <Loader2 size={13} className="animate-spin" />}
-              {isEdit ? "Simpan Perubahan" : "Terbitkan Lisensi"}
+              {isPending && <Loader2 size={14} className="animate-spin" />}
+              <span>{isEdit ? "Simpan Perubahan" : "Terbitkan Lisensi"}</span>
             </Button>
           </div>
         </form>

@@ -1,7 +1,8 @@
+"use client"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
-import { invoiceKeys } from "@/features/invoices/api/invoice.queries"
 import { clientKeys } from "@/features/clients/api/client.queries"
 import { licenseApi } from "./license.api"
 import type {
@@ -10,6 +11,7 @@ import type {
   CreateLicensePayload,
   UpdateLicensePayload,
   ExtendLicensePayload,
+  CreateLicenseOrderPayload,
   SyncLicenseAddonsPayload,
 } from "../@types/license"
 import type { PaginatedResponse } from "@/@types/api"
@@ -53,7 +55,7 @@ export function useCreateLicense() {
       )
       void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
       void queryClient.invalidateQueries({ queryKey: clientKeys.all })
-      void queryClient.invalidateQueries({ queryKey: invoiceKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ["invoices"] })
       void queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
     },
     onError: (error: Error) => {
@@ -196,6 +198,28 @@ export function useExtendLicense() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Gagal memperpanjang masa berlaku lisensi")
+    },
+  })
+}
+
+/** Hook to create order for license renewal or addon purchase via billing controller */
+export function useCreateLicenseOrder() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (payload: CreateLicenseOrderPayload) =>
+      licenseApi.createLicenseOrder(payload),
+    onSuccess: (invoice) => {
+      toast.success(
+        `Pesanan berhasil dibuat! Tagihan faktur ${invoice.invoice_number} telah diterbitkan.`
+      )
+      void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ["invoices"] })
+      void queryClient.invalidateQueries({ queryKey: clientKeys.all })
+      void queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Gagal membuat pesanan perpanjangan / add-on")
     },
   })
 }

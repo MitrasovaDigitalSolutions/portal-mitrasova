@@ -38,8 +38,7 @@ import { LicenseDetailInvoicesCard } from "./license-detail-invoices-card"
 import { LicenseDetailLogsCard } from "./license-detail-logs-card"
 import { LicenseDetailPageSkeleton } from "./license-detail-page-skeleton"
 import { LicenseFormDialog } from "./license-form-dialog"
-import { LicenseExtendDialog } from "./license-extend-dialog"
-import { LicenseAddonsDialog } from "./license-addons-dialog"
+import { LicenseOrderDialog } from "./license-order-dialog"
 
 interface LicenseDetailViewProps {
   licenseId: string
@@ -61,8 +60,8 @@ export function LicenseDetailView({
 
   // License Modal States
   const [isEditOpen, setIsEditOpen] = useState(false)
-  const [isExtendOpen, setIsExtendOpen] = useState(false)
-  const [isAddonsOpen, setIsAddonsOpen] = useState(false)
+  const [isOrderOpen, setIsOrderOpen] = useState(false)
+  const [orderInitialAddonId, setOrderInitialAddonId] = useState<string | null>(null)
   const [isResetDomainOpen, setIsResetDomainOpen] = useState(false)
   const [isRegenerateSecretOpen, setIsRegenerateSecretOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -193,8 +192,10 @@ export function LicenseDetailView({
         }
         isFetching={isFetching}
         onEdit={() => setIsEditOpen(true)}
-        onExtend={() => setIsExtendOpen(true)}
-        onSyncAddons={() => setIsAddonsOpen(true)}
+        onOrder={() => {
+          setOrderInitialAddonId(null)
+          setIsOrderOpen(true)
+        }}
         onResetDomain={() => setIsResetDomainOpen(true)}
         onRegenerateSecret={() => setIsRegenerateSecretOpen(true)}
         onDelete={() => setIsDeleteOpen(true)}
@@ -205,7 +206,7 @@ export function LicenseDetailView({
         <TabsList className="h-9 p-1 bg-muted/60 border border-border/80">
           <TabsTrigger value="overview" className="gap-1.5 text-xs">
             <Layers size={13} />
-            <span>Informasi & Kunci</span>
+            <span>Informasi & Kredensial</span>
           </TabsTrigger>
 
           <TabsTrigger value="invoices" className="gap-1.5 text-xs">
@@ -261,7 +262,10 @@ export function LicenseDetailView({
         <TabsContent value="addons" className="mt-0">
           <LicenseDetailAddonsCard
             license={license}
-            onManageAddons={() => setIsAddonsOpen(true)}
+            onOrderAddon={(addonId) => {
+              setOrderInitialAddonId(addonId || null)
+              setIsOrderOpen(true)
+            }}
           />
         </TabsContent>
 
@@ -279,16 +283,16 @@ export function LicenseDetailView({
         license={license}
       />
 
-      <LicenseExtendDialog
-        open={isExtendOpen}
-        onOpenChange={setIsExtendOpen}
+      <LicenseOrderDialog
+        open={isOrderOpen}
+        onOpenChange={(open) => {
+          setIsOrderOpen(open)
+          if (!open) {
+            setOrderInitialAddonId(null)
+          }
+        }}
         license={license}
-      />
-
-      <LicenseAddonsDialog
-        open={isAddonsOpen}
-        onOpenChange={setIsAddonsOpen}
-        license={license}
+        initialAddonId={orderInitialAddonId}
       />
 
       {/* Confirm Reset Domain */}

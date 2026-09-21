@@ -15,6 +15,8 @@ export function useLicenseActions() {
     useState<License | null>(null)
   const [selectedLicenseForDetail, setSelectedLicenseForDetail] =
     useState<License | null>(null)
+  const [selectedLicenseForOrder, setSelectedLicenseForOrder] =
+    useState<License | null>(null)
   const [selectedLicenseForExtend, setSelectedLicenseForExtend] =
     useState<License | null>(null)
   const [selectedLicenseForAddons, setSelectedLicenseForAddons] =
@@ -61,6 +63,8 @@ export function useLicenseActions() {
     setSelectedLicenseForEdit,
     selectedLicenseForDetail,
     setSelectedLicenseForDetail,
+    selectedLicenseForOrder,
+    setSelectedLicenseForOrder,
     selectedLicenseForExtend,
     setSelectedLicenseForExtend,
     selectedLicenseForAddons,

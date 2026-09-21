@@ -16,12 +16,16 @@ export function UserNav() {
   const { user, logout, isLoggingOut } = useAuth()
   const { openConfirmDialog } = useUIStore()
 
-  const displayName = user?.name || "Admin"
-  const displayEmail = user?.email || "admin@mitrasova.com"
+  const displayName = user?.name || user?.email?.split("@")[0] || "Admin"
+  const displayEmail = user?.email || ""
 
-  const getInitials = (name: string): string => {
-    return name
-      .split(" ")
+  const getInitials = (name?: string | null): string => {
+    if (!name || !name.trim()) return "AD"
+    const parts = name.trim().split(/\s+/)
+    if (parts.length === 1) {
+      return parts[0].slice(0, 2).toUpperCase()
+    }
+    return parts
       .map((part) => part[0])
       .filter(Boolean)
       .slice(0, 2)
@@ -54,9 +58,11 @@ export function UserNav() {
           <span className="text-xs leading-tight font-bold text-foreground">
             {displayName}
           </span>
-          <span className="max-w-[140px] truncate text-[10px] leading-tight text-muted-foreground">
-            {displayEmail}
-          </span>
+          {displayEmail && (
+            <span className="max-w-[140px] truncate text-[10px] leading-tight text-muted-foreground">
+              {displayEmail}
+            </span>
+          )}
         </div>
       </DropdownMenuTrigger>
 
@@ -66,9 +72,11 @@ export function UserNav() {
             <p className="text-xs leading-none font-bold text-foreground">
               {displayName}
             </p>
-            <p className="truncate text-[10px] leading-none text-muted-foreground">
-              {displayEmail}
-            </p>
+            {displayEmail && (
+              <p className="truncate text-[10px] leading-none text-muted-foreground">
+                {displayEmail}
+              </p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

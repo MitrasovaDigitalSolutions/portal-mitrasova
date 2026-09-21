@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import { toast } from "sonner"
@@ -10,10 +10,9 @@ import { AlertCircle, Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react"
 
 import { AppButton } from "@/components/shared/app-button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
+import { FormInput } from "@/components/forms"
 import { DEFAULT_LOGIN_REDIRECT } from "@/constants/routes"
 import { usePageLoadingStore } from "@/stores/page-loading-store"
-import { cn } from "@/lib/utils"
 import type { LoginFormValues } from "../validations/auth.schema"
 import { loginSchema } from "../validations/auth.schema"
 
@@ -27,13 +26,7 @@ export function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
+  const methods = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -42,7 +35,8 @@ export function LoginForm() {
     },
   })
 
-  const rememberValue = watch("remember")
+  const { handleSubmit, setValue, control } = methods
+  const rememberValue = useWatch({ control, name: "remember" })
 
   const onSubmit = async (values: LoginFormValues) => {
     setErrorMessage(null)
@@ -101,111 +95,73 @@ export function LoginForm() {
       )}
 
       {/* Login Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email Field */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="email"
-            className="text-xs font-semibold text-foreground/90"
-          >
-            Email
-          </label>
-          <div className="relative">
-            <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground">
-              <Mail size={16} />
-            </span>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Masukkan Email Anda..."
-              autoComplete="email"
-              {...register("email")}
-              className={cn(
-                "h-10.5 rounded-xl border-input bg-background/60 pl-10 text-xs transition-colors focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-primary",
-                errors.email &&
-                  "border-destructive focus-visible:ring-destructive"
-              )}
-            />
-          </div>
-          {errors.email && (
-            <p className="mt-1 text-[11px] font-medium text-destructive">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Password Field */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="password"
-            className="text-xs font-semibold text-foreground/90"
-          >
-            Kata Sandi
-          </label>
-          <div className="relative">
-            <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground">
-              <Lock size={16} />
-            </span>
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              {...register("password")}
-              className={cn(
-                "h-10.5 rounded-xl border-input bg-background/60 pr-10 pl-10 text-xs transition-colors focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-primary",
-                errors.password &&
-                  "border-destructive focus-visible:ring-destructive"
-              )}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute top-1/2 right-3.5 -translate-y-1/2 cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
-              aria-label={
-                showPassword
-                  ? "Sembunyikan kata sandi"
-                  : "Tampilkan kata sandi"
-              }
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          {errors.password && (
-            <p className="mt-1 text-[11px] font-medium text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        {/* Remember Me Checkbox */}
-        <div className="flex items-center gap-2 pt-0.5">
-          <Checkbox
-            id="remember"
-            checked={rememberValue}
-            onCheckedChange={(checked) =>
-              setValue("remember", Boolean(checked))
-            }
-            className="h-4 w-4 rounded-md"
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Email Field */}
+          <FormInput<LoginFormValues>
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="Masukkan Email Anda..."
+            autoComplete="email"
+            startIcon={<Mail size={16} />}
+            className="h-10.5 rounded-xl bg-background/60"
           />
-          <label
-            htmlFor="remember"
-            className="cursor-pointer text-xs font-medium text-muted-foreground select-none"
-          >
-            Ingat saya
-          </label>
-        </div>
 
-        {/* Submit Button */}
-        <AppButton
-          type="submit"
-          isLoading={isSubmitting}
-          loadingText="Memverifikasi..."
-          className="mt-2 h-11 w-full rounded-xl text-xs font-bold tracking-wider uppercase shadow-md shadow-primary/15 transition-all hover:shadow-lg hover:shadow-primary/25"
-        >
-          Masuk ke Portal
-        </AppButton>
-      </form>
+          {/* Password Field */}
+          <FormInput<LoginFormValues>
+            name="password"
+            label="Kata Sandi"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            autoComplete="current-password"
+            startIcon={<Lock size={16} />}
+            endIcon={
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+                aria-label={
+                  showPassword
+                    ? "Sembunyikan kata sandi"
+                    : "Tampilkan kata sandi"
+                }
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            }
+            className="h-10.5 rounded-xl bg-background/60"
+          />
+
+          {/* Remember Me Checkbox */}
+          <div className="flex items-center gap-2 pt-0.5">
+            <Checkbox
+              id="remember"
+              checked={rememberValue}
+              onCheckedChange={(checked) =>
+                setValue("remember", Boolean(checked))
+              }
+              className="h-4 w-4 rounded-md cursor-pointer"
+            />
+            <label
+              htmlFor="remember"
+              className="cursor-pointer text-xs font-medium text-muted-foreground select-none"
+            >
+              Ingat saya
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <AppButton
+            type="submit"
+            isLoading={isSubmitting}
+            loadingText="Memverifikasi..."
+            className="mt-2 h-11 w-full rounded-xl text-xs font-bold tracking-wider uppercase shadow-md shadow-primary/15 transition-all hover:shadow-lg hover:shadow-primary/25"
+          >
+            Masuk ke Portal
+          </AppButton>
+        </form>
+      </FormProvider>
     </div>
   )
 }

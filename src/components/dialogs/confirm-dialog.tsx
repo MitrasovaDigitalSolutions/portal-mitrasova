@@ -53,17 +53,15 @@ export function ConfirmDialog() {
           <Button
             onClick={closeConfirmDialog}
             variant="outline"
-            size="sm"
-            className="cursor-pointer text-xs"
+            className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
           >
             Batal
           </Button>
           <Button
             onClick={handleConfirm}
             variant={variant === "destructive" ? "destructive" : "default"}
-            size="sm"
             className={cn(
-              "cursor-pointer text-xs font-medium",
+              "h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl gap-2 shadow-xs",
               variant === "destructive" && "bg-destructive text-destructive-foreground hover:bg-destructive/90"
             )}
           >

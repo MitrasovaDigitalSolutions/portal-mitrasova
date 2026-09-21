@@ -69,7 +69,7 @@ export function InvoiceDetailDialog({
     <BaseDialog
       open={open}
       onOpenChange={onOpenChange}
-      className="max-w-2xl"
+      className="sm:max-w-2xl"
       title={
         <div className="flex items-center gap-2">
           <FileText className="size-4 text-primary" />
@@ -171,13 +171,12 @@ export function InvoiceDetailDialog({
         )}
 
         {/* Bottom Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border">
+        <div className="flex flex-wrap items-center justify-end gap-2 p-3 border-t border-border">
           <div className="flex flex-wrap items-center gap-2">
             {!isPaid && onMarkPaidClick && (
               <Button
                 type="button"
-                size="sm"
-                className="cursor-pointer gap-1.5 text-xs font-medium"
+                className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
                 onClick={() => {
                   onOpenChange(false)
                   onMarkPaidClick(invoice)
@@ -192,8 +191,7 @@ export function InvoiceDetailDialog({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
-                className="cursor-pointer gap-1.5 text-xs font-medium text-destructive hover:bg-destructive/10"
+                className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl text-destructive hover:bg-destructive/10"
                 onClick={() => {
                   onOpenChange(false)
                   onCancelClick(invoice)
@@ -207,8 +205,7 @@ export function InvoiceDetailDialog({
             <Button
               type="button"
               variant="outline"
-              size="sm"
-              className="cursor-pointer gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl text-muted-foreground hover:text-foreground"
               onClick={handleDownloadPdf}
               disabled={isDownloadingPdf}
             >
@@ -220,16 +217,6 @@ export function InvoiceDetailDialog({
               <span>Unduh PDF</span>
             </Button>
           </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="cursor-pointer text-xs font-medium"
-            onClick={() => onOpenChange(false)}
-          >
-            Tutup
-          </Button>
         </div>
       </div>
     </BaseDialog>

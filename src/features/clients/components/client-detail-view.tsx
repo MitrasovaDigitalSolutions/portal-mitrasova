@@ -14,11 +14,8 @@ import { ClientDetailInfoCard } from "./client-detail-info-card"
 import { ClientDetailLicensesSection } from "./client-detail-licenses-section"
 import { ClientDetailSkeleton } from "./client-detail-skeleton"
 import { ClientFormDialog } from "./client-form-dialog"
-import {
-  LicenseFormDialog,
-  LicenseExtendDialog,
-  LicenseAddonsDialog,
-} from "@/features/licenses"
+import { LicenseFormDialog } from "@/features/licenses/components/license-form-dialog"
+import { LicenseOrderDialog } from "@/features/licenses/components/license-order-dialog"
 
 export interface ClientDetailViewProps {
   clientId: string
@@ -58,10 +55,8 @@ export function ClientDetailView({
     setIsCreateLicenseOpen,
     selectedLicenseForEdit,
     setSelectedLicenseForEdit,
-    selectedLicenseForExtend,
-    setSelectedLicenseForExtend,
-    selectedLicenseForAddons,
-    setSelectedLicenseForAddons,
+    selectedLicenseForOrder,
+    setSelectedLicenseForOrder,
     licenseToDelete,
     setLicenseToDelete,
     licenseToResetDomain,
@@ -84,7 +79,7 @@ export function ClientDetailView({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-3.5"
     >
       <ClientDetailHeader
         client={client}
@@ -113,8 +108,8 @@ export function ClientDetailView({
           onInspectDetail: (lic) =>
             router.push(`/clients/${clientId}/licenses/${lic.id}`),
           onEdit: (lic) => setSelectedLicenseForEdit(lic),
-          onExtend: (lic) => setSelectedLicenseForExtend(lic),
-          onSyncAddons: (lic) => setSelectedLicenseForAddons(lic),
+          onOrder: (lic) => setSelectedLicenseForOrder(lic),
+          onExtend: (lic) => setSelectedLicenseForOrder(lic),
           onResetDomain: (lic) => setLicenseToResetDomain(lic),
           onRegenerateSecret: (lic) => setLicenseToRegenerateSecret(lic),
           onDelete: (lic) => setLicenseToDelete(lic),
@@ -139,16 +134,10 @@ export function ClientDetailView({
         license={selectedLicenseForEdit}
       />
 
-      <LicenseExtendDialog
-        open={Boolean(selectedLicenseForExtend)}
-        onOpenChange={(open) => !open && setSelectedLicenseForExtend(null)}
-        license={selectedLicenseForExtend}
-      />
-
-      <LicenseAddonsDialog
-        open={Boolean(selectedLicenseForAddons)}
-        onOpenChange={(open) => !open && setSelectedLicenseForAddons(null)}
-        license={selectedLicenseForAddons}
+      <LicenseOrderDialog
+        open={Boolean(selectedLicenseForOrder)}
+        onOpenChange={(open) => !open && setSelectedLicenseForOrder(null)}
+        license={selectedLicenseForOrder}
       />
 
       <ConfirmDialog

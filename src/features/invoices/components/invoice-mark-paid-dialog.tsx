@@ -209,17 +209,15 @@ export function InvoiceMarkPaidDialog({
             <Button
               type="button"
               variant="outline"
-              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={markPaidMutation.isPending}
-              className="cursor-pointer text-xs"
+              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
             >
               Batal
             </Button>
             <Button
               type="submit"
-              size="sm"
-              className="cursor-pointer gap-1.5 text-xs font-medium"
+              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
               disabled={markPaidMutation.isPending || !watchedPaymentMethod?.trim()}
             >
               {markPaidMutation.isPending ? (

@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-interface FormInputProps<T extends FieldValues> extends Omit<
+export interface FormInputProps<T extends FieldValues> extends Omit<
   React.ComponentProps<typeof Input>,
   "name"
 > {
@@ -17,6 +17,8 @@ interface FormInputProps<T extends FieldValues> extends Omit<
   label?: string
   wrapperId?: string
   inputRef?: React.Ref<HTMLInputElement>
+  startIcon?: React.ReactNode
+  endIcon?: React.ReactNode
 }
 
 function setRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
@@ -34,6 +36,8 @@ export function FormInput<T extends FieldValues>({
   className,
   required,
   inputRef,
+  startIcon,
+  endIcon,
   ...props
 }: FormInputProps<T>) {
   const {
@@ -63,18 +67,32 @@ export function FormInput<T extends FieldValues>({
           {required && <span className="text-destructive"> *</span>}
         </label>
       )}
-      <Input
-        id={name}
-        ref={handleRef}
-        {...registerProps}
-        className={cn(
-          "h-10 rounded-xl border-input bg-background text-xs text-foreground focus-visible:ring-ring",
-          error && "border-destructive focus-visible:ring-destructive",
-          className
+      <div className="relative">
+        {startIcon && (
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground flex items-center justify-center">
+            {startIcon}
+          </span>
         )}
-        aria-invalid={!!error}
-        {...props}
-      />
+        <Input
+          id={name}
+          ref={handleRef}
+          {...registerProps}
+          className={cn(
+            "h-10 rounded-xl border-input bg-background text-xs text-foreground focus-visible:ring-ring",
+            startIcon && "pl-10",
+            endIcon && "pr-10",
+            error && "border-destructive focus-visible:ring-destructive",
+            className
+          )}
+          aria-invalid={!!error}
+          {...props}
+        />
+        {endIcon && (
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center">
+            {endIcon}
+          </div>
+        )}
+      </div>
       {error && (
         <p className="text-[10px] font-medium text-destructive">
           {error.message as string}

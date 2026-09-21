@@ -139,8 +139,7 @@ export function ConfirmDialog({
             id={cancelBtnId}
             type="button"
             variant="outline"
-            size="sm"
-            className="cursor-pointer min-w-[84px] px-4 text-xs font-medium"
+            className="h-9 min-w-[90px] px-4 text-xs font-semibold cursor-pointer rounded-xl"
             onClick={() => onOpenChange(false)}
             disabled={showLoading}
           >
@@ -150,9 +149,8 @@ export function ConfirmDialog({
             id={confirmBtnId}
             type="button"
             variant={variant === "danger" ? "destructive" : "default"}
-            size="sm"
             className={cn(
-              "cursor-pointer min-w-[84px] px-4 text-xs font-medium gap-1.5",
+              "h-9 min-w-[90px] px-4 text-xs font-semibold cursor-pointer rounded-xl gap-2 shadow-xs",
               style.confirmBtn
             )}
             onClick={handleConfirm}

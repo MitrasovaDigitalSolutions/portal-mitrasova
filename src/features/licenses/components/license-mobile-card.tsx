@@ -2,8 +2,8 @@
 
 import type React from "react"
 import {
-  Boxes,
   CalendarClock,
+  CreditCard,
   Globe,
   KeyRound,
   MoreVertical,
@@ -74,14 +74,17 @@ export function LicenseMobileCard({
               <Pencil size={13} className="mr-2 text-amber-500" />
               <span>Edit Data Lisensi</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => actions.onExtend(license)}>
-              <CalendarClock size={13} className="mr-2 text-emerald-500" />
-              <span>Perpanjang Masa Aktif</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => actions.onSyncAddons(license)}>
-              <Boxes size={13} className="mr-2 text-indigo-500" />
-              <span>Kelola Modul Addon</span>
-            </DropdownMenuItem>
+            {actions.onOrder ? (
+              <DropdownMenuItem onClick={() => actions.onOrder?.(license)}>
+                <CreditCard size={13} className="mr-2 text-emerald-500" />
+                <span>Beli Perpanjangan & Add-on</span>
+              </DropdownMenuItem>
+            ) : actions.onExtend ? (
+              <DropdownMenuItem onClick={() => actions.onExtend?.(license)}>
+                <CalendarClock size={13} className="mr-2 text-emerald-500" />
+                <span>Perpanjang Masa Aktif</span>
+              </DropdownMenuItem>
+            ) : null}
             <DropdownMenuItem onClick={() => actions.onResetDomain(license)}>
               <RefreshCw size={13} className="mr-2 text-sky-500" />
               <span>Reset Domain Binding</span>
