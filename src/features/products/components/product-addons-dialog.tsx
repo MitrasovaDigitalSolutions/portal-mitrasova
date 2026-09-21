@@ -89,7 +89,7 @@ export function ProductAddonsDialog({
               type="button"
               size="sm"
               onClick={handleCreate}
-              className="w-full sm:w-auto h-8 text-xs gap-1.5 bg-sky-600 hover:bg-sky-700 text-white dark:bg-sky-500 cursor-pointer"
+              className="w-full sm:w-auto cursor-pointer gap-1.5 text-xs font-medium"
             >
               <Plus className="size-3.5" />
               Tambah Addon

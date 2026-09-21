@@ -18,13 +18,14 @@ import { DataTable } from "@/components/ui/data-table"
 import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { FormSelect } from "@/components/forms"
 import type { CommandOption } from "@/components/ui/command-select"
-import { getLicenseColumns, type LicenseColumnActions } from "./license-columns"
-import { LicenseMobileCard } from "./license-mobile-card"
-import type {
-  License,
-  LicenseStatus,
-  LicenseSubscriptionType,
-} from "../@types/license"
+import {
+  getLicenseColumns,
+  type LicenseColumnActions,
+  LicenseMobileCard,
+  type License,
+  type LicenseStatus,
+  type LicenseSubscriptionType,
+} from "@/features/licenses"
 
 interface LicenseFilterFormValues {
   status: LicenseStatus | "all"

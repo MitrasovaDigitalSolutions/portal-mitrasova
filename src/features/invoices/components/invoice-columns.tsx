@@ -1,45 +1,30 @@
 "use client"
 
-import type React from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Invoice } from "../@types/invoice"
 import { InvoiceStatusBadge } from "./invoice-status-badge"
-import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { formatCurrency, formatDate } from "@/utils"
-import {
-  FileText,
-  CheckCircle2,
-  Pencil,
-  Trash2,
-  Building,
-  Server,
-  AlertTriangle,
-} from "lucide-react"
+import { AlertTriangle, Building, Server } from "lucide-react"
 
-interface InvoiceColumnActions {
-  onViewDetail: (invoice: Invoice) => void
-  onMarkPaid: (invoice: Invoice) => void
-  onEdit: (invoice: Invoice) => void
-  onDelete: (invoice: Invoice) => void
+export interface InvoiceColumnOptions {
+  onViewDetail?: (invoice: Invoice) => void
 }
 
-export function getInvoiceColumns({
-  onViewDetail,
-  onMarkPaid,
-  onEdit,
-  onDelete,
-}: InvoiceColumnActions): ColumnDef<Invoice>[] {
+export function getInvoiceColumns(
+  options?: InvoiceColumnOptions
+): ColumnDef<Invoice>[] {
   return [
     {
       accessorKey: "invoice_number",
       header: "No. Invoice",
+      size: 170,
       cell: ({ row }) => {
         const inv = row.original
         return (
           <div className="space-y-0.5">
             <button
               type="button"
-              onClick={() => onViewDetail(inv)}
+              onClick={() => options?.onViewDetail?.(inv)}
               className="font-mono font-bold text-xs text-primary hover:underline transition-all text-left cursor-pointer"
             >
               {inv.invoice_number}
@@ -54,6 +39,7 @@ export function getInvoiceColumns({
     {
       accessorKey: "client",
       header: "Pelanggan",
+      size: 220,
       cell: ({ row }) => {
         const client = row.original.client
         if (!client) {
@@ -61,9 +47,9 @@ export function getInvoiceColumns({
         }
         return (
           <div className="space-y-0.5">
-            <div className="font-semibold text-xs text-foreground flex items-center gap-1.5">
+            <div className="font-semibold text-xs text-foreground flex items-center gap-1.5 truncate">
               <Building className="size-3.5 text-muted-foreground shrink-0" />
-              <span>{client.nama_pemilik || client.nama_usaha || "—"}</span>
+              <span className="truncate">{client.nama_pemilik || client.nama_usaha || "—"}</span>
             </div>
             {(client.nama_usaha || client.email) && (
               <div className="text-[11px] text-muted-foreground pl-5 truncate max-w-[200px]">
@@ -77,6 +63,7 @@ export function getInvoiceColumns({
     {
       accessorKey: "license",
       header: "Lisensi / Layanan",
+      size: 200,
       cell: ({ row }) => {
         const license = row.original.license
         if (!license) {
@@ -88,9 +75,9 @@ export function getInvoiceColumns({
         }
         return (
           <div className="space-y-0.5">
-            <div className="font-medium text-xs text-foreground flex items-center gap-1.5">
+            <div className="font-medium text-xs text-foreground flex items-center gap-1.5 truncate">
               <Server className="size-3.5 text-emerald-500 shrink-0" />
-              <span>{license.product?.name || "Produk Mitrasova"}</span>
+              <span className="truncate">{license.product?.name || "Produk Mitrasova"}</span>
             </div>
             <div className="text-[11px] text-muted-foreground pl-5 font-mono truncate max-w-[180px]">
               {license.nama_instance || license.domain_instance || "—"}
@@ -102,6 +89,7 @@ export function getInvoiceColumns({
     {
       accessorKey: "total_amount",
       header: "Total Tagihan",
+      size: 160,
       cell: ({ row }) => {
         const inv = row.original
         return (
@@ -121,6 +109,7 @@ export function getInvoiceColumns({
     {
       accessorKey: "due_date",
       header: "Jatuh Tempo",
+      size: 150,
       cell: ({ row }) => {
         const inv = row.original
         const isUnpaid = inv.status === "unpaid"
@@ -145,58 +134,9 @@ export function getInvoiceColumns({
     {
       accessorKey: "status",
       header: "Status",
+      size: 130,
       cell: ({ row }) => {
         return <InvoiceStatusBadge status={row.original.status} />
-      },
-    },
-    {
-      id: "actions",
-      header: () => <div className="text-right">Aksi</div>,
-      cell: ({ row }) => {
-        const inv = row.original
-        const isPaid = inv.status === "paid"
-
-        return (
-          <div className="flex items-center justify-end gap-1.5">
-            {/* View Detail */}
-            <DataTableActionButton
-              variant="sky"
-              tooltip="Lihat Detail"
-              onClick={() => onViewDetail(inv)}
-            >
-              <FileText className="size-3.5" />
-            </DataTableActionButton>
-
-            {/* Mark as Paid (if not paid) */}
-            {!isPaid && (
-              <DataTableActionButton
-                variant="emerald"
-                tooltip="Tandai Lunas"
-                onClick={() => onMarkPaid(inv)}
-              >
-                <CheckCircle2 className="size-3.5" />
-              </DataTableActionButton>
-            )}
-
-            {/* Edit */}
-            <DataTableActionButton
-              variant="primary"
-              tooltip="Edit Invoice"
-              onClick={() => onEdit(inv)}
-            >
-              <Pencil className="size-3.5" />
-            </DataTableActionButton>
-
-            {/* Delete */}
-            <DataTableActionButton
-              variant="rose"
-              tooltip="Hapus Invoice"
-              onClick={() => onDelete(inv)}
-            >
-              <Trash2 className="size-3.5" />
-            </DataTableActionButton>
-          </div>
-        )
       },
     },
   ]

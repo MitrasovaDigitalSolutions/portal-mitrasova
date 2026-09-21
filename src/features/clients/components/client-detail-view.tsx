@@ -1,6 +1,7 @@
 "use client"
 
 import type { JSX } from "react"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import {
@@ -13,10 +14,11 @@ import { ClientDetailInfoCard } from "./client-detail-info-card"
 import { ClientDetailLicensesSection } from "./client-detail-licenses-section"
 import { ClientDetailSkeleton } from "./client-detail-skeleton"
 import { ClientFormDialog } from "./client-form-dialog"
-import { LicenseFormDialog } from "./license-form-dialog"
-import { LicenseDetailDialog } from "./license-detail-dialog"
-import { LicenseExtendDialog } from "./license-extend-dialog"
-import { LicenseAddonsDialog } from "./license-addons-dialog"
+import {
+  LicenseFormDialog,
+  LicenseExtendDialog,
+  LicenseAddonsDialog,
+} from "@/features/licenses"
 
 export interface ClientDetailViewProps {
   clientId: string
@@ -25,6 +27,7 @@ export interface ClientDetailViewProps {
 export function ClientDetailView({
   clientId,
 }: ClientDetailViewProps): JSX.Element {
+  const router = useRouter()
   const {
     client,
     licenses,
@@ -55,8 +58,6 @@ export function ClientDetailView({
     setIsCreateLicenseOpen,
     selectedLicenseForEdit,
     setSelectedLicenseForEdit,
-    selectedLicenseForDetail,
-    setSelectedLicenseForDetail,
     selectedLicenseForExtend,
     setSelectedLicenseForExtend,
     selectedLicenseForAddons,
@@ -91,7 +92,6 @@ export function ClientDetailView({
         onRefresh={handleRefreshAll}
         onEdit={() => setIsEditClientOpen(true)}
         onDelete={() => setIsDeleteClientOpen(true)}
-        onCreateLicense={() => setIsCreateLicenseOpen(true)}
       />
 
       {client && (
@@ -110,7 +110,8 @@ export function ClientDetailView({
         isLoading={isLoading}
         onCreateLicense={() => setIsCreateLicenseOpen(true)}
         actions={{
-          onInspectDetail: (lic) => setSelectedLicenseForDetail(lic),
+          onInspectDetail: (lic) =>
+            router.push(`/clients/${clientId}/licenses/${lic.id}`),
           onEdit: (lic) => setSelectedLicenseForEdit(lic),
           onExtend: (lic) => setSelectedLicenseForExtend(lic),
           onSyncAddons: (lic) => setSelectedLicenseForAddons(lic),
@@ -136,12 +137,6 @@ export function ClientDetailView({
         }}
         clientId={clientId}
         license={selectedLicenseForEdit}
-      />
-
-      <LicenseDetailDialog
-        open={Boolean(selectedLicenseForDetail)}
-        onOpenChange={(open) => !open && setSelectedLicenseForDetail(null)}
-        license={selectedLicenseForDetail}
       />
 
       <LicenseExtendDialog

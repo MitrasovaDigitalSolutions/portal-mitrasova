@@ -32,22 +32,28 @@ export function InvoiceDetailItemsTable({
           </thead>
           <tbody className="divide-y divide-border/60">
             {items && items.length > 0 ? (
-              items.map((item, idx) => (
-                <tr key={idx} className="hover:bg-muted/30">
-                  <td className="py-2.5 px-3 font-medium text-foreground">
-                    {item.description}
-                  </td>
-                  <td className="py-2.5 px-3 text-center text-muted-foreground">
-                    {item.quantity}
-                  </td>
-                  <td className="py-2.5 px-3 text-right text-muted-foreground font-mono">
-                    {formatCurrency(item.unit_price)}
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-semibold text-foreground font-mono">
-                    {formatCurrency(item.amount)}
-                  </td>
-                </tr>
-              ))
+              items.map((item, idx) => {
+                const qty = item.qty ?? item.quantity ?? 1
+                const price = item.price ?? item.unit_price ?? 0
+                const subtotal = item.subtotal ?? item.amount ?? qty * price
+
+                return (
+                  <tr key={idx} className="hover:bg-muted/30">
+                    <td className="py-2.5 px-3 font-medium text-foreground">
+                      {item.name || item.description || "Item Tagihan"}
+                    </td>
+                    <td className="py-2.5 px-3 text-center text-muted-foreground">
+                      {qty}
+                    </td>
+                    <td className="py-2.5 px-3 text-right text-muted-foreground font-mono">
+                      {formatCurrency(price)}
+                    </td>
+                    <td className="py-2.5 px-3 text-right font-semibold text-foreground font-mono">
+                      {formatCurrency(subtotal)}
+                    </td>
+                  </tr>
+                )
+              })
             ) : (
               <tr>
                 <td className="py-3 px-3 font-medium text-foreground" colSpan={3}>

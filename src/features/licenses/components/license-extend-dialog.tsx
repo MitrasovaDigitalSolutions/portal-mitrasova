@@ -97,15 +97,16 @@ export function LicenseExtendDialog({
                 key={opt.days}
                 type="button"
                 variant={selectedDays === opt.days ? "default" : "outline"}
+                size="sm"
                 disabled={extendMutation.isPending}
                 onClick={() => {
                   setSelectedDays(opt.days)
                   setCustomDate("")
                   void handleQuickExtend(opt.days)
                 }}
-                className="h-10 text-xs justify-center cursor-pointer gap-2 font-medium"
+                className="h-8 text-xs justify-center cursor-pointer gap-1.5 font-medium"
               >
-                <CalendarClock size={14} />
+                <CalendarClock size={13} />
                 <span>{opt.label}</span>
               </Button>
             ))}
@@ -130,14 +131,15 @@ export function LicenseExtendDialog({
             </div>
             <Button
               type="button"
+              size="sm"
               disabled={!customDate || extendMutation.isPending}
               onClick={handleCustomExtend}
-              className="h-9 px-4 text-xs font-medium cursor-pointer"
+              className="cursor-pointer gap-1.5 text-xs font-medium"
             >
               {extendMutation.isPending && (
-                <Loader2 size={13} className="animate-spin mr-1.5" />
+                <Loader2 size={13} className="animate-spin" />
               )}
-              Terapkan
+              <span>Terapkan</span>
             </Button>
           </div>
         </div>

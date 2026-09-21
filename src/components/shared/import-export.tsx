@@ -466,11 +466,12 @@ export function ImportExport({
             </div>
           )}
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
             <Button
               type="button"
               variant="outline"
-              className="h-9 flex-1 cursor-pointer rounded-xl border-border text-xs font-semibold text-foreground hover:bg-muted"
+              size="sm"
+              className="cursor-pointer text-xs"
               onClick={handleCloseDialog}
               disabled={isImporting}
             >
@@ -478,7 +479,8 @@ export function ImportExport({
             </Button>
             <Button
               type="button"
-              className="flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-primary text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-70"
+              size="sm"
+              className="cursor-pointer gap-1.5 text-xs font-medium"
               onClick={onImportConfirm}
               disabled={!selectedFile || isImporting}
             >

@@ -5,7 +5,7 @@ import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { BaseDialog } from "@/components/ui/base-dialog"
 import { Button } from "@/components/ui/button"
-import { FormInput, FormSwitch } from "@/components/forms"
+import { FormDatePicker, FormSelect, FormSwitch } from "@/components/forms"
 import { useMarkInvoiceAsPaid } from "../api/invoice.queries"
 import {
   markPaidSchema,
@@ -27,12 +27,14 @@ interface InvoiceMarkPaidDialogProps {
   invoice: Invoice | null
 }
 
-const COMMON_PAYMENT_METHODS = [
-  "Transfer Bank BCA",
-  "Transfer Bank Mandiri",
-  "QRIS",
-  "Tunai",
-  "Kartu Kredit",
+const PAYMENT_METHOD_OPTIONS = [
+  { value: "Transfer Bank BCA", label: "Transfer Bank BCA" },
+  { value: "Transfer Bank Mandiri", label: "Transfer Bank Mandiri" },
+  { value: "Transfer Bank BNI", label: "Transfer Bank BNI" },
+  { value: "Transfer Bank BRI", label: "Transfer Bank BRI" },
+  { value: "QRIS", label: "QRIS" },
+  { value: "Tunai", label: "Tunai" },
+  { value: "Kartu Kredit", label: "Kartu Kredit" },
 ]
 
 const EXTEND_MONTH_OPTIONS = [1, 3, 6, 12]
@@ -66,12 +68,10 @@ export function InvoiceMarkPaidDialog({
       const year = now.getFullYear()
       const month = String(now.getMonth() + 1).padStart(2, "0")
       const day = String(now.getDate()).padStart(2, "0")
-      const hours = String(now.getHours()).padStart(2, "0")
-      const minutes = String(now.getMinutes()).padStart(2, "0")
 
       reset({
         payment_method: invoice.payment_method || "Transfer Bank BCA",
-        paid_at: `${year}-${month}-${day}T${hours}:${minutes}`,
+        paid_at: `${year}-${month}-${day}`,
         extend_license: Boolean(invoice.license_id),
         extend_months: 1,
       })
@@ -139,51 +139,24 @@ export function InvoiceMarkPaidDialog({
             </div>
           </div>
 
-          {/* Payment Method with Presets */}
-          <div className="space-y-2">
-            <div className="space-y-1">
-              <FormInput
-                name="payment_method"
-                label="Metode Pembayaran"
-                required
-                placeholder="Pilih atau ketik metode pembayaran..."
-              />
-            </div>
+          {/* Payment Method */}
+          <FormSelect<MarkPaidFormValues>
+            name="payment_method"
+            label="Metode Pembayaran"
+            options={PAYMENT_METHOD_OPTIONS}
+            placeholder="Pilih metode pembayaran..."
+            searchPlaceholder="Cari metode pembayaran..."
+          />
 
-            {/* Quick Preset Buttons */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {COMMON_PAYMENT_METHODS.map((method) => {
-                const isSelected = watchedPaymentMethod === method
-                return (
-                  <button
-                    key={method}
-                    type="button"
-                    onClick={() =>
-                      setValue("payment_method", method, { shouldValidate: true })
-                    }
-                    className={cn(
-                      "px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer",
-                      isSelected
-                        ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                        : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border"
-                    )}
-                  >
-                    {method}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Paid At DateTime */}
-          <div>
-            <FormInput
+          {/* Paid At DatePicker */}
+          <div className="space-y-1">
+            <FormDatePicker<MarkPaidFormValues>
               name="paid_at"
-              type="datetime-local"
-              label="Waktu Pelunasan"
+              label="Tanggal Pelunasan"
+              placeholder="Pilih tanggal pelunasan..."
             />
-            <p className="text-[11px] text-muted-foreground mt-1">
-              Waktu saat dana berhasil diterima atau diverifikasi.
+            <p className="text-[11px] text-muted-foreground">
+              Tanggal saat dana tagihan berhasil diterima atau diverifikasi.
             </p>
           </div>
 
@@ -215,10 +188,10 @@ export function InvoiceMarkPaidDialog({
                             setValue("extend_months", months, { shouldValidate: true })
                           }
                           className={cn(
-                            "py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer text-center",
+                            "py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer text-center",
                             isSelected
-                              ? "bg-emerald-600 text-white border-emerald-600 shadow-xs dark:bg-emerald-500 dark:border-emerald-500"
-                              : "bg-card hover:bg-muted text-muted-foreground border-border"
+                              ? "bg-primary text-primary-foreground border-primary shadow-2xs"
+                              : "bg-card hover:bg-muted text-muted-foreground hover:text-foreground border-border"
                           )}
                         >
                           {months} Bulan
@@ -236,21 +209,25 @@ export function InvoiceMarkPaidDialog({
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={markPaidMutation.isPending}
-              className="text-xs h-9 px-4 cursor-pointer"
+              className="cursor-pointer text-xs"
             >
               Batal
             </Button>
             <Button
               type="submit"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 font-semibold text-xs h-9 px-4 cursor-pointer"
+              size="sm"
+              className="cursor-pointer gap-1.5 text-xs font-medium"
               disabled={markPaidMutation.isPending || !watchedPaymentMethod?.trim()}
             >
-              {markPaidMutation.isPending && (
-                <Loader2 className="size-3.5 animate-spin mr-1.5" />
+              {markPaidMutation.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-3.5" />
               )}
-              Konfirmasi Lunas
+              <span>Konfirmasi Lunas</span>
             </Button>
           </div>
         </form>

@@ -15,14 +15,19 @@ import {
   CreditCard,
   FileText,
   CheckCircle2,
+  Ban,
+  Download,
+  Loader2,
 } from "lucide-react"
 import { toast } from "sonner"
+import { invoiceApi } from "../api/invoice.api"
 
 interface InvoiceDetailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   invoice: Invoice | null
   onMarkPaidClick?: (invoice: Invoice) => void
+  onCancelClick?: (invoice: Invoice) => void
 }
 
 export function InvoiceDetailDialog({
@@ -30,8 +35,10 @@ export function InvoiceDetailDialog({
   onOpenChange,
   invoice,
   onMarkPaidClick,
+  onCancelClick,
 }: InvoiceDetailDialogProps): React.JSX.Element {
   const [copiedInvoiceNumber, setCopiedInvoiceNumber] = React.useState(false)
+  const [isDownloadingPdf, setIsDownloadingPdf] = React.useState(false)
 
   if (!invoice) {
     return <></>
@@ -42,6 +49,18 @@ export function InvoiceDetailDialog({
     setCopiedInvoiceNumber(true)
     setTimeout(() => setCopiedInvoiceNumber(false), 2000)
     toast.success("Nomor invoice disalin")
+  }
+
+  const handleDownloadPdf = async () => {
+    try {
+      setIsDownloadingPdf(true)
+      await invoiceApi.downloadPdf(invoice.id, invoice.invoice_number)
+      toast.success(`PDF invoice ${invoice.invoice_number} berhasil diunduh`)
+    } catch {
+      toast.error("Gagal mengunduh PDF invoice")
+    } finally {
+      setIsDownloadingPdf(false)
+    }
   }
 
   const isPaid = invoice.status === "paid"
@@ -152,26 +171,61 @@ export function InvoiceDetailDialog({
         )}
 
         {/* Bottom Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-border">
-          <div>
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border">
+          <div className="flex flex-wrap items-center gap-2">
             {!isPaid && onMarkPaidClick && (
               <Button
                 type="button"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 font-semibold text-xs h-9 px-3 gap-1.5 cursor-pointer"
+                size="sm"
+                className="cursor-pointer gap-1.5 text-xs font-medium"
                 onClick={() => {
                   onOpenChange(false)
                   onMarkPaidClick(invoice)
                 }}
               >
                 <CheckCircle2 className="size-3.5" />
-                Tandai Lunas Sekarang
+                <span>Tandai Lunas</span>
               </Button>
             )}
+
+            {!isPaid && onCancelClick && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="cursor-pointer gap-1.5 text-xs font-medium text-destructive hover:bg-destructive/10"
+                onClick={() => {
+                  onOpenChange(false)
+                  onCancelClick(invoice)
+                }}
+              >
+                <Ban className="size-3.5" />
+                <span>Batalkan Invoice</span>
+              </Button>
+            )}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="cursor-pointer gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+              onClick={handleDownloadPdf}
+              disabled={isDownloadingPdf}
+            >
+              {isDownloadingPdf ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Download className="size-3.5" />
+              )}
+              <span>Unduh PDF</span>
+            </Button>
           </div>
+
           <Button
             type="button"
             variant="outline"
-            className="text-xs h-9 px-4 cursor-pointer"
+            size="sm"
+            className="cursor-pointer text-xs font-medium"
             onClick={() => onOpenChange(false)}
           >
             Tutup

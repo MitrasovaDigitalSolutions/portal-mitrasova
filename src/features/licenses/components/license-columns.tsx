@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { SUBSCRIPTION_TYPES, SERVER_TYPES } from "../constants"
+import { SUBSCRIPTION_TYPES, SERVER_TYPES, formatCodeToTitle } from "../constants"
 import type { License } from "../@types/license"
 
 export interface LicenseColumnActions {
@@ -156,11 +156,11 @@ export function getLicenseColumns(): ColumnDef<License>[] {
               variant={subConfig?.badgeVariant ?? "secondary"}
               className="text-[10px] py-0 font-medium"
             >
-              {subConfig?.label.split(" ")[0] ?? license.subscription_type}
+              {subConfig?.label.split(" ")[0] ?? formatCodeToTitle(license.subscription_type)}
             </Badge>
             <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
               <Server size={10} className="shrink-0" />
-              <span className="truncate">{serverConfig?.label ?? license.server_type}</span>
+              <span className="truncate">{serverConfig?.label ?? formatCodeToTitle(license.server_type)}</span>
             </div>
           </div>
         )

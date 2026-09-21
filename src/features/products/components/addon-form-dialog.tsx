@@ -170,13 +170,14 @@ export function AddonFormDialog({
             description="Addon aktif dapat dipilih untuk aktivasi pada lisensi"
           />
 
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
             <Button
               type="button"
               variant="outline"
               size="sm"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
+              className="cursor-pointer text-xs"
             >
               Batal
             </Button>
@@ -184,7 +185,7 @@ export function AddonFormDialog({
               type="submit"
               size="sm"
               disabled={isPending}
-              className="gap-2 bg-sky-600 hover:bg-sky-700 text-white dark:bg-sky-500"
+              className="cursor-pointer gap-1.5 text-xs font-medium"
             >
               {isPending && <Loader2 className="size-3.5 animate-spin" />}
               {isEdit ? "Simpan Perubahan" : "Tambah Addon"}

@@ -5,10 +5,17 @@
 export type InvoiceStatus = "unpaid" | "paid" | "cancelled" | "expired"
 
 export interface InvoiceItem {
-  description: string
-  quantity: number
-  unit_price: number
-  amount: number
+  name?: string
+  description?: string
+  qty?: number
+  quantity?: number
+  price?: number
+  unit_price?: number
+  subtotal?: number
+  amount?: number
+  type?: "base_product" | "addon" | string
+  code?: string
+  period_months?: number
 }
 
 export interface InvoiceClientRelation {
@@ -59,6 +66,7 @@ export interface InvoiceQueryParams {
   search?: string
   status?: InvoiceStatus | "all"
   client_id?: string
+  license_id?: string
   page?: number
   per_page?: number
 }

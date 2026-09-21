@@ -11,7 +11,8 @@ interface InvoiceMobileCardProps {
   invoice: Invoice
   onViewDetail: (inv: Invoice) => void
   onMarkPaid: (inv: Invoice) => void
-  onEdit: (inv: Invoice) => void
+  onCancel: (inv: Invoice) => void
+  onDownloadPdf: (inv: Invoice) => void
   onDelete: (inv: Invoice) => void
 }
 
@@ -19,10 +20,12 @@ export function InvoiceMobileCard({
   invoice,
   onViewDetail,
   onMarkPaid,
-  onEdit,
+  onCancel,
+  onDownloadPdf,
   onDelete,
 }: InvoiceMobileCardProps): React.JSX.Element {
   const isPaid = invoice.status === "paid"
+  const isUnpaid = invoice.status === "unpaid"
 
   return (
     <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs hover:border-primary/40 transition-colors">
@@ -64,7 +67,7 @@ export function InvoiceMobileCard({
       </div>
 
       {/* Mobile Card Actions */}
-      <div className="flex items-center justify-end gap-1.5 pt-1">
+      <div className="flex flex-wrap items-center justify-end gap-1.5 pt-1">
         <Button
           type="button"
           variant="outline"
@@ -74,34 +77,47 @@ export function InvoiceMobileCard({
         >
           Detail
         </Button>
-        {!isPaid && (
+        {isUnpaid && (
           <Button
             type="button"
             size="sm"
-            className="h-7 text-[11px] px-2 bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 cursor-pointer"
+            className="h-7 text-[11px] px-2 bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 cursor-pointer font-medium"
             onClick={() => onMarkPaid(invoice)}
           >
-            Tandai Lunas
+            Lunasi
+          </Button>
+        )}
+        {isUnpaid && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 text-[11px] px-2 text-destructive hover:bg-destructive/10 cursor-pointer"
+            onClick={() => onCancel(invoice)}
+          >
+            Batal
           </Button>
         )}
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="h-7 text-[11px] px-2 cursor-pointer"
-          onClick={() => onEdit(invoice)}
+          className="h-7 text-[11px] px-2 cursor-pointer text-muted-foreground hover:text-foreground"
+          onClick={() => onDownloadPdf(invoice)}
         >
-          Edit
+          PDF
         </Button>
-        <Button
-          type="button"
-          variant="destructive"
-          size="sm"
-          className="h-7 text-[11px] px-2 cursor-pointer"
-          onClick={() => onDelete(invoice)}
-        >
-          Hapus
-        </Button>
+        {!isPaid && (
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            className="h-7 text-[11px] px-2 cursor-pointer"
+            onClick={() => onDelete(invoice)}
+          >
+            Hapus
+          </Button>
+        )}
       </div>
     </div>
   )

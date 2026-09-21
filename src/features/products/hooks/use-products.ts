@@ -53,9 +53,12 @@ export function useProductsManagement() {
     setIsFormOpen(true)
   }, [])
 
-  const handleViewDetail = useCallback((product: Product) => {
-    router.push(`/products/${product.id}`)
-  }, [router])
+  const handleViewDetail = useCallback(
+    (product: Product) => {
+      router.push(`/products/${product.id}`)
+    },
+    [router]
+  )
 
   const handleDeleteClick = useCallback((product: Product) => {
     setProductToDelete(product)
@@ -91,7 +94,7 @@ export function useProductsManagement() {
     [productsList]
   )
 
-  const totalProducts = data?.meta?.total ?? productsList.length
+  const totalProducts = productsList.length
 
   return {
     // Pagination & Filter State

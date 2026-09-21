@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useUIStore } from "@/stores/ui-store"
+import { cn } from "@/lib/utils"
 import { AlertTriangle } from "lucide-react"
 
 /**
@@ -48,21 +49,23 @@ export function ConfirmDialog() {
           {description}
         </p>
 
-        <div className="grid grid-cols-2 gap-3 pt-4">
+        <div className="flex items-center justify-end gap-2 pt-4 border-t border-border mt-4">
           <Button
             onClick={closeConfirmDialog}
             variant="outline"
-            className="h-10 cursor-pointer rounded-xl border-border bg-background text-xs font-semibold text-foreground hover:bg-muted"
+            size="sm"
+            className="cursor-pointer text-xs"
           >
             Batal
           </Button>
           <Button
             onClick={handleConfirm}
-            className={`h-10 cursor-pointer rounded-xl text-xs font-semibold transition-all ${
-              variant === "destructive"
-                ? "text-destructive-foreground bg-destructive hover:bg-destructive/90"
-                : "bg-primary text-primary-foreground hover:bg-primary/90"
-            }`}
+            variant={variant === "destructive" ? "destructive" : "default"}
+            size="sm"
+            className={cn(
+              "cursor-pointer text-xs font-medium",
+              variant === "destructive" && "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            )}
           >
             Konfirmasi
           </Button>

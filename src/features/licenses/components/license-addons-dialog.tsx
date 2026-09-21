@@ -148,22 +148,24 @@ export function LicenseAddonsDialog({
           <Button
             type="button"
             variant="outline"
+            size="sm"
             onClick={() => onOpenChange(false)}
             disabled={syncMutation.isPending}
-            className="cursor-pointer"
+            className="cursor-pointer text-xs"
           >
             Batal
           </Button>
           <Button
             type="button"
+            size="sm"
             onClick={handleSubmit}
             disabled={syncMutation.isPending || isLoadingProduct}
-            className="gap-2 cursor-pointer font-medium"
+            className="gap-1.5 cursor-pointer text-xs font-medium"
           >
             {syncMutation.isPending ? (
-              <Loader2 size={14} className="animate-spin" />
+              <Loader2 size={13} className="animate-spin" />
             ) : (
-              <Check size={14} />
+              <Check size={13} />
             )}
             <span>Simpan Sinkronisasi</span>
           </Button>

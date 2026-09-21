@@ -3,20 +3,27 @@
 import { useEffect, useMemo } from "react"
 import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { FileText, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BaseDialog } from "@/components/ui/base-dialog"
-import { FormDatePicker, FormInput, FormSelect } from "@/components/forms"
-import type { AsyncQueryParams, AsyncQueryResult } from "@/components/forms/form-select"
-import { useInfiniteProducts } from "@/features/products"
-import type { Product } from "@/features/products"
+import {
+  FormDatePicker,
+  FormInput,
+  FormNumberInput,
+  FormSelect,
+} from "@/components/forms"
+import { useProducts } from "@/features/products"
 import { useCreateLicense, useUpdateLicense } from "../api/license.queries"
 import {
   licenseFormSchema,
   type LicenseFormValues,
 } from "../validations/license.schema"
-import { SUBSCRIPTION_TYPES, SERVER_TYPES, LICENSE_STATUSES } from "../constants"
-import type { License } from "../@types/license"
+import {
+  SUBSCRIPTION_TYPES,
+  SERVER_TYPES,
+  LICENSE_STATUSES,
+} from "../constants"
+import type { CreateLicensePayload, License } from "../@types/license"
 
 export interface LicenseFormDialogProps {
   open: boolean
@@ -48,20 +55,20 @@ export function LicenseFormDialog({
   const updateMutation = useUpdateLicense()
   const isPending = createMutation.isPending || updateMutation.isPending
 
-  // ─── Infinite products query adapter for async FormSelect ────────────────
-  function useInfiniteProductsQuery(
-    params: AsyncQueryParams
-  ): AsyncQueryResult<Product> {
-    return useInfiniteProducts({
-      search: params.search,
-      per_page: params.per_page ?? 8,
-      status: "active",
-    }) as AsyncQueryResult<Product>
-  }
+  const { data: productsData, isLoading: isLoadingProducts } = useProducts({
+    status: "active",
+  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const products = productsData?.data ?? []
 
-  function mapProductOption(p: Product) {
-    return { value: p.id, label: `${p.nama} (${p.code})` }
-  }
+  const productOptions = useMemo(
+    () =>
+      products.map((p) => ({
+        value: p.id,
+        label: `${p.nama} (${p.code})`,
+      })),
+    [products]
+  )
 
   const subscriptionOptions = useMemo(
     () =>
@@ -96,7 +103,10 @@ export function LicenseFormDialog({
   })
 
   const { handleSubmit, reset, control } = methods
-  const watchedSubscriptionType = useWatch({ control, name: "subscription_type" })
+  const watchedSubscriptionType = useWatch({
+    control,
+    name: "subscription_type",
+  })
   const isLifetime = watchedSubscriptionType === "lifetime"
 
   useEffect(() => {
@@ -121,9 +131,12 @@ export function LicenseFormDialog({
 
   const onSubmit = async (values: LicenseFormValues) => {
     try {
-      const payload = {
+      const isAnnual = values.subscription_type !== "monthly"
+      const payload: CreateLicensePayload = {
         ...values,
         expires_at: isLifetime ? null : values.expires_at || null,
+        create_invoice: true,
+        billing_period: isAnnual ? "annual" : "monthly",
       }
       if (isEdit && license) {
         await updateMutation.mutateAsync({
@@ -155,19 +168,19 @@ export function LicenseFormDialog({
           </p>
         </div>
       }
-      className="max-w-lg"
+      className="sm:max-w-2xl"
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormSelect<LicenseFormValues, Product>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormSelect
               name="product_id"
               label="Produk Software"
-              placeholder="Cari & pilih produk software..."
+              placeholder="Pilih produk software..."
               searchPlaceholder="Ketik nama atau kode produk..."
               emptyMessage="Produk tidak ditemukan."
-              useAsyncQuery={useInfiniteProductsQuery}
-              mapOption={mapProductOption}
+              options={productOptions}
+              isLoading={isLoadingProducts}
             />
             <FormInput
               name="nama_instance"
@@ -177,7 +190,7 @@ export function LicenseFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormInput
               name="domain_instance"
               label="Domain / IP Instance"
@@ -191,7 +204,7 @@ export function LicenseFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormSelect
               name="subscription_type"
               label="Paket Berlangganan"
@@ -204,7 +217,7 @@ export function LicenseFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {!isLifetime ? (
               <FormDatePicker
                 name="expires_at"
@@ -216,36 +229,49 @@ export function LicenseFormDialog({
                 <label className="text-xs font-medium text-muted-foreground">
                   Tanggal Kedaluwarsa
                 </label>
-                <div className="h-9 px-3 rounded-lg border border-dashed border-border bg-muted/40 flex items-center text-xs text-muted-foreground">
+                <div className="flex h-9 items-center rounded-lg border border-dashed border-border bg-muted/40 px-3 text-xs text-muted-foreground">
                   Paket Lifetime (Tidak ada kedaluwarsa)
                 </div>
               </div>
             )}
-            <FormInput
+            <FormNumberInput
               name="grace_period_days"
-              type="number"
               label="Grace Period (Hari)"
               placeholder="7"
-              required
+              min={0}
+              max={90}
+              allowNegative={false}
+              allowDecimal={false}
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          {!isEdit && (
+            <div className="flex items-center gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
+              <FileText className="size-4 shrink-0 text-primary" />
+              <span>
+                Faktur tagihan / invoice awal akan otomatis diterbitkan oleh sistem untuk pesanan lisensi ini.
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
             >
               Batal
             </Button>
             <Button
               type="submit"
+              size="sm"
               disabled={isPending}
-              className="gap-2 cursor-pointer font-medium"
+              className="cursor-pointer gap-1.5 text-xs font-medium"
             >
-              {isPending && <Loader2 size={14} className="animate-spin" />}
+              {isPending && <Loader2 size={13} className="animate-spin" />}
               {isEdit ? "Simpan Perubahan" : "Terbitkan Lisensi"}
             </Button>
           </div>

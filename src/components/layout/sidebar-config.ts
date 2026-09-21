@@ -40,7 +40,7 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
 export function getNavTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard")) { return "Dashboard" }
   if (pathname.startsWith("/invoices")) { return "Invoices" }
-  if (pathname.startsWith("/clients")) { return "Clients" }
+  if (pathname.startsWith("/clients") || pathname.startsWith("/licenses")) { return "Clients" }
   if (pathname.startsWith("/products")) { return "Products" }
   return "Portal Mitrasova"
 }

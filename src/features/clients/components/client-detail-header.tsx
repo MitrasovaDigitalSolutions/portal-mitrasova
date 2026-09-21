@@ -2,7 +2,7 @@
 
 import type React from "react"
 import Link from "next/link"
-import { ArrowLeft, Building2, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react"
+import { ArrowLeft, Building2, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Client } from "../@types/client"
@@ -13,7 +13,6 @@ interface ClientDetailHeaderProps {
   onRefresh?: () => void
   onEdit: () => void
   onDelete: () => void
-  onCreateLicense: () => void
 }
 
 export function ClientDetailHeader({
@@ -22,26 +21,25 @@ export function ClientDetailHeader({
   onRefresh,
   onEdit,
   onDelete,
-  onCreateLicense,
 }: ClientDetailHeaderProps): React.JSX.Element {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-border">
+    <div className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Left: Back button & Title */}
-      <div className="flex items-start sm:items-center gap-3">
+      <div className="flex items-start gap-3 sm:items-center">
         <Link href="/clients">
           <Button
             type="button"
             variant="outline"
             size="icon"
-            className="h-9 w-9 rounded-xl cursor-pointer shrink-0"
+            className="h-9 w-9 shrink-0 cursor-pointer rounded-xl"
             title="Kembali ke Daftar Klien"
           >
             <ArrowLeft size={16} />
           </Button>
         </Link>
-        <div className="space-y-1 min-w-0">
+        <div className="min-w-0 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-foreground truncate">
+            <h1 className="truncate text-xl font-bold tracking-tight text-foreground">
               {client?.nama_pemilik || "Detail Klien"}
             </h1>
             {client?.nama_perusahaan && (
@@ -66,14 +64,11 @@ export function ClientDetailHeader({
             size="sm"
             onClick={onRefresh}
             disabled={isFetching}
-            className="h-9 px-3 rounded-xl gap-2 cursor-pointer"
+            className="h-9 cursor-pointer gap-2 rounded-xl px-3"
             title="Muat ulang data"
           >
-            <RefreshCw
-              size={13}
-              className={isFetching ? "animate-spin" : ""}
-            />
-            <span className="hidden sm:inline text-xs">Refresh</span>
+            <RefreshCw size={13} className={isFetching ? "animate-spin" : ""} />
+            <span className="hidden text-xs sm:inline">Refresh</span>
           </Button>
         )}
 
@@ -82,7 +77,7 @@ export function ClientDetailHeader({
           variant="outline"
           size="sm"
           onClick={onEdit}
-          className="h-9 px-3 rounded-xl gap-1.5 cursor-pointer text-xs"
+          className="h-9 cursor-pointer gap-1.5 rounded-xl px-3 text-xs"
         >
           <Pencil size={13} />
           <span>Edit Klien</span>
@@ -93,19 +88,10 @@ export function ClientDetailHeader({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="h-9 px-3 rounded-xl gap-1.5 cursor-pointer text-xs text-destructive hover:bg-destructive/10"
+          className="h-9 cursor-pointer gap-1.5 rounded-xl px-3 text-xs text-destructive hover:bg-destructive/10"
         >
           <Trash2 size={13} />
           <span>Hapus</span>
-        </Button>
-
-        <Button
-          type="button"
-          onClick={onCreateLicense}
-          className="h-9 px-3.5 rounded-xl gap-1.5 cursor-pointer text-xs font-medium shadow-xs"
-        >
-          <Plus size={14} />
-          <span>Tambah Lisensi</span>
         </Button>
       </div>
     </div>

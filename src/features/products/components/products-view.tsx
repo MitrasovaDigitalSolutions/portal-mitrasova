@@ -1,23 +1,19 @@
 "use client"
 
-import { useMemo } from "react"
-import { motion } from "framer-motion"
-import { DataTable } from "@/components/ui/data-table"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { DataTable } from "@/components/ui/data-table"
+import { motion } from "framer-motion"
+import { useMemo } from "react"
 import { useProductsManagement } from "../hooks"
 import { getProductColumns } from "./product-columns"
+import { ProductFormDialog } from "./product-form-dialog"
+import { ProductMetricsGrid } from "./product-metrics-grid"
 import { ProductMobileCard } from "./product-mobile-card"
 import { ProductToolbar } from "./product-toolbar"
-import { ProductMetricsGrid } from "./product-metrics-grid"
-import { ProductFormDialog } from "./product-form-dialog"
 import { ProductsSkeleton } from "./products-skeleton"
 
 export function ProductsView(): React.JSX.Element {
   const {
-    page,
-    setPage,
-    perPage,
-    setPerPage,
     searchInput,
     handleSearchChange,
     statusFilter,
@@ -83,21 +79,13 @@ export function ProductsView(): React.JSX.Element {
       />
 
       {/* Main Table with Server Pagination */}
-      <div className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
         <DataTable
           columns={columns}
           data={productsList}
           isLoading={isLoading}
           isFetching={isFetching}
-          paginationMode="server"
-          page={page}
-          perPage={perPage}
-          onPageChange={setPage}
-          onPerPageChange={(newPerPage) => {
-            setPerPage(newPerPage)
-            setPage(1)
-          }}
-          meta={data?.meta}
+          paginationMode="client"
           entityName="produk"
           emptyMessage="Belum ada data produk software yang sesuai kriteria pencarian."
           onView={handleViewDetail}
@@ -133,9 +121,10 @@ export function ProductsView(): React.JSX.Element {
         description={
           <span>
             Apakah Anda yakin ingin menghapus produk{" "}
-            <strong className="text-foreground">{productToDelete?.nama}</strong> (
-            <code className="font-mono text-xs">{productToDelete?.code}</code>)?
-            Tindakan ini akan mempengaruhi lisensi dan modul addon yang terkait.
+            <strong className="text-foreground">{productToDelete?.nama}</strong>{" "}
+            (<code className="font-mono text-xs">{productToDelete?.code}</code>
+            )? Tindakan ini akan mempengaruhi lisensi dan modul addon yang
+            terkait.
           </span>
         }
         confirmText="Hapus Produk"

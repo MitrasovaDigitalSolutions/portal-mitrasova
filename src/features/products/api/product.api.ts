@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/axios"
-import type { ApiResponse, PaginatedResponse } from "@/@types/api"
+import type { ApiResponse } from "@/@types/api"
 import type {
   Product,
   ProductAddon,
@@ -11,10 +11,10 @@ import type {
 } from "../@types/product"
 
 export const productApi = {
-  /** Fetch paginated list of products */
+  /** Fetch list of products */
   getProducts: async (
     params?: ProductQueryParams
-  ): Promise<PaginatedResponse<Product>> => {
+  ): Promise<ApiResponse<Product[]>> => {
     const cleanParams: Record<string, string | number> = {}
     if (params?.page) {
       cleanParams.page = params.page
@@ -31,7 +31,7 @@ export const productApi = {
       cleanParams.is_active = 0
     }
 
-    const response = await apiClient.get<PaginatedResponse<Product>>(
+    const response = await apiClient.get<ApiResponse<Product[]>>(
       "/api/v1/admin/products",
       { params: cleanParams }
     )

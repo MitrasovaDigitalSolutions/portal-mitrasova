@@ -1,12 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { toast } from "sonner"
 
 import { DataTable } from "@/components/ui/data-table"
+import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { useInvoices, useDeleteInvoice } from "../api/invoice.queries"
+import { Ban, CheckCircle2, Download } from "lucide-react"
+import { useInvoices, useDeleteInvoice, useCancelInvoice } from "../api/invoice.queries"
+import { invoiceApi } from "../api/invoice.api"
 import { getInvoiceColumns } from "./invoice-columns"
 import { InvoicesMetricsGrid } from "./invoices-metrics-grid"
 import { InvoicesToolbar } from "./invoices-toolbar"
@@ -17,8 +20,6 @@ import { InvoicesSkeleton } from "./invoices-skeleton"
 import type { Invoice, InvoiceStatus } from "../@types/invoice"
 
 export function InvoicesView(): React.JSX.Element {
-  const router = useRouter()
-
   // Query state
   const [page, setPage] = React.useState<number>(1)
   const [perPage, setPerPage] = React.useState<number>(10)
@@ -49,21 +50,32 @@ export function InvoicesView(): React.JSX.Element {
     status: statusFilter === "all" ? undefined : statusFilter,
   })
 
-  // Delete mutation
+  // Delete & Cancel mutations
   const deleteMutation = useDeleteInvoice()
+  const cancelMutation = useCancelInvoice()
 
   // Modal dialog states
   const [selectedInvoice, setSelectedInvoice] = React.useState<Invoice | null>(null)
   const [markPaidInvoice, setMarkPaidInvoice] = React.useState<Invoice | null>(null)
+  const [invoiceToCancel, setInvoiceToCancel] = React.useState<Invoice | null>(null)
   const [invoiceToDelete, setInvoiceToDelete] = React.useState<Invoice | null>(null)
 
-  // Handlers
-  const handleEdit = React.useCallback(
-    (invoice: Invoice) => {
-      router.push(`/invoices/${invoice.id}/edit`)
-    },
-    [router]
-  )
+  const handleDownloadPdf = React.useCallback(async (invoice: Invoice) => {
+    try {
+      await invoiceApi.downloadPdf(invoice.id, invoice.invoice_number)
+      toast.success(`PDF invoice ${invoice.invoice_number} berhasil diunduh`)
+    } catch {
+      toast.error("Gagal mengunduh PDF invoice")
+    }
+  }, [])
+
+  const handleCancelConfirm = async () => {
+    if (!invoiceToCancel) {
+      return
+    }
+    await cancelMutation.mutateAsync(invoiceToCancel.id)
+    setInvoiceToCancel(null)
+  }
 
   const handleDeleteConfirm = async () => {
     if (!invoiceToDelete) {
@@ -78,11 +90,8 @@ export function InvoicesView(): React.JSX.Element {
     () =>
       getInvoiceColumns({
         onViewDetail: (inv) => setSelectedInvoice(inv),
-        onMarkPaid: (inv) => setMarkPaidInvoice(inv),
-        onEdit: handleEdit,
-        onDelete: (inv) => setInvoiceToDelete(inv),
       }),
-    [handleEdit]
+    []
   )
 
   // Computed metrics
@@ -112,7 +121,6 @@ export function InvoicesView(): React.JSX.Element {
         onStatusChange={handleStatusChange}
         isFetching={isFetching}
         onRefresh={() => void refetch()}
-        onCreateClick={() => router.push("/invoices/create")}
       />
 
       {/* KPI Overview Grid */}
@@ -141,12 +149,48 @@ export function InvoicesView(): React.JSX.Element {
           meta={data?.meta}
           entityName="invoice"
           emptyMessage="Belum ada data invoice yang sesuai kriteria pencarian."
+          maxActionButtons={5}
+          onView={(inv) => setSelectedInvoice(inv)}
+          onDelete={(inv) => setInvoiceToDelete(inv)}
+          hideDelete={(inv) => inv.status === "paid"}
+          extraActions={(inv) => (
+            <>
+              {inv.status === "unpaid" && (
+                <DataTableActionButton
+                  variant="emerald"
+                  tooltip="Tandai Lunas"
+                  onClick={() => setMarkPaidInvoice(inv)}
+                >
+                  <CheckCircle2 size={16} />
+                </DataTableActionButton>
+              )}
+
+              {inv.status === "unpaid" && (
+                <DataTableActionButton
+                  variant="amber"
+                  tooltip="Batalkan Invoice"
+                  onClick={() => setInvoiceToCancel(inv)}
+                >
+                  <Ban size={16} />
+                </DataTableActionButton>
+              )}
+
+              <DataTableActionButton
+                variant="sky"
+                tooltip="Unduh PDF"
+                onClick={() => handleDownloadPdf(inv)}
+              >
+                <Download size={16} />
+              </DataTableActionButton>
+            </>
+          )}
           renderCardItem={(row) => (
             <InvoiceMobileCard
               invoice={row.original}
               onViewDetail={(inv) => setSelectedInvoice(inv)}
               onMarkPaid={(inv) => setMarkPaidInvoice(inv)}
-              onEdit={handleEdit}
+              onCancel={(inv) => setInvoiceToCancel(inv)}
+              onDownloadPdf={handleDownloadPdf}
               onDelete={(inv) => setInvoiceToDelete(inv)}
             />
           )}
@@ -163,6 +207,7 @@ export function InvoicesView(): React.JSX.Element {
         }}
         invoice={selectedInvoice}
         onMarkPaidClick={(inv) => setMarkPaidInvoice(inv)}
+        onCancelClick={(inv) => setInvoiceToCancel(inv)}
       />
 
       {/* Mark Paid Dialog with BaseDialog */}
@@ -174,6 +219,31 @@ export function InvoicesView(): React.JSX.Element {
           }
         }}
         invoice={markPaidInvoice}
+      />
+
+      {/* Cancel Confirmation Dialog */}
+      <ConfirmDialog
+        open={Boolean(invoiceToCancel)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setInvoiceToCancel(null)
+          }
+        }}
+        title="Batalkan Invoice"
+        description={
+          <span>
+            Apakah Anda yakin ingin membatalkan invoice{" "}
+            <strong className="text-foreground font-mono">
+              {invoiceToCancel?.invoice_number}
+            </strong>
+            ? Status invoice akan diubah menjadi dibatalkan.
+          </span>
+        }
+        confirmText="Ya, Batalkan Invoice"
+        cancelText="Tutup"
+        variant="danger"
+        isLoading={cancelMutation.isPending}
+        onConfirm={handleCancelConfirm}
       />
 
       {/* Delete Confirmation Dialog */}

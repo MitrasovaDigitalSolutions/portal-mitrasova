@@ -22,7 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SUBSCRIPTION_TYPES } from "../constants"
+import { SUBSCRIPTION_TYPES, formatCodeToTitle } from "../constants"
 import type { License } from "../@types/license"
 import type { LicenseColumnActions } from "./license-columns"
 
@@ -114,7 +114,7 @@ export function LicenseMobileCard({
             variant={subConfig?.badgeVariant ?? "secondary"}
             className="text-[10px]"
           >
-            {subConfig?.label.split(" ")[0] ?? license.subscription_type}
+            {subConfig?.label.split(" ")[0] ?? formatCodeToTitle(license.subscription_type)}
           </Badge>
           {count > 0 && (
             <Badge variant="outline" className="text-[10px] gap-1 font-mono">

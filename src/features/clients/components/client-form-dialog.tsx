@@ -140,18 +140,20 @@ export function ClientFormDialog({
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs"
             >
               Batal
             </Button>
             <Button
               type="submit"
+              size="sm"
               disabled={isPending}
-              className="gap-2 cursor-pointer font-medium"
+              className="gap-1.5 cursor-pointer text-xs font-medium"
             >
-              {isPending && <Loader2 size={14} className="animate-spin" />}
+              {isPending && <Loader2 size={13} className="animate-spin" />}
               {isEdit ? "Simpan Perubahan" : "Tambah Klien"}
             </Button>
           </div>

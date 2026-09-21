@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Search, X, RotateCw, Plus } from "lucide-react"
+import { Search, X, RotateCw } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import type { InvoiceStatus } from "../@types/invoice"
@@ -22,7 +22,6 @@ interface InvoicesToolbarProps {
   onStatusChange: (status: "all" | InvoiceStatus) => void
   isFetching: boolean
   onRefresh: () => void
-  onCreateClick: () => void
 }
 
 export function InvoicesToolbar({
@@ -32,7 +31,6 @@ export function InvoicesToolbar({
   onStatusChange,
   isFetching,
   onRefresh,
-  onCreateClick,
 }: InvoicesToolbarProps): React.JSX.Element {
   return (
     <div className="space-y-4">
@@ -58,16 +56,6 @@ export function InvoicesToolbar({
           >
             <RotateCw className={cn("size-3.5", isFetching && "animate-spin")} />
             <span>Segarkan</span>
-          </Button>
-
-          <Button
-            type="button"
-            size="sm"
-            onClick={onCreateClick}
-            className="h-9 px-3.5 gap-1.5 text-xs font-semibold cursor-pointer shadow-xs"
-          >
-            <Plus className="size-4" />
-            <span>Buat Invoice Baru</span>
           </Button>
         </div>
       </div>
