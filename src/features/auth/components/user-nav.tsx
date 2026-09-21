@@ -20,7 +20,7 @@ export function UserNav() {
   const displayEmail = user?.email || ""
 
   const getInitials = (name?: string | null): string => {
-    if (!name || !name.trim()) return "AD"
+    if (!name || !name.trim()) { return "AD" }
     const parts = name.trim().split(/\s+/)
     if (parts.length === 1) {
       return parts[0].slice(0, 2).toUpperCase()
