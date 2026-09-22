@@ -50,11 +50,13 @@ const PaginationLink = ({
     disabled={disabled}
     className={cn(
       buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+        variant: isActive ? "default" : "ghost",
         size: "icon-sm",
       }),
-      "cursor-pointer disabled:pointer-events-none disabled:opacity-50",
-      isActive && "border-primary bg-primary/10 font-bold text-primary",
+      "cursor-pointer text-xs rounded-xl transition-all select-none disabled:pointer-events-none disabled:opacity-40",
+      isActive
+        ? "bg-primary text-primary-foreground font-bold shadow-2xs border border-transparent hover:bg-primary/90 hover:text-primary-foreground"
+        : "text-muted-foreground hover:bg-muted hover:text-foreground font-medium border border-transparent",
       className
     )}
     type="button"
@@ -69,7 +71,10 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    className={cn("h-8 w-auto gap-1 pr-3.5 pl-2.5 text-xs", className)}
+    className={cn(
+      "h-8 w-auto gap-1.5 px-3 text-xs font-medium rounded-xl border border-border/80 bg-card hover:bg-muted hover:text-foreground shadow-2xs transition-all",
+      className
+    )}
     {...props}
   >
     <ChevronLeft className="size-3.5" />
@@ -84,7 +89,10 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    className={cn("h-8 w-auto gap-1 pr-2.5 pl-3.5 text-xs", className)}
+    className={cn(
+      "h-8 w-auto gap-1.5 px-3 text-xs font-medium rounded-xl border border-border/80 bg-card hover:bg-muted hover:text-foreground shadow-2xs transition-all",
+      className
+    )}
     {...props}
   >
     <span>Selanjutnya</span>

@@ -14,10 +14,6 @@ import { ProductsSkeleton } from "./products-skeleton"
 
 export function ProductsView(): React.JSX.Element {
   const {
-    searchInput,
-    handleSearchChange,
-    statusFilter,
-    handleStatusChange,
     data,
     productsList,
     totalProducts,
@@ -57,18 +53,19 @@ export function ProductsView(): React.JSX.Element {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-3.5 sm:space-y-4"
     >
-      {/* Header & Filter Toolbar */}
-      <ProductToolbar
-        searchInput={searchInput}
-        onSearchChange={handleSearchChange}
-        statusFilter={statusFilter}
-        onStatusChange={handleStatusChange}
-        isFetching={isFetching}
-        onRefresh={() => void refetch()}
-        onCreateClick={handleCreate}
-      />
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            Katalog Produk & Layanan
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            Kelola master produk sistem Mitrasova dan modul product add-on terhubung.
+          </p>
+        </div>
+      </div>
 
       {/* KPI Overview Grid */}
       <ProductMetricsGrid
@@ -78,29 +75,35 @@ export function ProductsView(): React.JSX.Element {
         totalAddons={totalAddons}
       />
 
-      {/* Main Table with Server Pagination */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
-        <DataTable
-          columns={columns}
-          data={productsList}
-          isLoading={isLoading}
-          isFetching={isFetching}
-          paginationMode="client"
-          entityName="produk"
-          emptyMessage="Belum ada data produk software yang sesuai kriteria pencarian."
-          onView={handleViewDetail}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-          renderCardItem={(row) => (
-            <ProductMobileCard
-              product={row.original}
-              onViewDetail={handleViewDetail}
-              onEdit={handleEdit}
-              onDelete={handleDeleteClick}
-            />
-          )}
-        />
-      </div>
+      {/* Actions Toolbar */}
+      <ProductToolbar
+        isFetching={isFetching}
+        onRefresh={() => void refetch()}
+        onCreateClick={handleCreate}
+      />
+
+      {/* Main Table */}
+      <DataTable
+        columns={columns}
+        data={productsList}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        paginationMode="client"
+        actionColumnSize={110}
+        entityName="Produk"
+        emptyMessage="Belum ada data produk software yang sesuai kriteria pencarian."
+        onView={handleViewDetail}
+        onEdit={handleEdit}
+        onDelete={handleDeleteClick}
+        renderCardItem={(row) => (
+          <ProductMobileCard
+            product={row.original}
+            onViewDetail={handleViewDetail}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
+        )}
+      />
 
       {/* Product Create / Edit Modal */}
       <ProductFormDialog

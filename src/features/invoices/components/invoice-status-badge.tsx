@@ -21,26 +21,26 @@ const STATUS_CONFIGS: Record<string, StatusConfig> = {
   paid: {
     label: "Lunas",
     bgClass:
-      "bg-emerald-500/10 text-emerald-700 border-emerald-300/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-700/50",
+      "bg-emerald-500/10 text-emerald-800 border-emerald-300/70 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-700/50",
     dotClass: "bg-emerald-500",
   },
   unpaid: {
     label: "Belum Dibayar",
     bgClass:
-      "bg-amber-500/10 text-amber-700 border-amber-300/60 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-700/50",
+      "bg-amber-500/10 text-amber-800 border-amber-300/70 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-700/50",
     dotClass: "bg-amber-500",
     pulse: true,
   },
   expired: {
     label: "Kedaluwarsa",
     bgClass:
-      "bg-rose-500/10 text-rose-700 border-rose-300/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-700/50",
+      "bg-rose-500/10 text-rose-800 border-rose-300/70 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-700/50",
     dotClass: "bg-rose-500",
   },
   cancelled: {
     label: "Dibatalkan",
     bgClass:
-      "bg-slate-500/10 text-slate-600 border-slate-300/60 dark:bg-slate-500/15 dark:text-slate-400 dark:border-slate-700/50",
+      "bg-slate-500/10 text-slate-700 border-slate-300/70 dark:bg-slate-500/15 dark:text-slate-400 dark:border-slate-700/50",
     dotClass: "bg-slate-400 dark:bg-slate-500",
   },
 }

@@ -111,17 +111,19 @@ export function InvoicesView(): React.JSX.Element {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-3.5 sm:space-y-4"
     >
-      {/* Header & Filter Toolbar */}
-      <InvoicesToolbar
-        searchInput={searchInput}
-        onSearchChange={setSearchInput}
-        statusFilter={statusFilter}
-        onStatusChange={handleStatusChange}
-        isFetching={isFetching}
-        onRefresh={() => void refetch()}
-      />
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            Manajemen Invoices
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            Kelola penerbitan faktur tagihan, status pelunasan, dan aktivasi perpanjangan lisensi.
+          </p>
+        </div>
+      </div>
 
       {/* KPI Overview Grid */}
       <InvoicesMetricsGrid
@@ -131,71 +133,79 @@ export function InvoicesView(): React.JSX.Element {
         pageAmountTotal={totalAmountSum}
       />
 
+      {/* Filter and Actions Toolbar (Placed below summary cards, directly above DataTable) */}
+      <InvoicesToolbar
+        searchInput={searchInput}
+        onSearchChange={setSearchInput}
+        statusFilter={statusFilter}
+        onStatusChange={handleStatusChange}
+        isFetching={isFetching}
+        onRefresh={() => void refetch()}
+      />
+
       {/* Main Table with Server Pagination */}
-      <div className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={invoicesList}
-          isLoading={isLoading}
-          isFetching={isFetching}
-          paginationMode="server"
-          page={page}
-          perPage={perPage}
-          onPageChange={setPage}
-          onPerPageChange={(newPerPage) => {
-            setPerPage(newPerPage)
-            setPage(1)
-          }}
-          meta={data?.meta}
-          entityName="invoice"
-          emptyMessage="Belum ada data invoice yang sesuai kriteria pencarian."
-          maxActionButtons={5}
-          onView={(inv) => setSelectedInvoice(inv)}
-          onDelete={(inv) => setInvoiceToDelete(inv)}
-          hideDelete={(inv) => inv.status === "paid"}
-          extraActions={(inv) => (
-            <>
-              {inv.status === "unpaid" && (
-                <DataTableActionButton
-                  variant="emerald"
-                  tooltip="Tandai Lunas"
-                  onClick={() => setMarkPaidInvoice(inv)}
-                >
-                  <CheckCircle2 size={16} />
-                </DataTableActionButton>
-              )}
-
-              {inv.status === "unpaid" && (
-                <DataTableActionButton
-                  variant="amber"
-                  tooltip="Batalkan Invoice"
-                  onClick={() => setInvoiceToCancel(inv)}
-                >
-                  <Ban size={16} />
-                </DataTableActionButton>
-              )}
-
+      <DataTable
+        columns={columns}
+        data={invoicesList}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        paginationMode="server"
+        page={page}
+        perPage={perPage}
+        onPageChange={setPage}
+        onPerPageChange={(newPerPage) => {
+          setPerPage(newPerPage)
+          setPage(1)
+        }}
+        meta={data?.meta}
+        entityName="invoice"
+        emptyMessage="Belum ada data invoice yang sesuai kriteria pencarian."
+        maxActionButtons={5}
+        onView={(inv) => setSelectedInvoice(inv)}
+        onDelete={(inv) => setInvoiceToDelete(inv)}
+        hideDelete={(inv) => inv.status === "paid"}
+        extraActions={(inv) => (
+          <>
+            {inv.status === "unpaid" && (
               <DataTableActionButton
-                variant="sky"
-                tooltip="Unduh PDF"
-                onClick={() => handleDownloadPdf(inv)}
+                variant="emerald"
+                tooltip="Tandai Lunas"
+                onClick={() => setMarkPaidInvoice(inv)}
               >
-                <Download size={16} />
+                <CheckCircle2 size={16} />
               </DataTableActionButton>
-            </>
-          )}
-          renderCardItem={(row) => (
-            <InvoiceMobileCard
-              invoice={row.original}
-              onViewDetail={(inv) => setSelectedInvoice(inv)}
-              onMarkPaid={(inv) => setMarkPaidInvoice(inv)}
-              onCancel={(inv) => setInvoiceToCancel(inv)}
-              onDownloadPdf={handleDownloadPdf}
-              onDelete={(inv) => setInvoiceToDelete(inv)}
-            />
-          )}
-        />
-      </div>
+            )}
+
+            {inv.status === "unpaid" && (
+              <DataTableActionButton
+                variant="amber"
+                tooltip="Batalkan Invoice"
+                onClick={() => setInvoiceToCancel(inv)}
+              >
+                <Ban size={16} />
+              </DataTableActionButton>
+            )}
+
+            <DataTableActionButton
+              variant="sky"
+              tooltip="Unduh PDF"
+              onClick={() => handleDownloadPdf(inv)}
+            >
+              <Download size={16} />
+            </DataTableActionButton>
+          </>
+        )}
+        renderCardItem={(row) => (
+          <InvoiceMobileCard
+            invoice={row.original}
+            onViewDetail={(inv) => setSelectedInvoice(inv)}
+            onMarkPaid={(inv) => setMarkPaidInvoice(inv)}
+            onCancel={(inv) => setInvoiceToCancel(inv)}
+            onDownloadPdf={handleDownloadPdf}
+            onDelete={(inv) => setInvoiceToDelete(inv)}
+          />
+        )}
+      />
 
       {/* Detail Dialog with BaseDialog */}
       <InvoiceDetailDialog

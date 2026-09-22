@@ -58,80 +58,80 @@ export function DashboardCharts({
     ? [{ name: "Belum Ada Data", value: 1, color: "#94a3b8" }]
     : [
         {
-          name: "Lisensi Aktif Sehat",
+          name: "Healthy Active",
           value: healthyActiveCount,
           color: "#059669",
         },
         {
-          name: "Akan Kedaluwarsa",
+          name: "Expiring Soon",
           value: expiringCount,
-          color: "#f59e0b",
+          color: "#d97706",
         },
         {
-          name: "Kedaluwarsa",
+          name: "Grace / Expired",
           value: expiredCount,
-          color: "#ef4444",
+          color: "#e11d48",
         },
       ].filter((item) => item.value > 0)
 
   // ─── 2. Financial Bar Chart Data ─────────────────────────────────────────────
   const financialData = [
     {
-      kategori: "Omzet Bulan Ini",
+      kategori: "Revenue MTD",
       nominal: overview.revenue_this_month,
       color: "#059669",
     },
     {
-      kategori: "Tagihan Tertunda",
+      kategori: "Outstanding",
       nominal: overview.unpaid_invoices_amount,
-      color: "#f59e0b",
+      color: "#d97706",
     },
   ]
 
-  // Volume Bar Data (Klien vs Produk vs Lisensi)
+  // Volume Bar Data (Klien vs Produk vs Lisensi vs Invoices)
   const volumeData = [
-    { name: "Klien", jumlah: overview.total_clients, fill: "#0284c7" },
-    { name: "Produk", jumlah: overview.total_products, fill: "#8b5cf6" },
+    { name: "Mitra Klien", jumlah: overview.total_clients, fill: "#0284c7" },
+    { name: "SKU Produk", jumlah: overview.total_products, fill: "#6366f1" },
     { name: "Lisensi", jumlah: overview.total_licenses, fill: "#059669" },
-    { name: "Tagihan", jumlah: overview.unpaid_invoices_count, fill: "#f59e0b" },
+    { name: "Invoice", jumlah: overview.unpaid_invoices_count, fill: "#d97706" },
   ]
 
   const [activeTab, setActiveTab] = useState<"finance" | "volume">("finance")
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-      {/* Chart 1: Status Distribusi Lisensi (Donut) */}
+    <div className="grid grid-cols-1 gap-2.5 sm:gap-3 lg:grid-cols-12">
+      {/* Chart 1: License Health & Distribution (Donut) */}
       <motion.div
-        initial={{ opacity: 0, y: 14 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.1 }}
+        transition={{ duration: 0.3, delay: 0.08 }}
         className="lg:col-span-5"
       >
-        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-2xs">
+        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-border/60 pb-3">
+          <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
-                <PieChartIcon size={15} />
+              <div className="flex size-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                <PieChartIcon size={14} />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-foreground">
-                  Status Distribusi Lisensi
+                  License Health & Distribution
                 </h4>
                 <p className="text-[10px] text-muted-foreground">
-                  Proporsi lisensi aktif & kedaluwarsa
+                  Indeks utilisasi & pipeline perpanjangan
                 </p>
               </div>
             </div>
-            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
-              Total {overview.total_licenses}
+            <span className="font-mono rounded-md bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+              {overview.total_licenses} Total
             </span>
           </div>
 
           {/* Donut Body */}
-          <div className="relative my-2 flex min-h-[200px] w-full items-center justify-center">
+          <div className="relative my-1 flex min-h-[170px] w-full items-center justify-center">
             {mounted ? (
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={170}>
                 <PieChart>
                   <Tooltip
                     content={({ active, payload }) => {
@@ -147,7 +147,7 @@ export function DashboardCharts({
                               <span>{data.name}</span>
                             </div>
                             <div className="mt-1 text-[11px] font-semibold text-muted-foreground">
-                              Jumlah:{" "}
+                              Volume:{" "}
                               <span className="font-bold text-foreground">
                                 {data.value} lisensi
                               </span>
@@ -162,8 +162,8 @@ export function DashboardCharts({
                     data={licensePieData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={78}
+                    innerRadius={48}
+                    outerRadius={68}
                     paddingAngle={3}
                     dataKey="value"
                   >
@@ -174,45 +174,45 @@ export function DashboardCharts({
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-44 w-44 rounded-full border-4 border-muted animate-pulse" />
+              <div className="h-36 w-36 rounded-full border-4 border-muted animate-pulse" />
             )}
 
             {/* Inner Total Pill */}
             <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center">
-              <span className="text-xl font-black text-foreground">
+              <span className="font-mono text-lg font-black text-foreground leading-none">
                 {overview.active_licenses}
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground">
+              <span className="text-[10px] font-semibold text-muted-foreground mt-0.5">
                 Aktif
               </span>
             </div>
           </div>
 
           {/* Legend Pills */}
-          <div className="grid grid-cols-3 gap-2 border-t border-border/60 pt-3 text-center">
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-2">
-              <span className="block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                Sehat
+          <div className="grid grid-cols-3 gap-1.5 border-t border-border/60 pt-2.5 text-center">
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-1.5">
+              <span className="block text-[9px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-tight">
+                Healthy
               </span>
-              <span className="text-xs font-black text-foreground">
+              <span className="font-mono text-xs font-black text-foreground">
                 {healthyActiveCount}
               </span>
             </div>
 
-            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-2">
-              <span className="block text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                Akan Habis
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-1.5">
+              <span className="block text-[9px] font-bold text-amber-800 dark:text-amber-400 uppercase tracking-tight">
+                Expiring
               </span>
-              <span className="text-xs font-black text-foreground">
+              <span className="font-mono text-xs font-black text-foreground">
                 {expiringCount}
               </span>
             </div>
 
-            <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-2">
-              <span className="block text-[10px] font-semibold text-rose-600 dark:text-rose-400">
-                Kedaluwarsa
+            <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-1.5">
+              <span className="block text-[9px] font-bold text-rose-700 dark:text-rose-400 uppercase tracking-tight">
+                Expired
               </span>
-              <span className="text-xs font-black text-foreground">
+              <span className="font-mono text-xs font-black text-foreground">
                 {expiredCount}
               </span>
             </div>
@@ -220,36 +220,36 @@ export function DashboardCharts({
         </Card>
       </motion.div>
 
-      {/* Chart 2: Analitik Keuangan & Volume Ekosistem (Bar) */}
+      {/* Chart 2: Cash Flow & Ecosystem Volume (Bar) */}
       <motion.div
-        initial={{ opacity: 0, y: 14 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.15 }}
+        transition={{ duration: 0.3, delay: 0.12 }}
         className="lg:col-span-7"
       >
-        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-2xs">
+        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs">
           {/* Header with Switcher Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border/60 pb-2.5">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
-                <BarChart3 size={15} />
+              <div className="flex size-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                <BarChart3 size={14} />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-foreground">
                   {activeTab === "finance"
-                    ? "Komparasi Finansial & Tagihan"
-                    : "Volume Ekosistem Layanan"}
+                    ? "Cash Flow vs Outstanding Receivables"
+                    : "Platform Deployment Volume"}
                 </h4>
                 <p className="text-[10px] text-muted-foreground">
                   {activeTab === "finance"
-                    ? "Arus pendapatan vs piutang berjalan"
-                    : "Distribusi data entitas utama"}
+                    ? "Realisasi pendapatan MTD vs piutang terbuka"
+                    : "Distribusi entitas ekosistem operasional"}
                 </p>
               </div>
             </div>
 
             {/* Toggle Tabs */}
-            <div className="flex items-center gap-1 rounded-xl border border-border bg-muted/60 p-0.5">
+            <div className="flex items-center gap-1 rounded-xl border border-border bg-muted/60 p-0.5 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab("finance")}
@@ -260,7 +260,7 @@ export function DashboardCharts({
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                Finansial
+                Arus Finansial
               </button>
               <button
                 type="button"
@@ -272,19 +272,19 @@ export function DashboardCharts({
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                Volume
+                Volume Deployment
               </button>
             </div>
           </div>
 
           {/* Bar Chart Area */}
-          <div className="my-3 flex-1 min-h-[210px] w-full">
+          <div className="my-2 flex-1 min-h-[175px] w-full">
             {mounted ? (
-              <ResponsiveContainer width="100%" height={210}>
+              <ResponsiveContainer width="100%" height={175}>
                 {activeTab === "finance" ? (
                   <BarChart
                     data={financialData}
-                    margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                    margin={{ top: 8, right: 10, left: 10, bottom: 4 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -323,7 +323,7 @@ export function DashboardCharts({
                               <span className="font-bold text-popover-foreground">
                                 {data.payload.kategori}
                               </span>
-                              <div className="mt-1 text-sm font-black text-primary">
+                              <div className="mt-1 font-mono text-sm font-black text-primary">
                                 {formatRupiah(Number(data.value))}
                               </div>
                             </div>
@@ -334,8 +334,8 @@ export function DashboardCharts({
                     />
                     <Bar
                       dataKey="nominal"
-                      radius={[8, 8, 0, 0]}
-                      barSize={44}
+                      radius={[6, 6, 0, 0]}
+                      barSize={40}
                     >
                       {financialData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -345,7 +345,7 @@ export function DashboardCharts({
                 ) : (
                   <BarChart
                     data={volumeData}
-                    margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
+                    margin={{ top: 8, right: 10, left: 10, bottom: 4 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -375,8 +375,8 @@ export function DashboardCharts({
                               <span className="font-bold text-popover-foreground">
                                 {data.payload.name}
                               </span>
-                              <div className="mt-1 text-sm font-black text-foreground">
-                                {data.value} data
+                              <div className="mt-1 font-mono text-sm font-black text-foreground">
+                                {data.value} entitas
                               </div>
                             </div>
                           )
@@ -386,8 +386,8 @@ export function DashboardCharts({
                     />
                     <Bar
                       dataKey="jumlah"
-                      radius={[8, 8, 0, 0]}
-                      barSize={38}
+                      radius={[6, 6, 0, 0]}
+                      barSize={32}
                     >
                       {volumeData.map((entry, index) => (
                         <Cell key={`cell-vol-${index}`} fill={entry.fill} />
@@ -402,16 +402,16 @@ export function DashboardCharts({
           </div>
 
           {/* Bottom Insights Footnote */}
-          <div className="flex items-center justify-between border-t border-border/60 pt-2.5 text-[11px] text-muted-foreground">
+          <div className="flex items-center justify-between border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-1.5 truncate">
               <TrendingUp size={13} className="text-primary shrink-0" />
               <span className="truncate">
                 {overview.unpaid_invoices_count > 0
-                  ? `Ada ${overview.unpaid_invoices_count} invoice menunggu pelunasan`
-                  : "Semua tagihan lunas terverifikasi"}
+                  ? `${overview.unpaid_invoices_count} faktur terbuka menunggu penyelesaian`
+                  : "Seluruh kewajiban pembayaran lunas terverifikasi"}
               </span>
             </div>
-            <span className="shrink-0 font-bold text-foreground">
+            <span className="shrink-0 font-mono font-bold text-foreground">
               {formatRupiah(overview.revenue_this_month)}
             </span>
           </div>

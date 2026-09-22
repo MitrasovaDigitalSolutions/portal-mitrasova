@@ -33,79 +33,73 @@ export function InvoicesToolbar({
   onRefresh,
 }: InvoicesToolbarProps): React.JSX.Element {
   return (
-    <div className="space-y-4">
-      {/* Top Header & Main Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-xl font-bold tracking-tight text-foreground">
-            Manajemen Invoices
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            Kelola penerbitan faktur tagihan, status pelunasan, dan aktivasi perpanjangan lisensi
-          </p>
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+      {/* Left: Search Input & Status Filter Pills */}
+      <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        {/* Search Input */}
+        <div className="relative flex-1 max-w-sm">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+          />
+          <Input
+            value={searchInput}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Cari nomor invoice, pelanggan, email..."
+            className="pl-8.5 pr-8.5 h-9 text-xs rounded-xl bg-card border-border/80 shadow-2xs focus-visible:ring-1"
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors p-0.5"
+              aria-label="Bersihkan pencarian"
+            >
+              <X size={13} />
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onRefresh}
-            disabled={isFetching}
-            className="h-9 px-3 gap-1.5 text-xs font-semibold cursor-pointer"
-          >
-            <RotateCw className={cn("size-3.5", isFetching && "animate-spin")} />
-            <span>Segarkan</span>
-          </Button>
+        {/* Status Filter Segmented Buttons */}
+        <div className="flex items-center gap-1 rounded-xl bg-muted/50 p-1 border border-border/80 shrink-0 self-start sm:self-auto overflow-x-auto max-w-full">
+          {STATUS_TABS.map((tab) => {
+            const isSelected = statusFilter === tab.value
+            return (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => onStatusChange(tab.value)}
+                className={cn(
+                  "px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
+                  isSelected
+                    ? "bg-card text-foreground shadow-2xs font-bold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                )}
+              >
+                {tab.label}
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Cari nomor invoice, nama pelanggan, email..."
-              value={searchInput}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-9 pr-8 h-9 text-xs"
-            />
-            {searchInput && (
-              <button
-                type="button"
-                onClick={() => onSearchChange("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-muted-foreground hover:text-foreground cursor-pointer"
-              >
-                <X className="size-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Status Segmented Filter */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            {STATUS_TABS.map((tab) => {
-              const isSelected = statusFilter === tab.value
-              return (
-                <button
-                  key={tab.value}
-                  type="button"
-                  onClick={() => onStatusChange(tab.value)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border",
-                    isSelected
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+      {/* Right: Actions */}
+      <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={onRefresh}
+          disabled={isFetching}
+          className="h-9 px-3 rounded-xl gap-1.5 cursor-pointer text-xs font-medium border-border/80 bg-card shadow-2xs"
+          title="Muat ulang data invoice"
+        >
+          <RotateCw
+            size={13}
+            className={isFetching ? "animate-spin text-primary" : "text-muted-foreground"}
+          />
+          <span className="hidden sm:inline">Refresh</span>
+        </Button>
       </div>
     </div>
   )

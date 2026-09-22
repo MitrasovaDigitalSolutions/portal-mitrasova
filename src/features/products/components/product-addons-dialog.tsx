@@ -96,31 +96,31 @@ export function ProductAddonsDialog({
           </div>
 
           {/* Addons Table */}
-          <div className="rounded-xl border border-border bg-card shadow-2xs overflow-hidden">
-            {isLoading ? (
-              <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                <Loader2 className="size-6 animate-spin mb-2 text-primary" />
-                <p className="text-xs">Memuat daftar addon...</p>
-              </div>
-            ) : (
-              <DataTable
-                columns={addonColumns}
-                data={filteredAddons}
-                isLoading={false}
-                isFetching={isFetching}
-                emptyMessage="Belum ada modul addon untuk produk ini. Tambahkan addon pertama Anda."
-                onEdit={handleEdit}
-                onDelete={handleDeleteClick}
-                renderCardItem={(row) => (
-                  <AddonMobileCard
-                    addon={row.original}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteClick}
-                  />
-                )}
-              />
-            )}
-          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+              <Loader2 className="size-6 animate-spin mb-2 text-primary" />
+              <p className="text-xs">Memuat daftar addon...</p>
+            </div>
+          ) : (
+            <DataTable
+              columns={addonColumns}
+              data={filteredAddons}
+              isLoading={false}
+              isFetching={isFetching}
+              actionColumnSize={110}
+              entityName="Addon"
+              emptyMessage="Belum ada modul addon untuk produk ini. Tambahkan addon pertama Anda."
+              onEdit={handleEdit}
+              onDelete={handleDeleteClick}
+              renderCardItem={(row) => (
+                <AddonMobileCard
+                  addon={row.original}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteClick}
+                />
+              )}
+            />
+          )}
         </div>
       </BaseDialog>
 

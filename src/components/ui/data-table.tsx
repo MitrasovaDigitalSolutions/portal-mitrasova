@@ -86,6 +86,7 @@ export interface DataTableProps<TData, TValue = unknown> {
   // Pagination Props
   paginationMode?: "client" | "server"
   clientPagination?: boolean
+  alwaysShowPagination?: boolean
   page?: number
   perPage?: number
   onPageChange?: (page: number) => void
@@ -182,6 +183,7 @@ export function DataTable<TData, TValue = unknown>({
   disableCheck,
   extraActions,
   maxActionButtons = 5,
+  alwaysShowPagination = false,
   actionColumnWidth,
   actionColumnSize,
   getRowClassName,
@@ -1139,6 +1141,7 @@ export function DataTable<TData, TValue = unknown>({
 
       {/* Pagination Controls */}
       {computedMeta &&
+        (alwaysShowPagination || computedMeta.last_page > 1) &&
         (() => {
           const startItem =
             computedMeta.total > 0
@@ -1219,7 +1222,7 @@ export function DataTable<TData, TValue = unknown>({
                 className={cn(
                   "flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border text-[11px] font-bold shadow-2xs transition-all",
                   p === current
-                    ? "border-primary bg-primary text-primary-foreground"
+                    ? "border-transparent bg-primary text-primary-foreground"
                     : "border-border bg-card text-foreground hover:bg-muted"
                 )}
               >

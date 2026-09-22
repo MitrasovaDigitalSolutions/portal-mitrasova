@@ -8,7 +8,6 @@ import {
   Calendar,
   FileText,
 } from "lucide-react"
-import { Card } from "@/components/ui/card"
 import { formatDate } from "@/utils"
 import type { Product } from "../@types/product"
 
@@ -24,95 +23,97 @@ export function ProductDetailInfoCard({
   const licensesCount = product.licenses_count ?? 0
 
   return (
-    <div className="space-y-4">
-      {/* 4 Metric Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-3">
+      {/* 4 Metric Overview Cards (2-col mobile, 4-col desktop) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         {/* Card 1: Product Code */}
-        <Card className="rounded-2xl border-border bg-card p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground truncate">
               Kode Unik Produk
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
-              <Package className="size-4" />
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+              <Package size={14} />
             </div>
           </div>
-          <div className="mt-2 text-lg font-mono font-bold text-foreground">
-            {product.code}
+          <div className="mt-2 flex items-baseline justify-between gap-2">
+            <div className="text-base sm:text-lg font-mono font-bold text-foreground">
+              {product.code}
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">
+              Identitas terdaftar
+            </p>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            Identitas sistem terdaftar
-          </p>
-        </Card>
+        </div>
 
         {/* Card 2: Total Addons */}
-        <Card className="rounded-2xl border-border bg-card p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground truncate">
               Modul Addon
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-              <Layers className="size-4" />
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+              <Layers size={14} />
             </div>
           </div>
-          <div className="mt-2 text-lg font-bold text-foreground">
-            {addonsCount}{" "}
-            <span className="text-xs font-normal text-muted-foreground">
-              Modul
-            </span>
+          <div className="mt-2 flex items-baseline justify-between gap-2">
+            <div className="text-base sm:text-lg font-bold font-mono text-foreground">
+              {addonsCount}
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">
+              Modul tersedia
+            </p>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            Fitur tambahan tersedia
-          </p>
-        </Card>
+        </div>
 
         {/* Card 3: Licenses */}
-        <Card className="rounded-2xl border-border bg-card p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground truncate">
               Lisensi Terhubung
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-              <KeyRound className="size-4" />
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+              <KeyRound size={14} />
             </div>
           </div>
-          <div className="mt-2 text-lg font-bold text-foreground">
-            {licensesCount}{" "}
-            <span className="text-xs font-normal text-muted-foreground">
-              Instance
-            </span>
+          <div className="mt-2 flex items-baseline justify-between gap-2">
+            <div className="text-base sm:text-lg font-bold font-mono text-foreground">
+              {licensesCount}
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">
+              Instance klien
+            </p>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            Klien aktif menggunakan
-          </p>
-        </Card>
+        </div>
 
         {/* Card 4: Created Date */}
-        <Card className="rounded-2xl border-border bg-card p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground truncate">
               Tanggal Dibuat
             </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted text-muted-foreground border border-border">
-              <Calendar className="size-4" />
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground border border-border">
+              <Calendar size={14} />
             </div>
           </div>
-          <div className="mt-2 text-sm font-semibold text-foreground">
-            {formatDate(product.created_at)}
+          <div className="mt-2 flex items-baseline justify-between gap-2">
+            <div className="text-xs sm:text-sm font-semibold text-foreground truncate">
+              {formatDate(product.created_at)}
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">
+              Waktu registrasi
+            </p>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            Waktu registrasi sistem
-          </p>
-        </Card>
+        </div>
       </div>
 
       {/* Description Box */}
       {product.description && (
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs flex items-start gap-3">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground mt-0.5">
-            <FileText className="size-3.5" />
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs flex items-start gap-2.5">
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground mt-0.5">
+            <FileText size={13} />
           </div>
-          <div className="space-y-0.5 flex-1">
+          <div className="space-y-0.5 flex-1 min-w-0">
             <div className="text-xs font-semibold text-foreground">
               Deskripsi & Cakupan Produk
             </div>

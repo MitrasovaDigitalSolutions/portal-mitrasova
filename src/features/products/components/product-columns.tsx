@@ -1,7 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import { Layers, KeyRound, CheckCircle2, XCircle } from "lucide-react"
+import { Layers, KeyRound, CheckCircle2, XCircle, Package } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Tooltip,
@@ -22,7 +22,7 @@ export function getProductColumns(
     {
       accessorKey: "code",
       header: "Kode Produk",
-      size: 140,
+      size: 130,
       cell: ({ row }) => {
         const product = row.original
         return (
@@ -32,7 +32,7 @@ export function getProductColumns(
             className="flex items-center gap-2 cursor-pointer group text-left"
             title="Buka detail produk"
           >
-            <span className="font-mono text-xs font-bold text-primary px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors whitespace-nowrap">
+            <span className="font-mono text-xs font-bold text-primary px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors whitespace-nowrap shadow-2xs">
               {product.code}
             </span>
           </button>
@@ -42,43 +42,46 @@ export function getProductColumns(
     {
       accessorKey: "nama",
       header: "Nama Produk",
-      size: 360,
+      size: 300,
       cell: ({ row }) => {
         const product = row.original
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="space-y-0.5 max-w-[340px]">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => actions?.onViewDetail?.(product)}
-                    className="font-semibold text-xs text-foreground hover:text-primary hover:underline text-left cursor-pointer transition-colors block truncate max-w-full"
-                  >
-                    {product.nama}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs p-2.5 space-y-1">
-                  <div className="font-bold text-xs text-white">
-                    {product.nama}
-                  </div>
-                  {product.description && (
-                    <div className="text-[11px] text-zinc-300 leading-relaxed">
-                      {product.description}
-                    </div>
-                  )}
-                </TooltipContent>
-              </Tooltip>
+            <div className="flex items-center gap-2.5 max-w-[290px]">
+              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-2xs">
+                <Package size={14} />
+              </div>
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => actions?.onViewDetail?.(product)}
+                      className="font-semibold text-xs text-foreground hover:text-primary hover:underline text-left cursor-pointer transition-colors block truncate max-w-full"
+                    >
+                      {product.nama}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs text-xs">
+                    <p className="font-semibold">{product.nama}</p>
+                    {product.description && (
+                      <p className="text-zinc-400 text-[11px] leading-relaxed mt-0.5">
+                        {product.description}
+                      </p>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
 
-              {product.description ? (
-                <div className="text-[11px] text-muted-foreground line-clamp-1 truncate">
-                  {product.description}
-                </div>
-              ) : (
-                <div className="text-[11px] text-muted-foreground/60 italic">
-                  Tidak ada deskripsi
-                </div>
-              )}
+                {product.description ? (
+                  <div className="text-[11px] text-muted-foreground truncate leading-tight">
+                    {product.description}
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-muted-foreground/60 italic">
+                    Tidak ada deskripsi
+                  </div>
+                )}
+              </div>
             </div>
           </TooltipProvider>
         )
@@ -95,7 +98,7 @@ export function getProductColumns(
           <button
             type="button"
             onClick={() => actions?.onViewDetail?.(product)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-sky-500/20 bg-sky-500/10 text-sky-600 dark:text-sky-400 hover:bg-sky-500/20 transition-colors cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-400 dark:border-sky-500/20 hover:bg-sky-500/20 transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
             title="Buka detail produk dan kelola modul addon"
           >
             <Layers className="size-3.5 shrink-0" />
@@ -107,14 +110,17 @@ export function getProductColumns(
     {
       accessorKey: "licenses_count",
       header: "Lisensi Terhubung",
-      size: 150,
+      size: 140,
       cell: ({ row }) => {
         const count = row.original.licenses_count ?? 0
         return (
-          <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium whitespace-nowrap">
-            <KeyRound className="size-3.5 text-muted-foreground/70 shrink-0" />
+          <Badge
+            variant={count > 0 ? "secondary" : "outline"}
+            className="text-[10px] gap-1 font-mono font-medium px-2 py-0.5 whitespace-nowrap"
+          >
+            <KeyRound size={11} className="text-muted-foreground" />
             <span>{count} Lisensi</span>
-          </div>
+          </Badge>
         )
       },
     },
@@ -125,12 +131,12 @@ export function getProductColumns(
       cell: ({ row }) => {
         const isActive = row.original.is_active
         return isActive ? (
-          <Badge variant="success" className="gap-1 whitespace-nowrap">
+          <Badge variant="success" className="gap-1 whitespace-nowrap text-[10px]">
             <CheckCircle2 className="size-3" />
             Aktif
           </Badge>
         ) : (
-          <Badge variant="outline" className="gap-1 text-muted-foreground whitespace-nowrap">
+          <Badge variant="outline" className="gap-1 text-muted-foreground whitespace-nowrap text-[10px]">
             <XCircle className="size-3" />
             Non-Aktif
           </Badge>

@@ -132,7 +132,7 @@ export function getClientColumns(
               <span>{total} Lisensi</span>
             </Badge>
             {active > 0 ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 dark:border-emerald-500/20 font-mono">
                 <span className="size-1 rounded-full bg-emerald-500" />
                 <span>{active} Aktif</span>
               </span>

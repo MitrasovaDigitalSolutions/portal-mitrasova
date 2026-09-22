@@ -28,7 +28,7 @@ export function InvoiceMobileCard({
   const isUnpaid = invoice.status === "unpaid"
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-xs hover:border-primary/40 transition-colors">
+    <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2.5 shadow-2xs hover:border-primary/40 transition-colors">
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1">
           <button

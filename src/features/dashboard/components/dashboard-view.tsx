@@ -56,13 +56,19 @@ export function DashboardView() {
   return (
     <div className="space-y-4">
       {/* ─── Compact Top Controls ─────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-bold text-foreground sm:text-base">
-            Ringkasan Metrik
-          </h2>
-          <p className="text-[11px] text-muted-foreground">
-            Data operasional dan status lisensi terkini
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+              Executive Overview
+            </h1>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Sistem Aktif
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Pantau kinerja operasional, utilisasi lisensi, dan arus kas langganan secara real-time.
           </p>
         </div>
 
@@ -71,7 +77,8 @@ export function DashboardView() {
           size="sm"
           onClick={handleRefresh}
           disabled={isFetching || isManualRefreshing}
-          className="h-8 rounded-xl border-border bg-card text-xs font-bold text-muted-foreground shadow-2xs hover:bg-muted hover:text-foreground cursor-pointer"
+          className="h-8.5 px-3 rounded-xl border-border bg-card text-xs font-semibold text-muted-foreground shadow-2xs hover:bg-muted hover:text-foreground cursor-pointer shrink-0 self-start sm:self-auto"
+          title="Sinkronisasi ulang data metrik terkini"
         >
           <RotateCw
             size={12}
@@ -79,7 +86,7 @@ export function DashboardView() {
               isFetching || isManualRefreshing ? "animate-spin text-primary" : ""
             }`}
           />
-          <span>Segarkan</span>
+          <span>Segarkan Data</span>
         </Button>
       </div>
 

@@ -26,19 +26,19 @@ const ACTION_VARIANT_CLASSES: Record<DataTableActionVariant, string> = {
   solidPrimary:
     "text-primary-foreground bg-primary border-primary hover:bg-primary/90 shadow-2xs font-bold",
   emerald:
-    "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white hover:border-emerald-600 dark:hover:border-emerald-600",
+    "text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/30 dark:border-emerald-500/20 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white hover:border-emerald-600 dark:hover:border-emerald-600",
   amber:
-    "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-600 dark:hover:text-white hover:border-amber-600 dark:hover:border-amber-600",
+    "text-amber-800 dark:text-amber-400 bg-amber-500/10 border-amber-500/30 dark:border-amber-500/20 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-600 dark:hover:text-white hover:border-amber-600 dark:hover:border-amber-600",
   rose:
-    "text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white hover:border-rose-600 dark:hover:border-rose-600",
+    "text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/30 dark:border-rose-500/20 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white hover:border-rose-600 dark:hover:border-rose-600",
   solidRose:
     "text-white bg-destructive border-destructive hover:bg-destructive/90 shadow-2xs font-bold",
   sky:
-    "text-sky-600 dark:text-sky-400 bg-sky-500/10 border-sky-500/20 hover:bg-sky-600 hover:text-white dark:hover:bg-sky-600 dark:hover:text-white hover:border-sky-600 dark:hover:border-sky-600",
+    "text-sky-700 dark:text-sky-400 bg-sky-500/10 border-sky-500/30 dark:border-sky-500/20 hover:bg-sky-600 hover:text-white dark:hover:bg-sky-600 dark:hover:text-white hover:border-sky-600 dark:hover:border-sky-600",
   indigo:
-    "text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-indigo-600",
+    "text-indigo-700 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/30 dark:border-indigo-500/20 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-indigo-600",
   slate:
-    "text-muted-foreground bg-muted border-border hover:bg-foreground hover:text-background dark:hover:bg-foreground dark:hover:text-background hover:border-foreground dark:hover:border-foreground",
+    "text-muted-foreground bg-muted/60 border-border hover:bg-foreground hover:text-background dark:hover:bg-foreground dark:hover:text-background hover:border-foreground dark:hover:border-foreground",
 }
 
 export interface DataTableActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

@@ -12,20 +12,20 @@ const badgeVariants = cva(
         default:
           "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-border/80 bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
-          "border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30",
+          "border-rose-500/30 bg-rose-500/10 text-rose-700 hover:bg-rose-500/20 dark:border-destructive/20 dark:bg-destructive/20 dark:text-destructive dark:hover:bg-destructive/30",
         danger:
-          "border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30",
+          "border-rose-500/30 bg-rose-500/10 text-rose-700 hover:bg-rose-500/20 dark:border-destructive/20 dark:bg-destructive/20 dark:text-destructive dark:hover:bg-destructive/30",
         success:
-          "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400",
+          "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 dark:border-emerald-500/20 dark:text-emerald-400",
         warning:
-          "border-amber-500/20 bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 dark:text-amber-400",
-        info: "border-sky-500/20 bg-sky-500/10 text-sky-600 hover:bg-sky-500/20 dark:text-sky-400",
-        sky: "border-sky-500/20 bg-sky-500/10 text-sky-600 hover:bg-sky-500/20 dark:text-sky-400",
+          "border-amber-500/30 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:border-amber-500/20 dark:text-amber-400",
+        info: "border-sky-500/30 bg-sky-500/10 text-sky-700 hover:bg-sky-500/20 dark:border-sky-500/20 dark:text-sky-400",
+        sky: "border-sky-500/30 bg-sky-500/10 text-sky-700 hover:bg-sky-500/20 dark:border-sky-500/20 dark:text-sky-400",
         purple:
-          "border-indigo-500/20 bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400",
-        cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20 dark:text-cyan-400",
+          "border-indigo-500/30 bg-indigo-500/10 text-indigo-700 hover:bg-indigo-500/20 dark:border-indigo-500/20 dark:text-indigo-400",
+        cyan: "border-cyan-500/30 bg-cyan-500/10 text-cyan-700 hover:bg-cyan-500/20 dark:border-cyan-500/20 dark:text-cyan-400",
         outline:
           "border-border text-foreground hover:bg-muted dark:border-input",
         ghost:

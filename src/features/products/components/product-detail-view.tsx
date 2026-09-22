@@ -53,7 +53,7 @@ export function ProductDetailView({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-3.5 sm:space-y-4"
     >
       {/* Detail Page Header */}
       <ProductDetailHeader

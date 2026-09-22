@@ -1,20 +1,20 @@
 "use client"
 
+import { Check, CreditCard, Loader2, Receipt } from "lucide-react"
 import type { JSX } from "react"
 import { FormProvider } from "react-hook-form"
-import { CreditCard, Loader2, Receipt, Sparkles } from "lucide-react"
 
-import { BaseDialog } from "@/components/ui/base-dialog"
 import { Badge } from "@/components/ui/badge"
+import { BaseDialog } from "@/components/ui/base-dialog"
 import { Button } from "@/components/ui/button"
 import { Scrollable } from "@/components/ui/scrollable"
-import { formatCurrency } from "@/utils"
 import type { Invoice } from "@/features/invoices/@types/invoice"
+import { formatCurrency } from "@/utils"
 import type { License } from "../@types/license"
 import { useLicenseOrder } from "../hooks/use-license-order"
-import { LicenseOrderPeriodSelector } from "./license-order-period-selector"
-import { LicenseOrderBaseProduct } from "./license-order-base-product"
 import { LicenseOrderAddonsList } from "./license-order-addons-list"
+import { LicenseOrderBaseProduct } from "./license-order-base-product"
+import { LicenseOrderPeriodSelector } from "./license-order-period-selector"
 import { LicenseOrderSummary } from "./license-order-summary"
 
 export interface LicenseOrderDialogProps {
@@ -189,9 +189,9 @@ export function LicenseOrderDialog({
                 {isPending ? (
                   <Loader2 size={14} className="animate-spin" />
                 ) : (
-                  <Sparkles size={14} />
+                  <Check size={14} />
                 )}
-                <span>Terbitkan Tagihan & Pesan</span>
+                <span>Terbitkan Tagihan</span>
               </Button>
             </div>
           </div>
