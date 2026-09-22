@@ -31,11 +31,11 @@ export const updateInvoiceSchema = z.object({
 export const markPaidSchema = z.object({
   payment_method: z.string().min(1, "Metode pembayaran wajib diisi"),
   paid_at: z.string().optional().nullable(),
-  extend_license: z.boolean(),
   extend_months: z
     .number()
     .min(1, "Durasi perpanjangan minimal 1 bulan")
-    .optional(),
+    .optional()
+    .nullable(),
 })
 
 export type CreateInvoiceFormValues = z.infer<typeof createInvoiceSchema>

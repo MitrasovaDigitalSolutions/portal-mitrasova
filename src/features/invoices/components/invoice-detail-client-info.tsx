@@ -33,10 +33,10 @@ export function InvoiceDetailClientInfo({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {/* Client Info Card */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
-        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-2">
+      <div className="rounded-xl border border-border/80 bg-card p-3 sm:p-3.5 space-y-2 shadow-2xs">
+        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-1.5 text-xs">
           <Building className="size-3.5 text-primary" />
           Informasi Pelanggan
         </div>
@@ -54,7 +54,7 @@ export function InvoiceDetailClientInfo({
           {client?.email && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Mail className="size-3 text-muted-foreground shrink-0" />
-              <span>{client.email}</span>
+              <span className="truncate">{client.email}</span>
             </div>
           )}
           {client?.no_telepon && (
@@ -67,8 +67,8 @@ export function InvoiceDetailClientInfo({
       </div>
 
       {/* License Info Card */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
-        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-2">
+      <div className="rounded-xl border border-border/80 bg-card p-3 sm:p-3.5 space-y-2 shadow-2xs">
+        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-1.5 text-xs">
           <Server className="size-3.5 text-emerald-500" />
           Lisensi / Produk Terkait
         </div>

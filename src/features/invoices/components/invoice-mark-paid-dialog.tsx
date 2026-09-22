@@ -3,23 +3,26 @@
 import * as React from "react"
 import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  Building,
+  CheckCircle2,
+  Clock,
+  KeyRound,
+  Loader2,
+  Receipt,
+} from "lucide-react"
+
 import { BaseDialog } from "@/components/ui/base-dialog"
 import { Button } from "@/components/ui/button"
-import { FormDatePicker, FormSelect, FormSwitch } from "@/components/forms"
+import { FormDatePicker, FormSelect } from "@/components/forms"
+import { formatCurrency, formatDate } from "@/utils"
+
+import type { Invoice } from "../@types/invoice"
 import { useMarkInvoiceAsPaid } from "../api/invoice.queries"
 import {
   markPaidSchema,
   type MarkPaidFormValues,
 } from "../validations/invoice.schema"
-import { formatCurrency, formatDate } from "@/utils"
-import type { Invoice } from "../@types/invoice"
-import {
-  CheckCircle2,
-  Building,
-  KeyRound,
-  Loader2,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
 
 interface InvoiceMarkPaidDialogProps {
   open: boolean
@@ -37,8 +40,6 @@ const PAYMENT_METHOD_OPTIONS = [
   { value: "Kartu Kredit", label: "Kartu Kredit" },
 ]
 
-const EXTEND_MONTH_OPTIONS = [1, 3, 6, 12]
-
 export function InvoiceMarkPaidDialog({
   open,
   onOpenChange,
@@ -51,14 +52,10 @@ export function InvoiceMarkPaidDialog({
     defaultValues: {
       payment_method: "Transfer Bank BCA",
       paid_at: "",
-      extend_license: false,
-      extend_months: 1,
     },
   })
 
-  const { setValue, reset, handleSubmit, control } = methods
-  const watchedExtendLicense = useWatch({ control, name: "extend_license" })
-  const watchedExtendMonths = useWatch({ control, name: "extend_months" }) || 1
+  const { reset, handleSubmit, control } = methods
   const watchedPaymentMethod = useWatch({ control, name: "payment_method" })
 
   // Initialize form state when invoice opens
@@ -72,8 +69,6 @@ export function InvoiceMarkPaidDialog({
       reset({
         payment_method: invoice.payment_method || "Transfer Bank BCA",
         paid_at: `${year}-${month}-${day}`,
-        extend_license: Boolean(invoice.license_id),
-        extend_months: 1,
       })
     }
   }, [open, invoice, reset])
@@ -82,7 +77,17 @@ export function InvoiceMarkPaidDialog({
     return <></>
   }
 
-  const hasLicense = Boolean(invoice.license_id && invoice.license)
+  const clientDisplayName =
+    invoice.client?.nama_pemilik && invoice.client?.nama_usaha
+      ? `${invoice.client.nama_pemilik} (${invoice.client.nama_usaha})`
+      : invoice.client?.nama_pemilik || invoice.client?.nama_usaha || "—"
+
+  const licenseDisplayName = invoice.license
+    ? invoice.license.nama_instance ||
+      invoice.license.domain_instance ||
+      invoice.license.license_key ||
+      "Lisensi Terkait"
+    : invoice.items?.[0]?.name || "Tanpa Lisensi"
 
   const onSubmit = async (data: MarkPaidFormValues) => {
     await markPaidMutation.mutateAsync({
@@ -90,8 +95,6 @@ export function InvoiceMarkPaidDialog({
       payload: {
         payment_method: data.payment_method.trim(),
         paid_at: data.paid_at ? new Date(data.paid_at).toISOString() : undefined,
-        extend_license: hasLicense ? data.extend_license : false,
-        extend_months: hasLicense && data.extend_license ? data.extend_months : undefined,
       },
     })
 
@@ -102,123 +105,116 @@ export function InvoiceMarkPaidDialog({
     <BaseDialog
       open={open}
       onOpenChange={onOpenChange}
-      className="max-w-md sm:max-w-lg"
+      className="sm:max-w-lg"
       title={
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="size-4 text-emerald-500" />
-          <span>Tandai Invoice Lunas</span>
+          <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <CheckCircle2 className="size-4" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground leading-tight">
+              Tandai Invoice Lunas
+            </h3>
+            <p className="text-[11px] font-normal text-muted-foreground">
+              Konfirmasi pelunasan tagihan invoice
+            </p>
+          </div>
+        </div>
+      }
+      headerRight={
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted/60 border border-border/80 font-mono text-[11px] font-semibold text-foreground">
+          <Receipt className="size-3 text-muted-foreground" />
+          <span>{invoice.invoice_number}</span>
         </div>
       }
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2 text-xs">
-          {/* Invoice Summary Box */}
-          <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 space-y-2 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Nomor Faktur</span>
-              <span className="font-mono font-bold text-foreground">
-                {invoice.invoice_number}
-              </span>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5 pt-1 text-xs">
+          {/* Hero Receipt Card */}
+          <div className="rounded-xl border border-border/80 bg-gradient-to-br from-emerald-500/5 via-card to-primary/5 p-3 sm:p-3.5 space-y-3 shadow-2xs">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                  Total Tagihan
+                </span>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tracking-tight">
+                  {formatCurrency(invoice.total_amount)}
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  <Clock className="size-2.5" />
+                  Jatuh tempo: {formatDate(invoice.due_date)}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Pelanggan</span>
-              <span className="font-medium text-foreground flex items-center gap-1.5">
-                <Building className="size-3.5 text-muted-foreground" />
-                {invoice.client?.nama_pemilik || invoice.client?.nama_usaha || "—"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Jatuh Tempo</span>
-              <span className="text-foreground">{formatDate(invoice.due_date)}</span>
-            </div>
-            <div className="flex items-center justify-between pt-2 border-t border-border/60">
-              <span className="font-semibold text-foreground">Total Tagihan</span>
-              <span className="font-bold text-sm font-mono text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(invoice.total_amount)}
-              </span>
+
+            {/* Context Info 2 Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2.5 border-t border-border/60">
+              {/* Customer */}
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                  <Building className="size-3" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] text-muted-foreground leading-none">Pelanggan</p>
+                  <p className="font-medium text-foreground truncate mt-0.5" title={clientDisplayName}>
+                    {clientDisplayName}
+                  </p>
+                </div>
+              </div>
+
+              {/* Linked License / Product */}
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                  <KeyRound className="size-3" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] text-muted-foreground leading-none">Lisensi / Produk</p>
+                  <p className="font-medium text-foreground truncate mt-0.5" title={licenseDisplayName}>
+                    {licenseDisplayName}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Payment Method */}
-          <FormSelect<MarkPaidFormValues>
-            name="payment_method"
-            label="Metode Pembayaran"
-            options={PAYMENT_METHOD_OPTIONS}
-            placeholder="Pilih metode pembayaran..."
-            searchPlaceholder="Cari metode pembayaran..."
-          />
+          {/* Form Fields: 2 Grid Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
+            <FormSelect<MarkPaidFormValues>
+              name="payment_method"
+              label="Metode Pembayaran"
+              options={PAYMENT_METHOD_OPTIONS}
+              placeholder="Pilih metode pembayaran..."
+              searchPlaceholder="Cari metode pembayaran..."
+            />
 
-          {/* Paid At DatePicker */}
-          <div className="space-y-1">
             <FormDatePicker<MarkPaidFormValues>
               name="paid_at"
               label="Tanggal Pelunasan"
               placeholder="Pilih tanggal pelunasan..."
             />
-            <p className="text-[11px] text-muted-foreground">
-              Tanggal saat dana tagihan berhasil diterima atau diverifikasi.
-            </p>
           </div>
-
-          {/* License Extension Option (if linked to a license) */}
-          {hasLicense && (
-            <div className="space-y-3">
-              <FormSwitch
-                name="extend_license"
-                label="Perpanjang Masa Aktif Lisensi Otomatis"
-                description={`Lisensi: ${
-                  invoice.license?.nama_instance || invoice.license?.domain_instance || "Terkait"
-                }`}
-              />
-
-              {watchedExtendLicense && (
-                <div className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-2 animate-in fade-in duration-200">
-                  <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                    <KeyRound className="size-3.5 text-muted-foreground" />
-                    Tambah Durasi Masa Aktif
-                  </label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {EXTEND_MONTH_OPTIONS.map((months) => {
-                      const isSelected = watchedExtendMonths === months
-                      return (
-                        <button
-                          key={months}
-                          type="button"
-                          onClick={() =>
-                            setValue("extend_months", months, { shouldValidate: true })
-                          }
-                          className={cn(
-                            "py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer text-center",
-                            isSelected
-                              ? "bg-primary text-primary-foreground border-primary shadow-2xs"
-                              : "bg-card hover:bg-muted text-muted-foreground hover:text-foreground border-border"
-                          )}
-                        >
-                          {months} Bulan
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Footer Actions */}
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={markPaidMutation.isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-8 px-3.5 text-xs font-medium cursor-pointer rounded-xl"
             >
               Batal
             </Button>
             <Button
               type="submit"
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
-              disabled={markPaidMutation.isPending || !watchedPaymentMethod?.trim()}
+              size="sm"
+              className="h-8 px-4 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+              disabled={
+                markPaidMutation.isPending || !watchedPaymentMethod?.trim()
+              }
             >
               {markPaidMutation.isPending ? (
                 <Loader2 className="size-3.5 animate-spin" />
@@ -233,3 +229,4 @@ export function InvoiceMarkPaidDialog({
     </BaseDialog>
   )
 }
+

@@ -95,6 +95,5 @@ export interface UpdateInvoicePayload {
 export interface MarkPaidPayload {
   payment_method: string
   paid_at?: string | null
-  extend_license?: boolean
-  extend_months?: number
+  extend_months?: number | null
 }
