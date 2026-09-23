@@ -3,14 +3,10 @@ import type { Invoice } from "@/features/invoices/@types/invoice"
 import type { Client } from "@/features/clients/@types/client"
 
 export type LicenseSubscriptionType =
+  | "trial"
   | "monthly"
   | "yearly"
   | "lifetime"
-  | "trial"
-  | "multi_store"
-  | "single_store"
-  | "enterprise"
-  | (string & {})
 
 export type LicenseServerType =
   | "cloud"
@@ -32,6 +28,8 @@ export interface LicenseProductInfo {
   code: string
   nama: string
   deskripsi?: string | null
+  harga_bulanan?: number | null
+  harga_tahunan?: number | null
 }
 
 export interface ProductAddonInfo {

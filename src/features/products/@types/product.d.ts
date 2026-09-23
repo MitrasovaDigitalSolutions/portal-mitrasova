@@ -21,6 +21,8 @@ export interface Product {
   code: string
   nama: string
   description: string | null
+  harga_bulanan?: number | null
+  harga_tahunan?: number | null
   is_active: boolean
   addons?: ProductAddon[]
   addons_count?: number
@@ -40,6 +42,8 @@ export interface CreateProductPayload {
   code: string
   nama: string
   description?: string | null
+  harga_bulanan?: number | null
+  harga_tahunan?: number | null
   is_active?: boolean
 }
 
@@ -47,6 +51,8 @@ export interface UpdateProductPayload {
   code?: string
   nama?: string
   description?: string | null
+  harga_bulanan?: number | null
+  harga_tahunan?: number | null
   is_active?: boolean
 }
 

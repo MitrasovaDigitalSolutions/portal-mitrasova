@@ -11,17 +11,7 @@ export const licenseFormSchema = z.object({
     .string()
     .max(255, "Domain instance maksimal 255 karakter")
     .optional(),
-  subscription_type: z
-    .enum([
-      "monthly",
-      "yearly",
-      "lifetime",
-      "trial",
-      "multi_store",
-      "single_store",
-      "enterprise",
-    ])
-    .or(z.string().min(1)),
+  subscription_type: z.enum(["trial", "monthly", "yearly", "lifetime"]),
   server_type: z
     .enum([
       "cloud",

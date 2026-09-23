@@ -5,26 +5,21 @@ import { CalendarClock, Package } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { FormSwitch } from "@/components/forms/form-switch"
 import { formatCurrency } from "@/utils"
-import {
-  BASE_PRODUCT_ANNUAL_PRICE,
-  BASE_PRODUCT_MONTHLY_PRICE,
-} from "../hooks/use-license-order"
 import type { LicenseOrderValues } from "../validations/license-order.schema"
 
 interface LicenseOrderBaseProductProps {
   productName: string
   currentExpiryText: string
   isAnnual: boolean
+  price?: number
 }
 
 export function LicenseOrderBaseProduct({
   productName,
   currentExpiryText,
   isAnnual,
+  price = 0,
 }: LicenseOrderBaseProductProps): JSX.Element {
-  const price = isAnnual
-    ? BASE_PRODUCT_ANNUAL_PRICE
-    : BASE_PRODUCT_MONTHLY_PRICE
 
   return (
     <div className="space-y-1.5">
@@ -58,10 +53,10 @@ export function LicenseOrderBaseProduct({
         rightElement={
           <div className="text-right">
             <div className="font-bold text-xs text-primary font-mono">
-              {formatCurrency(price)}
+              {price > 0 ? formatCurrency(price) : "Rp 0"}
             </div>
             <div className="text-[10px] text-muted-foreground">
-              /{isAnnual ? "tahun" : "bulan"}
+              {price > 0 ? `/${isAnnual ? "tahun" : "bulan"}` : "Termasuk"}
             </div>
           </div>
         }

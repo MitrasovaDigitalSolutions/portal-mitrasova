@@ -10,6 +10,8 @@ export const productSchema = z.object({
     .min(2, "Nama produk minimal 2 karakter")
     .max(150, "Nama produk maksimal 150 karakter"),
   description: z.string().optional().nullable(),
+  harga_bulanan: z.number().min(0, "Harga bulanan minimal Rp 0"),
+  harga_tahunan: z.number().min(0, "Harga tahunan minimal Rp 0"),
   is_active: z.boolean(),
 })
 

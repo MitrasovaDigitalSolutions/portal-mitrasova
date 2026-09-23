@@ -7,8 +7,10 @@ import {
   KeyRound,
   Calendar,
   FileText,
+  CreditCard,
+  Coins,
 } from "lucide-react"
-import { formatDate } from "@/utils"
+import { formatDate, formatCurrency } from "@/utils"
 import type { Product } from "../@types/product"
 
 export interface ProductDetailInfoCardProps {
@@ -104,6 +106,43 @@ export function ProductDetailInfoCard({
               Waktu registrasi
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Pricing Information Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              <Coins size={14} />
+            </div>
+            <div>
+              <span className="text-[11px] font-medium text-muted-foreground block">
+                Tarif Lisensi Pokok (Bulanan)
+              </span>
+              <span className="font-mono text-sm sm:text-base font-bold text-foreground">
+                {product.harga_bulanan ? formatCurrency(product.harga_bulanan) : "Rp 0"}
+              </span>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono text-muted-foreground">/ bulan</span>
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <CreditCard size={14} />
+            </div>
+            <div>
+              <span className="text-[11px] font-medium text-muted-foreground block">
+                Tarif Lisensi Pokok (Tahunan)
+              </span>
+              <span className="font-mono text-sm sm:text-base font-bold text-primary">
+                {product.harga_tahunan ? formatCurrency(product.harga_tahunan) : "Rp 0"}
+              </span>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono text-muted-foreground">/ tahun</span>
         </div>
       </div>
 

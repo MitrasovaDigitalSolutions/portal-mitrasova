@@ -131,11 +131,12 @@ export function LicenseFormDialog({
 
   const onSubmit = async (values: LicenseFormValues) => {
     try {
-      const isAnnual = values.subscription_type !== "monthly"
+      const isAnnual = values.subscription_type === "yearly"
+      const isTrial = values.subscription_type === "trial"
       const payload: CreateLicensePayload = {
         ...values,
         expires_at: isLifetime ? null : values.expires_at || null,
-        create_invoice: true,
+        create_invoice: !isTrial,
         billing_period: isAnnual ? "annual" : "monthly",
       }
       if (isEdit && license) {

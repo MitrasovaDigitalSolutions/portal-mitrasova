@@ -6,7 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Package, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BaseDialog } from "@/components/ui/base-dialog"
-import { FormInput, FormTextarea, FormSwitch } from "@/components/forms"
+import {
+  FormInput,
+  FormTextarea,
+  FormNominalInput,
+  FormSwitch,
+} from "@/components/forms"
 import { useCreateProduct, useUpdateProduct } from "../api/product.queries"
 import { productSchema, type ProductFormValues } from "../validations/product.schema"
 import type { Product } from "../@types/product"
@@ -21,6 +26,8 @@ const defaultValues: ProductFormValues = {
   code: "",
   nama: "",
   description: "",
+  harga_bulanan: 0,
+  harga_tahunan: 0,
   is_active: true,
 }
 
@@ -48,6 +55,8 @@ export function ProductFormDialog({
           code: product.code,
           nama: product.nama,
           description: product.description ?? "",
+          harga_bulanan: Number(product.harga_bulanan) || 0,
+          harga_tahunan: Number(product.harga_tahunan) || 0,
           is_active: product.is_active,
         })
       } else {
@@ -65,6 +74,8 @@ export function ProductFormDialog({
             code: values.code.trim().toUpperCase(),
             nama: values.nama.trim(),
             description: values.description?.trim() || null,
+            harga_bulanan: values.harga_bulanan,
+            harga_tahunan: values.harga_tahunan,
             is_active: values.is_active,
           },
         })
@@ -73,6 +84,8 @@ export function ProductFormDialog({
           code: values.code.trim().toUpperCase(),
           nama: values.nama.trim(),
           description: values.description?.trim() || null,
+          harga_bulanan: values.harga_bulanan,
+          harga_tahunan: values.harga_tahunan,
           is_active: values.is_active,
         })
       }
@@ -128,6 +141,19 @@ export function ProductFormDialog({
             placeholder="Jelaskan cakupan fitur atau kegunaan sistem ini..."
             rows={3}
           />
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <FormNominalInput<ProductFormValues>
+              name="harga_bulanan"
+              label="Harga Bulanan (Rp)"
+              placeholder="0"
+            />
+            <FormNominalInput<ProductFormValues>
+              name="harga_tahunan"
+              label="Harga Tahunan (Rp)"
+              placeholder="0"
+            />
+          </div>
 
           <FormSwitch<ProductFormValues>
             name="is_active"

@@ -15,8 +15,8 @@ import {
   type LicenseOrderValues,
 } from "../validations/license-order.schema"
 
-export const BASE_PRODUCT_MONTHLY_PRICE = 120000
-export const BASE_PRODUCT_ANNUAL_PRICE = 1200000
+export const BASE_PRODUCT_MONTHLY_PRICE = 0
+export const BASE_PRODUCT_ANNUAL_PRICE = 0
 
 export interface SubscribedAddonItem {
   id: string
@@ -169,12 +169,22 @@ export function useLicenseOrder({
     return formatDate(license.expires_at)
   }, [license])
 
+  const basePrice = useMemo(() => {
+    const baseMonthlyPrice =
+      license?.product?.harga_bulanan ??
+      product?.harga_bulanan ??
+      0
+
+    const baseAnnualPrice =
+      license?.product?.harga_tahunan ??
+      product?.harga_tahunan ??
+      0
+
+    return isAnnual ? baseAnnualPrice : baseMonthlyPrice
+  }, [license?.product?.harga_bulanan, license?.product?.harga_tahunan, product?.harga_bulanan, product?.harga_tahunan, isAnnual])
+
   const calculation = useMemo(() => {
     const items: OrderCalculationItem[] = []
-
-    const basePrice = isAnnual
-      ? BASE_PRODUCT_ANNUAL_PRICE
-      : BASE_PRODUCT_MONTHLY_PRICE
 
     if (includeBase) {
       items.push({
@@ -205,7 +215,7 @@ export function useLicenseOrder({
     const grandTotal = items.reduce((sum, it) => sum + it.subtotal, 0)
 
     return { items, grandTotal }
-  }, [includeBase, selectedAddonIds, isAnnual, license, product, availableAddons])
+  }, [includeBase, selectedAddonIds, isAnnual, license, product, availableAddons, basePrice])
 
   const handleToggleAddon = (addonId: string) => {
     const exists = selectedAddonIds.includes(addonId)
@@ -251,6 +261,7 @@ export function useLicenseOrder({
 
   return {
     methods,
+    basePrice,
     billingPeriod,
     includeBase,
     selectedAddonIds,

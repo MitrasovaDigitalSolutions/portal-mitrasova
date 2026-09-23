@@ -56,13 +56,10 @@ const STATUS_FILTER_OPTIONS: CommandOption[] = [
 
 const SUBSCRIPTION_FILTER_OPTIONS: CommandOption[] = [
   { value: "all", label: "Semua Paket" },
+  { value: "trial", label: "Uji Coba (Trial)" },
   { value: "monthly", label: "Bulanan (Monthly)" },
   { value: "yearly", label: "Tahunan (Yearly)" },
-  { value: "multi_store", label: "Multi-Store" },
-  { value: "single_store", label: "Single-Store" },
-  { value: "lifetime", label: "Lifetime" },
-  { value: "enterprise", label: "Enterprise" },
-  { value: "trial", label: "Trial" },
+  { value: "lifetime", label: "Seumur Hidup (Lifetime)" },
 ]
 
 export function ClientDetailLicensesSection({

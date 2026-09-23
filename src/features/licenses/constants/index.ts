@@ -1,9 +1,14 @@
-import type { LicenseStatus } from "../@types/license"
+import type { LicenseStatus, LicenseSubscriptionType } from "../@types/license"
 
 export const SUBSCRIPTION_TYPES: Record<
-  string,
+  LicenseSubscriptionType,
   { label: string; badgeVariant: "default" | "secondary" | "outline"; description?: string }
 > = {
+  trial: {
+    label: "Uji Coba (Trial)",
+    badgeVariant: "outline",
+    description: "Masa evaluasi dan uji coba fitur",
+  },
   monthly: {
     label: "Bulanan (Monthly)",
     badgeVariant: "secondary",
@@ -18,26 +23,6 @@ export const SUBSCRIPTION_TYPES: Record<
     label: "Seumur Hidup (Lifetime)",
     badgeVariant: "default",
     description: "Akses lisensi permanen",
-  },
-  trial: {
-    label: "Uji Coba (Trial)",
-    badgeVariant: "outline",
-    description: "Masa evaluasi dan uji coba fitur",
-  },
-  multi_store: {
-    label: "Multi-Store",
-    badgeVariant: "default",
-    description: "Lisensi paket Multi-Cabang / Multi-Outlet",
-  },
-  single_store: {
-    label: "Single-Store",
-    badgeVariant: "secondary",
-    description: "Lisensi paket Single Store (1 Outlet)",
-  },
-  enterprise: {
-    label: "Enterprise",
-    badgeVariant: "default",
-    description: "Lisensi skala korporasi / kustom",
   },
 }
 
@@ -197,7 +182,10 @@ export function getSubscriptionTypeLabel(type?: string | null): string {
   if (!type) {
     return "-"
   }
-  return SUBSCRIPTION_TYPES[type]?.label ?? formatCodeToTitle(type)
+  return (
+    (SUBSCRIPTION_TYPES as Record<string, { label: string }>)[type]?.label ??
+    formatCodeToTitle(type)
+  )
 }
 
 /**
@@ -219,5 +207,8 @@ export function getSubscriptionBadgeVariant(
   if (!type) {
     return "secondary"
   }
-  return SUBSCRIPTION_TYPES[type]?.badgeVariant ?? "secondary"
+  return (
+    (SUBSCRIPTION_TYPES as Record<string, { badgeVariant: "default" | "secondary" | "outline" }>)[type]?.badgeVariant ??
+    "secondary"
+  )
 }

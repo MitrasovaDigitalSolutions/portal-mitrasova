@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { formatCurrency } from "@/utils"
 import type { Product } from "../@types/product"
 
 export interface ProductMobileCardProps {
@@ -80,6 +81,16 @@ export function ProductMobileCard({
             Tidak ada deskripsi
           </p>
         )}
+      </div>
+
+      {/* Pricing Row */}
+      <div className="flex items-center justify-between text-[11px] font-mono rounded-lg bg-muted/30 px-2 py-1 border border-border/50">
+        <span className="text-muted-foreground">
+          Bln: <span className="font-semibold text-foreground">{product.harga_bulanan ? formatCurrency(product.harga_bulanan) : "Rp 0"}</span>
+        </span>
+        <span className="text-muted-foreground">
+          Thn: <span className="font-semibold text-primary">{product.harga_tahunan ? formatCurrency(product.harga_tahunan) : "Rp 0"}</span>
+        </span>
       </div>
 
       {/* Badges / Metrics Row */}

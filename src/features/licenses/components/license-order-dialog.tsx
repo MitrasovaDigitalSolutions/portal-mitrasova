@@ -34,6 +34,7 @@ export function LicenseOrderDialog({
 }: LicenseOrderDialogProps): JSX.Element | null {
   const {
     methods,
+    basePrice,
     billingPeriod,
     selectedAddonIds,
     isAnnual,
@@ -109,6 +110,7 @@ export function LicenseOrderDialog({
                     }
                     currentExpiryText={currentExpiryText}
                     isAnnual={isAnnual}
+                    price={basePrice}
                   />
 
                   {/* 3. Itemized Breakdown & Notice */}

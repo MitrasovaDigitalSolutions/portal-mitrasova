@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { formatCurrency } from "@/utils"
 import type { Product } from "../@types/product"
 
 export interface ProductColumnActions {
@@ -84,6 +85,33 @@ export function getProductColumns(
               </div>
             </div>
           </TooltipProvider>
+        )
+      },
+    },
+    {
+      id: "pricing",
+      header: "Harga Pokok",
+      size: 160,
+      cell: ({ row }) => {
+        const product = row.original
+        const bulanan = Number(product.harga_bulanan) || 0
+        const tahunan = Number(product.harga_tahunan) || 0
+
+        return (
+          <div className="space-y-0.5 text-xs">
+            <div className="flex items-center gap-1.5 font-mono">
+              <span className="text-[10px] text-muted-foreground">Bln:</span>
+              <span className="font-semibold text-foreground">
+                {bulanan > 0 ? formatCurrency(bulanan) : "Rp 0"}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 font-mono">
+              <span className="text-[10px] text-muted-foreground">Thn:</span>
+              <span className="font-semibold text-primary">
+                {tahunan > 0 ? formatCurrency(tahunan) : "Rp 0"}
+              </span>
+            </div>
+          </div>
         )
       },
     },
