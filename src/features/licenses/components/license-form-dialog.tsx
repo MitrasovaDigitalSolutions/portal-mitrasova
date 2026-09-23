@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, type JSX } from "react"
 import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FileText, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BaseDialog } from "@/components/ui/base-dialog"
 import {
@@ -11,8 +11,10 @@ import {
   FormInput,
   FormNumberInput,
   FormSelect,
+  FormTextarea,
 } from "@/components/forms"
 import { useProducts } from "@/features/products"
+import { useServerPackages } from "@/features/server-packages"
 import { useCreateLicense, useUpdateLicense } from "../api/license.queries"
 import {
   licenseFormSchema,
@@ -20,10 +22,9 @@ import {
 } from "../validations/license.schema"
 import {
   SUBSCRIPTION_TYPES,
-  SERVER_TYPES,
   LICENSE_STATUSES,
 } from "../constants"
-import type { CreateLicensePayload, License } from "../@types/license"
+import type { CreateLicensePayload, License, UpdateLicensePayload } from "../@types/license"
 
 export interface LicenseFormDialogProps {
   open: boolean
@@ -37,11 +38,14 @@ const defaultValues: LicenseFormValues = {
   product_id: "",
   nama_instance: "",
   domain_instance: "",
-  subscription_type: "yearly",
-  server_type: "cloud",
+  subscription_type: "annual",
+  server_package_id: "",
+  server_notes: "",
   status: "active",
   expires_at: undefined,
   grace_period_days: 7,
+  create_invoice: false,
+  billing_period: "annual",
 }
 
 export function LicenseFormDialog({
@@ -49,7 +53,7 @@ export function LicenseFormDialog({
   onOpenChange,
   clientId,
   license,
-}: LicenseFormDialogProps): React.JSX.Element {
+}: LicenseFormDialogProps): JSX.Element {
   const isEdit = Boolean(license)
   const createMutation = useCreateLicense()
   const updateMutation = useUpdateLicense()
@@ -58,33 +62,35 @@ export function LicenseFormDialog({
   const { data: productsData, isLoading: isLoadingProducts } = useProducts({
     status: "active",
   })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const products = productsData?.data ?? []
+  const { data: serverPackagesData, isLoading: isLoadingServers } = useServerPackages({
+    is_active: true,
+  })
 
   const productOptions = useMemo(
     () =>
-      products.map((p) => ({
+      (productsData?.data ?? []).map((p) => ({
         value: p.id,
         label: `${p.nama} (${p.code})`,
       })),
-    [products]
-  )
-
-  const subscriptionOptions = useMemo(
-    () =>
-      Object.entries(SUBSCRIPTION_TYPES).map(([val, conf]) => ({
-        value: val,
-        label: conf.label,
-      })),
-    []
+    [productsData?.data]
   )
 
   const serverOptions = useMemo(
     () =>
-      Object.entries(SERVER_TYPES).map(([val, conf]) => ({
-        value: val,
-        label: conf.label,
+      (serverPackagesData?.data ?? []).map((s) => ({
+        value: s.id,
+        label: `${s.nama} (${s.code})`,
       })),
+    [serverPackagesData?.data]
+  )
+
+  const subscriptionOptions = useMemo(
+    () => [
+      { value: "annual", label: SUBSCRIPTION_TYPES.annual.label },
+      { value: "monthly", label: SUBSCRIPTION_TYPES.monthly.label },
+      { value: "lifetime", label: SUBSCRIPTION_TYPES.lifetime.label },
+      { value: "trial", label: SUBSCRIPTION_TYPES.trial.label },
+    ],
     []
   )
 
@@ -118,10 +124,13 @@ export function LicenseFormDialog({
           nama_instance: license.nama_instance,
           domain_instance: license.domain_instance ?? "",
           subscription_type: license.subscription_type,
-          server_type: license.server_type,
+          server_package_id: license.server_package_id ?? "",
+          server_notes: license.server_notes ?? "",
           status: license.status,
           expires_at: license.expires_at ?? undefined,
           grace_period_days: license.grace_period_days ?? 7,
+          create_invoice: false,
+          billing_period: license.subscription_type === "monthly" ? "monthly" : "annual",
         })
       } else {
         reset({ ...defaultValues, client_id: clientId })
@@ -131,21 +140,27 @@ export function LicenseFormDialog({
 
   const onSubmit = async (values: LicenseFormValues) => {
     try {
-      const isAnnual = values.subscription_type === "yearly"
-      const isTrial = values.subscription_type === "trial"
-      const payload: CreateLicensePayload = {
-        ...values,
-        expires_at: isLifetime ? null : values.expires_at || null,
-        create_invoice: !isTrial,
-        billing_period: isAnnual ? "annual" : "monthly",
-      }
       if (isEdit && license) {
+        const updatePayload: UpdateLicensePayload = {
+          nama_instance: values.nama_instance,
+          domain_instance: values.domain_instance || null,
+          subscription_type: values.subscription_type,
+          server_package_id: values.server_package_id,
+          server_notes: values.server_notes || null,
+          status: values.status,
+          expires_at: isLifetime ? null : values.expires_at || null,
+          grace_period_days: values.grace_period_days,
+        }
         await updateMutation.mutateAsync({
           id: license.id,
-          payload,
+          payload: updatePayload,
         })
       } else {
-        await createMutation.mutateAsync(payload)
+        const createPayload: CreateLicensePayload = {
+          ...values,
+          expires_at: isLifetime ? null : values.expires_at || null,
+        }
+        await createMutation.mutateAsync(createPayload)
       }
       onOpenChange(false)
     } catch {
@@ -160,29 +175,40 @@ export function LicenseFormDialog({
       title={
         <div>
           <div className="text-sm font-bold text-foreground">
-            {isEdit ? "Edit Data Lisensi" : "Terbitkan Lisensi Baru"}
+            {isEdit ? "Edit Konfigurasi Lisensi" : "Terbitkan Lisensi Baru"}
           </div>
           <p className="text-[11px] font-normal text-muted-foreground">
             {isEdit
-              ? "Perbarui konfigurasi instance dan parameter lisensi."
+              ? "Perbarui konfigurasi instance, paket server, dan parameter lisensi."
               : "Konfigurasikan instance software baru untuk klien ini."}
           </p>
         </div>
       }
-      className="sm:max-w-2xl"
+      className="sm:max-w-xl"
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormSelect
-              name="product_id"
-              label="Produk Software"
-              placeholder="Pilih produk software..."
-              searchPlaceholder="Ketik nama atau kode produk..."
-              emptyMessage="Produk tidak ditemukan."
-              options={productOptions}
-              isLoading={isLoadingProducts}
-            />
+            {!isEdit ? (
+              <FormSelect
+                name="product_id"
+                label="Produk Software"
+                placeholder="Pilih produk software..."
+                searchPlaceholder="Ketik nama atau kode produk..."
+                emptyMessage="Produk tidak ditemukan."
+                options={productOptions}
+                isLoading={isLoadingProducts}
+              />
+            ) : (
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Produk Software Terdaftar
+                </label>
+                <div className="flex h-9 items-center rounded-lg border border-border bg-muted/40 px-3 text-xs font-semibold text-foreground">
+                  {license?.product?.nama || "Software Instance"}
+                </div>
+              </div>
+            )}
             <FormInput
               name="nama_instance"
               label="Nama Instance / Cabang"
@@ -196,19 +222,20 @@ export function LicenseFormDialog({
               name="domain_instance"
               label="Domain / IP Instance"
               placeholder="Contoh: pos.mitrasova.com atau IP"
-              required
             />
             <FormSelect
-              name="server_type"
-              label="Tipe Server Hosting"
+              name="server_package_id"
+              label="Paket Server Hosting"
+              placeholder="Pilih paket server..."
               options={serverOptions}
+              isLoading={isLoadingServers}
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormSelect
               name="subscription_type"
-              label="Paket Berlangganan"
+              label="Tipe Berlangganan"
               options={subscriptionOptions}
             />
             <FormSelect
@@ -246,14 +273,12 @@ export function LicenseFormDialog({
             />
           </div>
 
-          {!isEdit && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
-              <FileText className="size-4 shrink-0 text-primary" />
-              <span>
-                Faktur tagihan / invoice awal akan otomatis diterbitkan oleh sistem untuk pesanan lisensi ini.
-              </span>
-            </div>
-          )}
+          <FormTextarea
+            name="server_notes"
+            label="Catatan Server & Hosting"
+            placeholder="Catatan tambahan mengenai server atau deployment..."
+            rows={2}
+          />
 
           <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button

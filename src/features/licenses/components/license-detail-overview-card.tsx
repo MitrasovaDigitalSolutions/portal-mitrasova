@@ -12,7 +12,7 @@ export function LicenseDetailOverviewCard({
   license,
 }: LicenseDetailOverviewCardProps): JSX.Element {
   const subConfig = SUBSCRIPTION_TYPES[license.subscription_type]
-  const serverConfig = SERVER_TYPES[license.server_type]
+  const serverConfig = license.server_type ? SERVER_TYPES[license.server_type] : undefined
 
   // Calculate days remaining
   let daysRemaining: number | null = null
@@ -97,16 +97,22 @@ export function LicenseDetailOverviewCard({
           </p>
         </div>
 
-        {/* 5. Tipe Server */}
+        {/* 5. Tipe Server Hosting */}
         <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
           <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-            <Server size={11} /> Deployment Server
+            <Server size={11} /> Hosting Server
           </span>
           <p className="font-semibold text-foreground">
-            {serverConfig?.label ?? formatCodeToTitle(license.server_type)}
+            {license.serverPackage?.nama ??
+              license.server_package?.nama ??
+              serverConfig?.label ??
+              formatCodeToTitle(license.server_type)}
           </p>
           <p className="text-[11px] text-muted-foreground">
-            {serverConfig?.description ?? "Verifikasi instance otomatis"}
+            {license.serverPackage
+              ? `${license.serverPackage.cpu || ""} ${license.serverPackage.ram || ""} ${license.serverPackage.storage || ""}`.trim() ||
+                license.serverPackage.code
+              : serverConfig?.description ?? "Verifikasi instance otomatis"}
           </p>
         </div>
 

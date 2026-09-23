@@ -53,7 +53,11 @@ export function LicenseDetailHeader({
   onDelete,
 }: LicenseDetailHeaderProps): JSX.Element {
   const subConfig = SUBSCRIPTION_TYPES[license.subscription_type]
-  const serverConfig = SERVER_TYPES[license.server_type]
+  const serverName =
+    license.serverPackage?.nama ??
+    license.server_package?.nama ??
+    (license.server_type ? SERVER_TYPES[license.server_type]?.label : null) ??
+    formatCodeToTitle(license.server_type)
   const effectiveClientId = clientId || license.client_id || license.client?.id
   const effectiveClientName =
     clientName ||
@@ -114,7 +118,7 @@ export function LicenseDetailHeader({
                 {subConfig?.label ?? formatCodeToTitle(license.subscription_type)}
               </Badge>
               <Badge variant="outline" className="text-xs text-muted-foreground">
-                {serverConfig?.label ?? formatCodeToTitle(license.server_type)}
+                {serverName}
               </Badge>
             </div>
           </div>

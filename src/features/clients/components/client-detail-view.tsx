@@ -51,8 +51,6 @@ export function ClientDetailView({
   } = useLicensesList(licenses)
 
   const {
-    isCreateLicenseOpen,
-    setIsCreateLicenseOpen,
     selectedLicenseForEdit,
     setSelectedLicenseForEdit,
     selectedLicenseForOrder,
@@ -103,7 +101,9 @@ export function ClientDetailView({
         subscriptionFilter={subscriptionFilter}
         onSubscriptionFilterChange={setSubscriptionFilter}
         isLoading={isLoading}
-        onCreateLicense={() => setIsCreateLicenseOpen(true)}
+        onCreateLicense={() =>
+          router.push(`/licenses/create?clientId=${clientId}`)
+        }
         actions={{
           onInspectDetail: (lic) =>
             router.push(`/clients/${clientId}/licenses/${lic.id}`),
@@ -123,10 +123,9 @@ export function ClientDetailView({
       />
 
       <LicenseFormDialog
-        open={isCreateLicenseOpen || Boolean(selectedLicenseForEdit)}
+        open={Boolean(selectedLicenseForEdit)}
         onOpenChange={(open) => {
           if (!open) {
-            setIsCreateLicenseOpen(false)
             setSelectedLicenseForEdit(null)
           }
         }}

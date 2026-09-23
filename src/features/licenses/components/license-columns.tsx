@@ -149,7 +149,11 @@ export function getLicenseColumns(): ColumnDef<License>[] {
       cell: ({ row }) => {
         const license = row.original
         const subConfig = SUBSCRIPTION_TYPES[license.subscription_type]
-        const serverConfig = SERVER_TYPES[license.server_type]
+        const serverName =
+          license.serverPackage?.nama ??
+          license.server_package?.nama ??
+          SERVER_TYPES[license.server_type as string]?.label ??
+          formatCodeToTitle(license.server_type)
 
         return (
           <div className="space-y-1">
@@ -159,9 +163,9 @@ export function getLicenseColumns(): ColumnDef<License>[] {
             >
               {subConfig?.label.split(" ")[0] ?? formatCodeToTitle(license.subscription_type)}
             </Badge>
-            <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-1 text-[11px] text-muted-foreground truncate max-w-[170px]" title={serverName}>
               <Server size={10} className="shrink-0" />
-              <span className="truncate">{serverConfig?.label ?? formatCodeToTitle(license.server_type)}</span>
+              <span className="truncate">{serverName}</span>
             </div>
           </div>
         )

@@ -77,7 +77,10 @@ export function LicenseExtendDialog({
       if (values.extend_mode === "custom_date" && values.expires_at) {
         await extendMutation.mutateAsync({
           id: license.id,
-          payload: { expires_at: values.expires_at },
+          payload: {
+            exact_date: values.expires_at,
+            expires_at: values.expires_at,
+          },
         })
       } else if (values.days) {
         await extendMutation.mutateAsync({

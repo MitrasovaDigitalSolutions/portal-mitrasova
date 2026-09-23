@@ -14,6 +14,11 @@ export const SUBSCRIPTION_TYPES: Record<
     badgeVariant: "secondary",
     description: "Langganan periode 1 bulan",
   },
+  annual: {
+    label: "Tahunan (Annual)",
+    badgeVariant: "default",
+    description: "Langganan periode 1 tahun",
+  },
   yearly: {
     label: "Tahunan (Yearly)",
     badgeVariant: "default",
