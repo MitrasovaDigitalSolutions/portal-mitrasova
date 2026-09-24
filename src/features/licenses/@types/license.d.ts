@@ -132,7 +132,7 @@ export interface CreateLicensePayload {
   addon_ids?: string[]
   create_invoice?: boolean
   billing_period?: "monthly" | "annual"
-  discount_amount?: number | null
+  discount_amount?: number | string | null
   discount_description?: string | null
   coupon_code?: string | null
   metadata?: Record<string, unknown>

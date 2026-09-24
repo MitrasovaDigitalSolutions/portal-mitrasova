@@ -63,7 +63,7 @@ export function LicenseCreateServerCard({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FormSelect
           name="server_package_id"
-          label="Paket Hosting Server"
+          label="Paket Hosting Server *"
           placeholder="Pilih paket server hosting..."
           searchPlaceholder="Cari paket server..."
           emptyMessage="Paket server tidak ditemukan."

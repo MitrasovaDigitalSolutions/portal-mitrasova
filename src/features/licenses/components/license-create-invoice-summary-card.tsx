@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Scrollable } from "@/components/ui/scrollable"
 import { formatCurrency } from "@/utils"
 import type { CheckCouponResponse } from "../@types/license"
 
@@ -38,6 +39,7 @@ interface LicenseCreateInvoiceSummaryCardProps {
   onCouponCodeChange: (val: string) => void
   onCheckCoupon: () => void
   onRemoveCoupon: () => void
+  onSubmitLicense?: () => void
 }
 
 export function LicenseCreateInvoiceSummaryCard({
@@ -52,6 +54,7 @@ export function LicenseCreateInvoiceSummaryCard({
   onCouponCodeChange,
   onCheckCoupon,
   onRemoveCoupon,
+  onSubmitLicense,
 }: LicenseCreateInvoiceSummaryCardProps): JSX.Element {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -133,19 +136,21 @@ export function LicenseCreateInvoiceSummaryCard({
             Pilih produk aplikasi untuk melihat rincian biaya.
           </p>
         ) : (
-          <div className="space-y-1 text-xs max-h-36 overflow-y-auto pr-1">
-            {orderCalculation.items.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground py-0.5"
-              >
-                <span className="truncate flex-1">{item.name}</span>
-                <span className="font-mono text-foreground font-medium shrink-0">
-                  {formatCurrency(item.subtotal)}
-                </span>
-              </div>
-            ))}
-          </div>
+          <Scrollable className="max-h-24 sm:max-h-28 pr-1.5">
+            <div className="space-y-1 text-xs">
+              {orderCalculation.items.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground py-0.5"
+                >
+                  <span className="truncate flex-1" title={item.name}>{item.name}</span>
+                  <span className="font-mono text-foreground font-medium shrink-0">
+                    {formatCurrency(item.subtotal)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Scrollable>
         )}
       </div>
 
@@ -251,8 +256,10 @@ export function LicenseCreateInvoiceSummaryCard({
       <div className="pt-1.5 border-t border-border/60">
         <Button
           type="submit"
+          form="license-create-form"
+          onClick={onSubmitLicense}
           disabled={isSubmitting}
-          className="w-full h-9.5 gap-2 text-xs font-bold cursor-pointer rounded-xl shadow-xs"
+          className="w-full h-9 gap-2 text-xs font-bold cursor-pointer rounded-xl shadow-xs"
         >
           {isSubmitting ? (
             <Loader2 size={15} className="animate-spin" />

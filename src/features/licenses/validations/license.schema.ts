@@ -26,7 +26,7 @@ export const licenseFormSchema = z.object({
   addon_ids: z.array(z.string()).optional(),
   create_invoice: z.boolean().optional(),
   billing_period: z.enum(["monthly", "annual"]).optional(),
-  discount_amount: z.number().min(0).optional().nullable(),
+  discount_amount: z.union([z.number(), z.string()]).optional().nullable(),
   discount_description: z.string().max(255).optional().nullable(),
   coupon_code: z.string().optional().nullable(),
 })

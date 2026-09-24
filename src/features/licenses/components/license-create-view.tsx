@@ -82,7 +82,7 @@ export function LicenseCreateView(): JSX.Element {
 
       {/* Main Form Area */}
       <FormProvider {...methods}>
-        <form onSubmit={submitForm}>
+        <form id="license-create-form" onSubmit={submitForm}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
             {/* Left Column: Form Details (8 cols) */}
             <div className="lg:col-span-7 xl:col-span-8 space-y-3.5">
@@ -132,6 +132,7 @@ export function LicenseCreateView(): JSX.Element {
                 onCouponCodeChange={(code) => methods.setValue("coupon_code", code)}
                 onCheckCoupon={handleCheckCoupon}
                 onRemoveCoupon={handleRemoveCoupon}
+                onSubmitLicense={submitForm}
               />
             </div>
           </div>

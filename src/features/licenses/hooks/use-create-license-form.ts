@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, useWatch, type FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { useClients } from "@/features/clients/api/client.queries"
@@ -15,7 +15,7 @@ import {
   licenseFormSchema,
   type LicenseFormValues,
 } from "../validations/license.schema"
-import type { CheckCouponResponse } from "../@types/license"
+import type { CheckCouponResponse, CreateLicensePayload } from "../@types/license"
 
 export function useCreateLicenseForm() {
   const router = useRouter()
@@ -346,41 +346,46 @@ export function useCreateLicenseForm() {
         return
       }
 
-      // Calculate discount amount
+      // Calculate discount amount ensuring pure numeric types
+      const rawDiscValue = Number(matchingCoupon.discount_value) || 0
+      const rawMaxDisc =
+        matchingCoupon.max_discount_amount !== null && matchingCoupon.max_discount_amount !== undefined
+          ? Number(matchingCoupon.max_discount_amount)
+          : null
+
       let discountAmount = 0
       if (matchingCoupon.discount_type === "percentage") {
         discountAmount = Math.round(
-          (orderCalculation.grossSubtotal * matchingCoupon.discount_value) / 100
+          (orderCalculation.grossSubtotal * rawDiscValue) / 100
         )
-        if (
-          matchingCoupon.max_discount_amount &&
-          discountAmount > matchingCoupon.max_discount_amount
-        ) {
-          discountAmount = matchingCoupon.max_discount_amount
+        if (rawMaxDisc !== null && discountAmount > rawMaxDisc) {
+          discountAmount = rawMaxDisc
         }
       } else {
-        discountAmount = matchingCoupon.discount_value
+        discountAmount = rawDiscValue
         if (discountAmount > orderCalculation.grossSubtotal) {
           discountAmount = orderCalculation.grossSubtotal
         }
       }
 
+      const numericDiscountAmount = Number(discountAmount) || 0
+
       const couponObj = {
         code: matchingCoupon.code,
         name: matchingCoupon.name,
         discount_type: matchingCoupon.discount_type,
-        discount_value: matchingCoupon.discount_value,
-        discount_amount: discountAmount,
-        formatted_discount: formatCurrency(discountAmount),
+        discount_value: rawDiscValue,
+        discount_amount: numericDiscountAmount,
+        formatted_discount: formatCurrency(numericDiscountAmount),
         subtotal: orderCalculation.grossSubtotal,
-        final_amount: Math.max(0, orderCalculation.grossSubtotal - discountAmount),
+        final_amount: Math.max(0, orderCalculation.grossSubtotal - numericDiscountAmount),
       }
 
       setCouponResult(couponObj)
-      setValue("discount_amount", discountAmount)
+      setValue("discount_amount", numericDiscountAmount, { shouldValidate: true })
       setValue("discount_description", `Kupon: ${matchingCoupon.code} (${matchingCoupon.name})`)
       toast.success(
-        `Kupon ${matchingCoupon.code} berhasil diterapkan! Hemat ${formatCurrency(discountAmount)}`
+        `Kupon ${matchingCoupon.code} berhasil diterapkan! Hemat ${formatCurrency(numericDiscountAmount)}`
       )
     } catch (err: unknown) {
       const rawMsg = err instanceof Error ? err.message : "Kupon tidak valid"
@@ -389,7 +394,7 @@ export function useCreateLicenseForm() {
         : rawMsg
       setCouponError(userFriendlyMsg)
       setCouponResult(null)
-      setValue("discount_amount", 0)
+      setValue("discount_amount", 0, { shouldValidate: true })
       setValue("discount_description", null)
     } finally {
       setIsCheckingCoupon(false)
@@ -400,18 +405,22 @@ export function useCreateLicenseForm() {
     setCouponResult(null)
     setCouponError(null)
     setValue("coupon_code", "")
-    setValue("discount_amount", 0)
+    setValue("discount_amount", 0, { shouldValidate: true })
     setValue("discount_description", null)
   }
 
   // Submit handler
   const onSubmit = async (values: LicenseFormValues) => {
     try {
-      const payload = {
+      const payload: CreateLicensePayload = {
         ...values,
+        grace_period_days: Number(values.grace_period_days) || 0,
+        domain_instance: values.domain_instance?.trim() || null,
+        server_notes: values.server_notes?.trim() || null,
+        expires_at: isLifetime ? null : values.expires_at || null,
         create_invoice: true,
         coupon_code: couponResult?.code ?? values.coupon_code ?? undefined,
-        discount_amount: couponResult?.discount_amount ?? values.discount_amount ?? 0,
+        discount_amount: Number(couponResult?.discount_amount ?? values.discount_amount ?? 0) || 0,
         discount_description:
           couponResult ? `Kupon: ${couponResult.code} (${couponResult.name})` : values.discount_description ?? null,
       }
@@ -425,6 +434,47 @@ export function useCreateLicenseForm() {
       }
     } catch {
       // Error handled by query mutation toast
+    }
+  }
+
+  // Field names mapping for clear Indonesian validation toasts
+  const FIELD_LABELS: Record<string, string> = {
+    client_id: "Klien / Merchant",
+    product_id: "Produk Software",
+    nama_instance: "Nama Instance / Cabang",
+    domain_instance: "Domain / IP Instance",
+    subscription_type: "Tipe Langganan",
+    server_package_id: "Paket Hosting Server",
+    status: "Status Lisensi",
+    expires_at: "Tanggal Kedaluwarsa",
+    grace_period_days: "Masa Tenggang",
+    discount_amount: "Nominal Diskon",
+    coupon_code: "Kode Kupon",
+  }
+
+  // Validation failure handler to provide direct visual feedback and auto-scroll
+  const onInvalid = (errors: FieldErrors<LicenseFormValues>) => {
+    const errorEntries = Object.entries(errors)
+    if (errorEntries.length === 0) {
+      return
+    }
+
+    const [firstField, firstErr] = errorEntries[0]
+    const fieldLabel = FIELD_LABELS[firstField] || firstField
+    const message = (firstErr?.message as string) || "Harap lengkapi data wajib pada formulir"
+    toast.error(`Formulir belum lengkap pada kolom ${fieldLabel}: ${message}`)
+
+    // Smoothly scroll to the first invalid field
+    const el =
+      document.querySelector(`[name="${firstField}"]`) ||
+      document.getElementById(firstField) ||
+      document.getElementById(`wrapper-${firstField}`)
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" })
+      if (el instanceof HTMLElement) {
+        el.focus()
+      }
     }
   }
 
@@ -461,7 +511,7 @@ export function useCreateLicenseForm() {
     handleClearAddons,
     handleCheckCoupon,
     handleRemoveCoupon,
-    submitForm: handleSubmit(onSubmit),
+    submitForm: handleSubmit(onSubmit, onInvalid),
     reset,
   }
 }

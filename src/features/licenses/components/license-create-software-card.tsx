@@ -88,7 +88,7 @@ export function LicenseCreateSoftwareCard({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormSelect
             name="client_id"
-            label="Klien / Merchant"
+            label="Klien / Merchant *"
             placeholder="Cari nama klien..."
             searchPlaceholder="Ketik nama pemilik atau usaha..."
             emptyMessage="Klien tidak ditemukan."
@@ -98,7 +98,7 @@ export function LicenseCreateSoftwareCard({
 
           <FormSelect
             name="product_id"
-            label="Produk Aplikasi Software"
+            label="Produk Aplikasi Software *"
             placeholder="Pilih produk software..."
             searchPlaceholder="Ketik nama atau kode produk..."
             emptyMessage="Produk tidak ditemukan."

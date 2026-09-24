@@ -94,10 +94,11 @@ export function FormNumberInput<T extends FieldValues>({
             <NumberInput
               id={name}
               ref={(node) => handleRef(node, ref)}
-              value={value}
+              value={typeof value === "string" ? (Number(value) || 0) : value}
               onChange={(val) => {
-                onChange(val)
-                onValueChange?.(val)
+                const numericVal = val !== null && val !== undefined ? Number(val) : null
+                onChange(numericVal)
+                onValueChange?.(numericVal)
               }}
               onBlur={onBlur}
               disabled={disabled}
