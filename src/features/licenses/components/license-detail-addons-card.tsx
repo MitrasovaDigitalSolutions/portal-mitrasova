@@ -1,14 +1,22 @@
 "use client"
 
-import { useMemo, type JSX } from "react"
-import { Calendar, CreditCard, Puzzle } from "lucide-react"
+import { useMemo, useState, type JSX } from "react"
+import { Calendar, CreditCard, Loader2, Puzzle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Switch } from "@/components/ui/switch"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { formatCurrency, formatDate } from "@/utils"
 import { useProduct } from "@/features/products"
 import type { License } from "../@types/license"
 import { KNOWN_PRODUCT_ADDONS, formatCodeToTitle } from "../constants"
+import { useToggleLicenseAddon } from "../api/license.queries"
 
 interface LicenseDetailAddonsCardProps {
   license: License
@@ -19,6 +27,9 @@ export function LicenseDetailAddonsCard({
   license,
   onOrderAddon,
 }: LicenseDetailAddonsCardProps): JSX.Element {
+  const [togglingAddonId, setTogglingAddonId] = useState<string | null>(null)
+  const { mutate: toggleAddon, isPending: isToggling } = useToggleLicenseAddon()
+
   const { data: product, isLoading: isLoadingProduct } = useProduct(
     license.product_id,
     Boolean(license.product_id)
@@ -71,6 +82,25 @@ export function LicenseDetailAddonsCard({
       (addon) => activeMap[addon.id]?.status === "active"
     ).length
   }, [availableAddons, activeMap])
+
+  const handleToggle = (addonId: string, checked: boolean) => {
+    setTogglingAddonId(addonId)
+    toggleAddon(
+      {
+        licenseId: license.id,
+        productAddonId: addonId,
+        payload: {
+          is_enabled: checked,
+          status: checked ? "active" : "disabled",
+        },
+      },
+      {
+        onSettled: () => {
+          setTogglingAddonId(null)
+        },
+      }
+    )
+  }
 
   return (
     <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
@@ -129,106 +159,194 @@ export function LicenseDetailAddonsCard({
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {availableAddons.map((addon) => {
-            const currentItem = activeMap[addon.id]
-            const isActive = currentItem?.status === "active"
-            const knownAddon = KNOWN_PRODUCT_ADDONS[addon.code]
-            const addonName =
-              addon.nama || knownAddon?.nama || formatCodeToTitle(addon.code)
-            const addonDesc =
-              addon.description || knownAddon?.description
+        <TooltipProvider delayDuration={200}>
+          <div className="space-y-2">
+            {availableAddons.map((addon) => {
+              const currentItem = activeMap[addon.id]
+              const isPurchased = Boolean(currentItem)
+              const isExpired = Boolean(
+                currentItem?.expires_at &&
+                  new Date(currentItem.expires_at).getTime() < Date.now()
+              )
+              const isActive = currentItem?.status === "active" && !isExpired
+              const isDisabled = currentItem?.status === "disabled"
+              const isItemToggling = togglingAddonId === addon.id
 
-            return (
-              <div
-                key={addon.id}
-                className={`p-3 rounded-xl border transition-all flex items-center justify-between gap-3 ${
-                  isActive
-                    ? "bg-primary/5 border-primary/30 shadow-2xs"
-                    : "bg-muted/15 border-border/70 hover:border-border"
-                }`}
-              >
-                {/* Left: Info */}
-                <div className="space-y-1 min-w-0 flex-1 pr-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold text-xs text-foreground truncate">
-                      {addonName}
-                    </span>
+              const knownAddon = KNOWN_PRODUCT_ADDONS[addon.code]
+              const addonName =
+                addon.nama || knownAddon?.nama || formatCodeToTitle(addon.code)
+              const addonDesc =
+                addon.description || knownAddon?.description
 
-                    <Badge
-                      variant="outline"
-                      className="font-mono text-[10px] px-1.5 py-0 bg-background/60 text-muted-foreground border-border/80"
-                    >
-                      {addon.code}
-                    </Badge>
+              // Tooltip reason if toggle is disabled
+              let toggleDisabledReason: string | null = null
+              if (license.status === "suspended") {
+                toggleDisabledReason =
+                  "Lisensi sedang ditangguhkan (suspended). Tidak dapat mengubah status add-on."
+              } else if (isExpired && !isActive) {
+                toggleDisabledReason =
+                  "Langganan add-on telah kedaluwarsa. Perpanjang lisensi/addon terlebih dahulu untuk mengaktifkan kembali."
+              }
 
-                    <Badge
-                      variant={isActive ? "default" : "secondary"}
-                      className={
-                        isActive
-                          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] px-1.5 py-0 font-medium"
-                          : "text-[10px] px-1.5 py-0 font-medium text-muted-foreground"
-                      }
-                    >
-                      {isActive ? "Aktif" : "Belum Aktif"}
-                    </Badge>
-                  </div>
-
-                  {addonDesc && (
-                    <p className="text-[11px] text-muted-foreground line-clamp-1">
-                      {addonDesc}
-                    </p>
-                  )}
-
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground pt-0.5">
-                    {addon.harga_bulanan > 0 && (
-                      <span>
-                        Harga:{" "}
-                        <strong className="text-foreground font-semibold font-mono">
-                          {formatCurrency(addon.harga_bulanan)}
-                        </strong>
-                        /bln
-                        {addon.harga_tahunan > 0 && (
-                          <span className="ml-1 text-muted-foreground">
-                            •{" "}
-                            <strong className="text-foreground font-semibold font-mono">
-                              {formatCurrency(addon.harga_tahunan)}
-                            </strong>
-                            /thn
-                          </span>
-                        )}
+              return (
+                <div
+                  key={addon.id}
+                  className={`p-3 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    isActive
+                      ? "bg-primary/5 border-primary/30 shadow-2xs"
+                      : "bg-muted/15 border-border/70 hover:border-border"
+                  }`}
+                >
+                  {/* Left: Info */}
+                  <div className="space-y-1 min-w-0 flex-1 pr-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-xs text-foreground truncate">
+                        {addonName}
                       </span>
+
+                      <Badge
+                        variant="outline"
+                        className="font-mono text-[10px] px-1.5 py-0 bg-background/60 text-muted-foreground border-border/80"
+                      >
+                        {addon.code}
+                      </Badge>
+
+                      {/* Status Badge */}
+                      {isPurchased ? (
+                        isExpired ? (
+                          <Badge
+                            variant="destructive"
+                            className="text-[10px] px-1.5 py-0 font-medium"
+                          >
+                            Kedaluwarsa
+                          </Badge>
+                        ) : isActive ? (
+                          <Badge
+                            variant="default"
+                            className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] px-1.5 py-0 font-medium"
+                          >
+                            Aktif
+                          </Badge>
+                        ) : isDisabled ? (
+                          <Badge
+                            variant="secondary"
+                            className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] px-1.5 py-0 font-medium"
+                          >
+                            Dinonaktifkan
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="secondary"
+                            className="text-[10px] px-1.5 py-0 font-medium text-muted-foreground"
+                          >
+                            Nonaktif
+                          </Badge>
+                        )
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] px-1.5 py-0 font-medium text-muted-foreground"
+                        >
+                          Belum Dibeli
+                        </Badge>
+                      )}
+                    </div>
+
+                    {addonDesc && (
+                      <p className="text-[11px] text-muted-foreground line-clamp-1">
+                        {addonDesc}
+                      </p>
                     )}
 
-                    {currentItem?.expires_at && (
-                      <span className="flex items-center gap-1">
-                        <Calendar size={11} />
-                        <span>Masa Aktif: {formatDate(currentItem.expires_at)}</span>
-                      </span>
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground pt-0.5">
+                      {addon.harga_bulanan > 0 && (
+                        <span>
+                          Harga:{" "}
+                          <strong className="text-foreground font-semibold font-mono">
+                            {formatCurrency(addon.harga_bulanan)}
+                          </strong>
+                          /bln
+                          {addon.harga_tahunan > 0 && (
+                            <span className="ml-1 text-muted-foreground">
+                              •{" "}
+                              <strong className="text-foreground font-semibold font-mono">
+                                {formatCurrency(addon.harga_tahunan)}
+                              </strong>
+                              /thn
+                            </span>
+                          )}
+                        </span>
+                      )}
+
+                      {currentItem?.expires_at && (
+                        <span className="flex items-center gap-1">
+                          <Calendar size={11} />
+                          <span>Masa Aktif: {formatDate(currentItem.expires_at)}</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right: Actions */}
+                  <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                    {/* Toggle Switch for Purchased Addons */}
+                    {isPurchased && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-background/80 border border-border/80">
+                            {isItemToggling ? (
+                              <Loader2
+                                size={13}
+                                className="animate-spin text-primary"
+                              />
+                            ) : null}
+                            <span className="text-[11px] font-medium text-muted-foreground">
+                              {isActive ? "Aktif" : "Nonaktif"}
+                            </span>
+                            <Switch
+                              checked={isActive}
+                              disabled={
+                                isToggling ||
+                                license.status === "suspended" ||
+                                (!isActive && isExpired)
+                              }
+                              onCheckedChange={(checked) =>
+                                handleToggle(addon.id, checked)
+                              }
+                              aria-label={`Toggle addon ${addonName}`}
+                            />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-xs text-xs">
+                          {toggleDisabledReason ||
+                            (isActive
+                              ? "Nonaktifkan modul ini (masa aktif langganan tidak terpengaruh)."
+                              : "Aktifkan kembali modul addon ini.")}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+
+                    {/* Order / Extend Button */}
+                    {onOrderAddon && (
+                      <Button
+                        type="button"
+                        variant={isPurchased ? "outline" : "default"}
+                        size="sm"
+                        onClick={() => onOrderAddon(addon.id)}
+                        className="h-8 px-2.5 text-xs cursor-pointer gap-1 shadow-2xs"
+                      >
+                        <CreditCard size={12} />
+                        <span>{isPurchased ? "Perpanjang" : "Beli Addon"}</span>
+                      </Button>
                     )}
                   </div>
                 </div>
-
-                {/* Right: Order / Extend Button */}
-                {onOrderAddon && (
-                  <div className="shrink-0">
-                    <Button
-                      type="button"
-                      variant={isActive ? "outline" : "default"}
-                      size="sm"
-                      onClick={() => onOrderAddon(addon.id)}
-                      className="h-7 px-2.5 text-xs cursor-pointer gap-1"
-                    >
-                      <CreditCard size={12} />
-                      <span>{isActive ? "Perpanjang" : "Beli Addon"}</span>
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        </TooltipProvider>
       )}
     </div>
   )
 }
+

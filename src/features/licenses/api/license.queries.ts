@@ -13,6 +13,7 @@ import type {
   ExtendLicensePayload,
   CreateLicenseOrderPayload,
   SyncLicenseAddonsPayload,
+  ToggleLicenseAddonPayload,
 } from "../@types/license"
 import type { PaginatedResponse } from "@/@types/api"
 
@@ -171,6 +172,35 @@ export function useSyncLicenseAddons() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Gagal menyinkronkan modul addon")
+    },
+  })
+}
+
+/** Hook to toggle enable/disable status of an addon on a license */
+export function useToggleLicenseAddon() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      licenseId,
+      productAddonId,
+      payload,
+    }: {
+      licenseId: string
+      productAddonId: string
+      payload?: ToggleLicenseAddonPayload
+    }) => licenseApi.toggleAddon(licenseId, productAddonId, payload),
+    onSuccess: (result, variables) => {
+      const actionWord = result.is_enabled ? "diaktifkan" : "dinonaktifkan"
+      toast.success(`Add-on ${result.addon_name} berhasil ${actionWord}`)
+      void queryClient.invalidateQueries({
+        queryKey: licenseKeys.detail(variables.licenseId),
+      })
+      void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
+      void queryClient.invalidateQueries({ queryKey: clientKeys.all })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Gagal mengubah status modul add-on")
     },
   })
 }

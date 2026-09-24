@@ -23,7 +23,7 @@ export type LicenseServerType =
 
 export type LicenseStatus = "active" | "suspended" | "expired" | "trial"
 
-export type LicenseAddonStatus = "active" | "inactive" | "expired"
+export type LicenseAddonStatus = "active" | "inactive" | "disabled" | "expired"
 
 export interface LicenseProductInfo {
   id: string
@@ -208,3 +208,24 @@ export interface CheckCouponResponse {
     final_amount: number
   }
 }
+
+export interface ToggleLicenseAddonPayload {
+  status?: "active" | "disabled"
+  is_enabled?: boolean
+  product_addon_id?: string
+  addon_id?: string
+  addon_code?: string
+}
+
+export interface ToggleLicenseAddonResponse {
+  license_addon_id: string
+  product_addon_id: string
+  addon_code: string
+  addon_name: string
+  status: LicenseAddonStatus
+  is_enabled: boolean
+  expires_at: string | null
+  days_remaining: number | null
+  active_addons: string[]
+}
+

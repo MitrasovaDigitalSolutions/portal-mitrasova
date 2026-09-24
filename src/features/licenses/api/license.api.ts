@@ -12,6 +12,8 @@ import type {
   RegenerateSecretResponse,
   CheckCouponPayload,
   CheckCouponResponse,
+  ToggleLicenseAddonPayload,
+  ToggleLicenseAddonResponse,
 } from "../@types/license"
 
 export const licenseApi = {
@@ -137,6 +139,19 @@ export const licenseApi = {
     const response = await apiClient.post<ApiResponse<License>>(
       `/api/v1/admin/licenses/${id}/addons`,
       payload
+    )
+    return response.data.data
+  },
+
+  /** Toggle enable/disable addon status on a license without affecting its subscription period */
+  toggleAddon: async (
+    licenseId: string,
+    productAddonId: string,
+    payload?: ToggleLicenseAddonPayload
+  ): Promise<ToggleLicenseAddonResponse> => {
+    const response = await apiClient.post<ApiResponse<ToggleLicenseAddonResponse>>(
+      `/api/v1/admin/licenses/${licenseId}/addons/${productAddonId}/toggle`,
+      payload ?? {}
     )
     return response.data.data
   },
