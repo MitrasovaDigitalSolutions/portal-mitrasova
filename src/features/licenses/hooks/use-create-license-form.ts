@@ -8,8 +8,9 @@ import { toast } from "sonner"
 import { useClients } from "@/features/clients/api/client.queries"
 import { useProducts, useProduct } from "@/features/products/api/product.queries"
 import { useServerPackages } from "@/features/server-packages/api/server-package.queries"
+import { couponApi } from "@/features/coupons/api/coupon.api"
+import { formatCurrency } from "@/utils"
 import { useCreateLicense } from "../api/license.queries"
-import { licenseApi } from "../api/license.api"
 import {
   licenseFormSchema,
   type LicenseFormValues,
@@ -165,6 +166,25 @@ export function useCreateLicenseForm() {
     }
   }
 
+  const handleSelectAllAddons = () => {
+    const allPurchasableIds = purchasableAddons.map((a) => a.id)
+    setValue("addon_ids", allPurchasableIds, { shouldValidate: true })
+    if (couponResult) {
+      setCouponResult(null)
+      setValue("discount_amount", 0)
+      setValue("discount_description", null)
+    }
+  }
+
+  const handleClearAddons = () => {
+    setValue("addon_ids", [], { shouldValidate: true })
+    if (couponResult) {
+      setCouponResult(null)
+      setValue("discount_amount", 0)
+      setValue("discount_description", null)
+    }
+  }
+
   // Invoice calculations
   const orderCalculation = useMemo(() => {
     const items: Array<{
@@ -249,27 +269,125 @@ export function useCreateLicenseForm() {
     setCouponError(null)
 
     try {
-      // Temporary dummy license key for validation before license is created
-      const dummyKey = "NEW-LICENSE-PREVIEW"
-      const res = await licenseApi.checkCoupon({
-        license_key: dummyKey,
-        coupon_code: enteredCouponCode.trim(),
-        billing_period: (billingPeriod as "monthly" | "annual") ?? "annual",
-        include_base_product: true,
-        include_server: Boolean(selectedServerId),
-        server_package_id: selectedServerId || undefined,
-        addon_ids: selectedAddonIds,
-      })
+      const code = enteredCouponCode.trim()
+      const couponsRes = await couponApi.getCoupons({ search: code, per_page: 20 })
+      const matchingCoupon = couponsRes.data?.find(
+        (c) => c.code.toUpperCase() === code.toUpperCase()
+      )
 
-      if (res.valid) {
-        setCouponResult(res.coupon)
-        setValue("discount_amount", res.coupon.discount_amount)
-        setValue("discount_description", `Kupon: ${res.coupon.code} (${res.coupon.name})`)
-        toast.success(`Kupon ${res.coupon.code} berhasil diterapkan! Hemat ${res.coupon.formatted_discount}`)
+      if (!matchingCoupon) {
+        setCouponError("Kode kupon tidak ditemukan atau tidak valid")
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
       }
+
+      if (!matchingCoupon.is_active) {
+        setCouponError("Kupon ini sedang tidak aktif")
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      const now = new Date()
+      if (matchingCoupon.starts_at && new Date(matchingCoupon.starts_at) > now) {
+        setCouponError("Kupon promo ini belum dapat digunakan")
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      if (matchingCoupon.expires_at && new Date(matchingCoupon.expires_at) < now) {
+        setCouponError("Kupon promo ini telah kedaluwarsa")
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      if (
+        matchingCoupon.max_uses &&
+        (matchingCoupon.usages_count ?? 0) >= matchingCoupon.max_uses
+      ) {
+        setCouponError("Batas penggunaan kupon promo ini telah habis")
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      if (
+        matchingCoupon.applicable_period &&
+        matchingCoupon.applicable_period !== "all" &&
+        matchingCoupon.applicable_period !== billingPeriod
+      ) {
+        const periodLabel =
+          matchingCoupon.applicable_period === "annual" ? "Tahunan" : "Bulanan"
+        setCouponError(`Kupon ini hanya berlaku untuk siklus penagihan ${periodLabel}`)
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      if (
+        matchingCoupon.min_order_amount &&
+        orderCalculation.grossSubtotal < matchingCoupon.min_order_amount
+      ) {
+        setCouponError(
+          `Minimal total transaksi untuk kupon ini adalah ${formatCurrency(matchingCoupon.min_order_amount)}`
+        )
+        setCouponResult(null)
+        setValue("discount_amount", 0)
+        setValue("discount_description", null)
+        return
+      }
+
+      // Calculate discount amount
+      let discountAmount = 0
+      if (matchingCoupon.discount_type === "percentage") {
+        discountAmount = Math.round(
+          (orderCalculation.grossSubtotal * matchingCoupon.discount_value) / 100
+        )
+        if (
+          matchingCoupon.max_discount_amount &&
+          discountAmount > matchingCoupon.max_discount_amount
+        ) {
+          discountAmount = matchingCoupon.max_discount_amount
+        }
+      } else {
+        discountAmount = matchingCoupon.discount_value
+        if (discountAmount > orderCalculation.grossSubtotal) {
+          discountAmount = orderCalculation.grossSubtotal
+        }
+      }
+
+      const couponObj = {
+        code: matchingCoupon.code,
+        name: matchingCoupon.name,
+        discount_type: matchingCoupon.discount_type,
+        discount_value: matchingCoupon.discount_value,
+        discount_amount: discountAmount,
+        formatted_discount: formatCurrency(discountAmount),
+        subtotal: orderCalculation.grossSubtotal,
+        final_amount: Math.max(0, orderCalculation.grossSubtotal - discountAmount),
+      }
+
+      setCouponResult(couponObj)
+      setValue("discount_amount", discountAmount)
+      setValue("discount_description", `Kupon: ${matchingCoupon.code} (${matchingCoupon.name})`)
+      toast.success(
+        `Kupon ${matchingCoupon.code} berhasil diterapkan! Hemat ${formatCurrency(discountAmount)}`
+      )
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Kupon tidak valid"
-      setCouponError(msg)
+      const rawMsg = err instanceof Error ? err.message : "Kupon tidak valid"
+      const userFriendlyMsg = /license.*key/i.test(rawMsg)
+        ? "Kode kupon tidak valid atau tidak dapat diterapkan"
+        : rawMsg
+      setCouponError(userFriendlyMsg)
       setCouponResult(null)
       setValue("discount_amount", 0)
       setValue("discount_description", null)
@@ -291,6 +409,7 @@ export function useCreateLicenseForm() {
     try {
       const payload = {
         ...values,
+        create_invoice: true,
         coupon_code: couponResult?.code ?? values.coupon_code ?? undefined,
         discount_amount: couponResult?.discount_amount ?? values.discount_amount ?? 0,
         discount_description:
@@ -338,6 +457,8 @@ export function useCreateLicenseForm() {
     couponError,
     orderCalculation,
     handleToggleAddon,
+    handleSelectAllAddons,
+    handleClearAddons,
     handleCheckCoupon,
     handleRemoveCoupon,
     submitForm: handleSubmit(onSubmit),

@@ -161,13 +161,11 @@ export function LicenseDetailView({
           type="button"
           variant="outline"
           size="sm"
-          onClick={() =>
-            router.push(clientId ? `/clients/${clientId}` : "/clients")
-          }
-          className="gap-2"
+          onClick={() => router.back()}
+          className="gap-2 cursor-pointer"
         >
           <ArrowLeft size={14} />
-          <span>Kembali ke Klien</span>
+          <span>Kembali</span>
         </Button>
       </div>
     )

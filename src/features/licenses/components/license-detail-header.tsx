@@ -2,6 +2,7 @@
 
 import type { JSX } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
   CalendarClock,
@@ -52,6 +53,7 @@ export function LicenseDetailHeader({
   onRegenerateSecret,
   onDelete,
 }: LicenseDetailHeaderProps): JSX.Element {
+  const router = useRouter()
   const subConfig = SUBSCRIPTION_TYPES[license.subscription_type]
   const serverName =
     license.serverPackage?.nama ??
@@ -100,13 +102,16 @@ export function LicenseDetailHeader({
       {/* Main Title & Action Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1 border-b border-border">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <Link
-            href={effectiveClientId ? `/clients/${effectiveClientId}` : "/clients"}
-            className="inline-flex items-center justify-center size-8 rounded-lg border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-            title="Kembali ke profil klien"
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => router.back()}
+            className="h-8 w-8 p-0 rounded-lg cursor-pointer shrink-0"
+            title="Kembali ke halaman sebelumnya"
           >
             <ArrowLeft size={15} />
-          </Link>
+          </Button>
 
           <div>
             <div className="flex items-center gap-2 flex-wrap">
