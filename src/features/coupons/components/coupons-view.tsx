@@ -3,6 +3,7 @@
 import { useMemo, useState, type JSX } from "react"
 import { motion } from "framer-motion"
 import { Plus, Search, Tag, X } from "lucide-react"
+import { useDebounce } from "@/hooks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -14,40 +15,41 @@ import { useCoupons, useDeleteCoupon } from "../api/coupon.queries"
 import type { Coupon } from "../@types/coupon"
 
 export function CouponsView(): JSX.Element {
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(15)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [selectedForEdit, setSelectedForEdit] = useState<Coupon | null>(null)
   const [selectedForDelete, setSelectedForDelete] = useState<Coupon | null>(null)
 
-  const { data: response, isLoading } = useCoupons({
-    per_page: 50,
+  const debouncedSearch = useDebounce(search, 400)
+
+  const handleSearchChange = (val: string) => {
+    setSearch(val)
+    setPage(1)
+  }
+
+  const handleStatusFilterChange = (status: "all" | "active" | "inactive") => {
+    setStatusFilter(status)
+    setPage(1)
+  }
+
+  const { data: response, isLoading, isFetching } = useCoupons({
+    page,
+    per_page: perPage,
+    search: debouncedSearch.trim() || undefined,
+    is_active: statusFilter === "all" ? undefined : statusFilter === "active",
   })
   const deleteMutation = useDeleteCoupon()
 
   const coupons = useMemo(() => response?.data ?? [], [response?.data])
 
-  const filteredCoupons = useMemo(() => {
-    return coupons.filter((coupon) => {
-      if (statusFilter === "active" && !coupon.is_active) {return false}
-      if (statusFilter === "inactive" && coupon.is_active) {return false}
-
-      if (search.trim()) {
-        const query = search.toLowerCase()
-        const matchCode = coupon.code.toLowerCase().includes(query)
-        const matchName = coupon.name.toLowerCase().includes(query)
-        const matchDesc = coupon.description?.toLowerCase().includes(query) ?? false
-        return matchCode || matchName || matchDesc
-      }
-      return true
-    })
-  }, [coupons, statusFilter, search])
-
   const stats = useMemo(() => {
-    const total = coupons.length
+    const total = response?.meta?.total ?? coupons.length
     const active = coupons.filter((c) => c.is_active).length
     return { total, active }
-  }, [coupons])
+  }, [response?.meta?.total, coupons])
 
   const columns = useMemo(() => getCouponColumns(), [])
 
@@ -109,14 +111,14 @@ export function CouponsView(): JSX.Element {
             />
             <Input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Cari kode promo, nama..."
               className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
             />
             {search && (
               <button
                 type="button"
-                onClick={() => setSearch("")}
+                onClick={() => handleSearchChange("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                 title="Hapus pencarian"
               >
@@ -129,7 +131,7 @@ export function CouponsView(): JSX.Element {
           <div className="flex items-center gap-1.5 bg-muted/50 p-0.5 rounded-lg border border-border text-xs">
             <button
               type="button"
-              onClick={() => setStatusFilter("all")}
+              onClick={() => handleStatusFilterChange("all")}
               className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                 statusFilter === "all"
                   ? "bg-background text-foreground shadow-2xs"
@@ -140,7 +142,7 @@ export function CouponsView(): JSX.Element {
             </button>
             <button
               type="button"
-              onClick={() => setStatusFilter("active")}
+              onClick={() => handleStatusFilterChange("active")}
               className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                 statusFilter === "active"
                   ? "bg-background text-foreground shadow-2xs"
@@ -151,7 +153,7 @@ export function CouponsView(): JSX.Element {
             </button>
             <button
               type="button"
-              onClick={() => setStatusFilter("inactive")}
+              onClick={() => handleStatusFilterChange("inactive")}
               className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                 statusFilter === "inactive"
                   ? "bg-background text-foreground shadow-2xs"
@@ -166,8 +168,18 @@ export function CouponsView(): JSX.Element {
         {/* DataTable */}
         <DataTable
           columns={columns}
-          data={filteredCoupons}
+          data={coupons}
           isLoading={isLoading}
+          isFetching={isFetching}
+          paginationMode="server"
+          page={page}
+          perPage={perPage}
+          onPageChange={setPage}
+          onPerPageChange={(newPerPage) => {
+            setPerPage(newPerPage)
+            setPage(1)
+          }}
+          meta={response?.meta}
           maxActionButtons={5}
           onEdit={(coupon) => setSelectedForEdit(coupon)}
           onDelete={(coupon) => setSelectedForDelete(coupon)}

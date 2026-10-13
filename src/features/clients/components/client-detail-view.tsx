@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import {
   useClientDetailManagement,
-  useLicensesList,
   useLicenseActions,
 } from "../hooks"
 import { ClientDetailHeader } from "./client-detail-header"
@@ -29,6 +28,12 @@ export function ClientDetailView({
     client,
     licenses,
     licenseStats,
+    licenseSearch,
+    setLicenseSearch,
+    licenseStatusFilter,
+    setLicenseStatusFilter,
+    licenseSubscriptionFilter,
+    setLicenseSubscriptionFilter,
     isLoading,
     isFetching,
     isEditClientOpen,
@@ -39,16 +44,6 @@ export function ClientDetailView({
     handleDeleteClientConfirm,
     handleRefreshAll,
   } = useClientDetailManagement(clientId)
-
-  const {
-    search,
-    setSearch,
-    statusFilter,
-    setStatusFilter,
-    subscriptionFilter,
-    setSubscriptionFilter,
-    filteredLicenses,
-  } = useLicensesList(licenses)
 
   const {
     selectedLicenseForEdit,
@@ -93,13 +88,13 @@ export function ClientDetailView({
 
       <ClientDetailLicensesSection
         licenses={licenses}
-        filteredLicenses={filteredLicenses}
-        search={search}
-        onSearchChange={setSearch}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        subscriptionFilter={subscriptionFilter}
-        onSubscriptionFilterChange={setSubscriptionFilter}
+        filteredLicenses={licenses}
+        search={licenseSearch}
+        onSearchChange={setLicenseSearch}
+        statusFilter={licenseStatusFilter}
+        onStatusFilterChange={setLicenseStatusFilter}
+        subscriptionFilter={licenseSubscriptionFilter}
+        onSubscriptionFilterChange={setLicenseSubscriptionFilter}
         isLoading={isLoading}
         onCreateLicense={() =>
           router.push(`/licenses/create?clientId=${clientId}`)

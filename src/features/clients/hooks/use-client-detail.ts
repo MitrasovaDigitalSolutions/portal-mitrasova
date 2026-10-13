@@ -2,12 +2,19 @@
 
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useDebounce } from "@/hooks"
 import { useClient, useDeleteClient } from "../api/client.queries"
 import { useLicenses } from "../api/license.queries"
-import type { License } from "../@types/license"
+import type { License, LicenseStatus, LicenseSubscriptionType } from "../@types/license"
 
 export function useClientDetailManagement(clientId: string) {
   const router = useRouter()
+
+  const [licenseSearch, setLicenseSearch] = useState("")
+  const [licenseStatusFilter, setLicenseStatusFilter] = useState<LicenseStatus | "all">("all")
+  const [licenseSubscriptionFilter, setLicenseSubscriptionFilter] = useState<LicenseSubscriptionType | "all">("all")
+
+  const debouncedLicenseSearch = useDebounce(licenseSearch, 400)
 
   // Fetch client details
   const {
@@ -17,7 +24,7 @@ export function useClientDetailManagement(clientId: string) {
     refetch: refetchClient,
   } = useClient(clientId)
 
-  // Fetch licenses belonging to this client
+  // Fetch licenses belonging to this client with BE filtering
   const {
     data: licensesData,
     isLoading: isLicensesLoading,
@@ -25,6 +32,9 @@ export function useClientDetailManagement(clientId: string) {
     refetch: refetchLicenses,
   } = useLicenses({
     client_id: clientId,
+    search: debouncedLicenseSearch.trim() || undefined,
+    status: licenseStatusFilter === "all" ? undefined : licenseStatusFilter,
+    subscription_type: licenseSubscriptionFilter === "all" ? undefined : licenseSubscriptionFilter,
     per_page: 100,
   })
 
@@ -35,13 +45,17 @@ export function useClientDetailManagement(clientId: string) {
   // Delete mutation
   const deleteClientMutation = useDeleteClient()
 
-  // Resolved licenses list (either from licenses query or client relation)
+  // Resolved licenses list from BE query
   const licenses: License[] = useMemo(() => {
-    if (licensesData?.data && licensesData.data.length > 0) {
+    if (licensesData?.data) {
       return licensesData.data
     }
-    return client?.licenses ?? []
-  }, [licensesData?.data, client?.licenses])
+    // Fallback to client.licenses only if no search/filter was applied
+    if (!debouncedLicenseSearch && licenseStatusFilter === "all" && licenseSubscriptionFilter === "all") {
+      return client?.licenses ?? []
+    }
+    return []
+  }, [licensesData?.data, client?.licenses, debouncedLicenseSearch, licenseStatusFilter, licenseSubscriptionFilter])
 
   // Compute license stats for this client
   const licenseStats = useMemo(() => {
@@ -50,7 +64,9 @@ export function useClientDetailManagement(clientId: string) {
     let expired = 0
     let addonsCount = 0
 
-    licenses.forEach((lic) => {
+    const sourceLicenses = client?.licenses ?? licenses
+
+    sourceLicenses.forEach((lic) => {
       if (lic.status === "active") {
         active += 1
       } else if (lic.status === "trial") {
@@ -64,13 +80,13 @@ export function useClientDetailManagement(clientId: string) {
     })
 
     return {
-      total: licenses.length,
+      total: sourceLicenses.length,
       active,
       trial,
       expired,
       addonsCount,
     }
-  }, [licenses])
+  }, [client?.licenses, licenses])
 
   const handleDeleteClientConfirm = async () => {
     await deleteClientMutation.mutateAsync(clientId)
@@ -90,6 +106,12 @@ export function useClientDetailManagement(clientId: string) {
     client,
     licenses,
     licenseStats,
+    licenseSearch,
+    setLicenseSearch,
+    licenseStatusFilter,
+    setLicenseStatusFilter,
+    licenseSubscriptionFilter,
+    setLicenseSubscriptionFilter,
     isLoading,
     isFetching,
     isEditClientOpen,
@@ -101,3 +123,4 @@ export function useClientDetailManagement(clientId: string) {
     handleRefreshAll,
   }
 }
+

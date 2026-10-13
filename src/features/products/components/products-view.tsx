@@ -20,6 +20,10 @@ export function ProductsView(): React.JSX.Element {
     activeCount,
     inactiveCount,
     totalAddons,
+    searchInput,
+    handleSearchChange,
+    statusFilter,
+    handleStatusChange,
     isLoading,
     isFetching,
     refetch,
@@ -77,6 +81,10 @@ export function ProductsView(): React.JSX.Element {
 
       {/* Actions Toolbar */}
       <ProductToolbar
+        searchInput={searchInput}
+        onSearchChange={handleSearchChange}
+        statusFilter={statusFilter}
+        onStatusChange={handleStatusChange}
         isFetching={isFetching}
         onRefresh={() => void refetch()}
         onCreateClick={handleCreate}

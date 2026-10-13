@@ -1,15 +1,19 @@
 "use client"
 
-import { useMemo, useState, type JSX } from "react"
+import { useEffect, useMemo, useState, type JSX } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { KeyRound, Plus, RefreshCw, Search, ShieldAlert, X } from "lucide-react"
+import { useForm, FormProvider } from "react-hook-form"
+import { useDebounce } from "@/hooks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
 import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { FormSelect } from "@/components/forms"
+import type { CommandOption } from "@/components/ui/command-select"
 import { getLicenseColumns } from "./license-columns"
 import { LicenseMobileCard } from "./license-mobile-card"
 import { LicenseFormDialog } from "./license-form-dialog"
@@ -20,13 +24,57 @@ import {
   useRegenerateLicenseSecret,
   useResetLicenseDomain,
 } from "../api/license.queries"
+import { SUBSCRIPTION_TYPES } from "../constants"
 import type { License, LicenseStatus, LicenseSubscriptionType } from "../@types/license"
+
+interface LicenseFilterFormValues {
+  subscription: LicenseSubscriptionType | "all"
+}
+
+const SUBSCRIPTION_FILTER_OPTIONS: CommandOption[] = [
+  { value: "all", label: "Semua Paket" },
+  { value: "annual", label: SUBSCRIPTION_TYPES.annual.label },
+  { value: "monthly", label: SUBSCRIPTION_TYPES.monthly.label },
+  { value: "lifetime", label: SUBSCRIPTION_TYPES.lifetime.label },
+  { value: "trial", label: SUBSCRIPTION_TYPES.trial.label },
+]
 
 export function LicensesView(): JSX.Element {
   const router = useRouter()
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(15)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<LicenseStatus | "all">("all")
   const [subscriptionFilter, setSubscriptionFilter] = useState<LicenseSubscriptionType | "all">("all")
+
+  const debouncedSearch = useDebounce(search, 400)
+
+  // Reset page when filters change
+  const handleSearchChange = (val: string) => {
+    setSearch(val)
+    setPage(1)
+  }
+
+  const handleStatusFilterChange = (status: LicenseStatus | "all") => {
+    setStatusFilter(status)
+    setPage(1)
+  }
+
+  const handleSubscriptionFilterChange = (sub: LicenseSubscriptionType | "all") => {
+    setSubscriptionFilter(sub)
+    setPage(1)
+  }
+
+  const filterMethods = useForm<LicenseFilterFormValues>({
+    defaultValues: {
+      subscription: subscriptionFilter,
+    },
+  })
+
+  // Synchronize form when state changes
+  useEffect(() => {
+    filterMethods.setValue("subscription", subscriptionFilter)
+  }, [subscriptionFilter, filterMethods])
 
   const [selectedForEdit, setSelectedForEdit] = useState<License | null>(null)
   const [selectedForOrder, setSelectedForOrder] = useState<License | null>(null)
@@ -34,8 +82,12 @@ export function LicensesView(): JSX.Element {
   const [selectedForResetDomain, setSelectedForResetDomain] = useState<License | null>(null)
   const [selectedForRegenerateSecret, setSelectedForRegenerateSecret] = useState<License | null>(null)
 
-  const { data: response, isLoading } = useLicenses({
-    per_page: 50,
+  const { data: response, isLoading, isFetching } = useLicenses({
+    page,
+    per_page: perPage,
+    search: debouncedSearch.trim() || undefined,
+    status: statusFilter === "all" ? undefined : statusFilter,
+    subscription_type: subscriptionFilter === "all" ? undefined : subscriptionFilter,
   })
 
   const deleteMutation = useDeleteLicense()
@@ -44,30 +96,12 @@ export function LicensesView(): JSX.Element {
 
   const licenses = useMemo(() => response?.data ?? [], [response?.data])
 
-  const filteredLicenses = useMemo(() => {
-    return licenses.filter((license) => {
-      if (statusFilter !== "all" && license.status !== statusFilter) {return false}
-      if (subscriptionFilter !== "all" && license.subscription_type !== subscriptionFilter) {return false}
-
-      if (search.trim()) {
-        const query = search.toLowerCase()
-        const matchName = license.nama_instance.toLowerCase().includes(query)
-        const matchKey = license.license_key.toLowerCase().includes(query)
-        const matchDomain = license.domain_instance?.toLowerCase().includes(query) ?? false
-        const matchClient = license.client?.nama_pemilik.toLowerCase().includes(query) ?? false
-        const matchProduct = license.product?.nama.toLowerCase().includes(query) ?? false
-        return matchName || matchKey || matchDomain || matchClient || matchProduct
-      }
-      return true
-    })
-  }, [licenses, statusFilter, subscriptionFilter, search])
-
   const stats = useMemo(() => {
-    const total = licenses.length
+    const total = response?.meta?.total ?? licenses.length
     const active = licenses.filter((l) => l.status === "active").length
     const expired = licenses.filter((l) => l.status === "expired").length
     return { total, active, expired }
-  }, [licenses])
+  }, [response?.meta?.total, licenses])
 
   const columns = useMemo(() => getLicenseColumns(), [])
 
@@ -149,14 +183,14 @@ export function LicensesView(): JSX.Element {
             />
             <Input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Cari instance, klien, key..."
               className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
             />
             {search && (
               <button
                 type="button"
-                onClick={() => setSearch("")}
+                onClick={() => handleSearchChange("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                 title="Hapus pencarian"
               >
@@ -167,27 +201,27 @@ export function LicensesView(): JSX.Element {
 
           <div className="flex flex-wrap items-center gap-2">
             {/* Subscription Filter */}
-            <select
-              value={subscriptionFilter}
-              onChange={(e) =>
-                setSubscriptionFilter(
-                  e.target.value as LicenseSubscriptionType | "all"
-                )
-              }
-              className="h-8 px-2.5 rounded-lg border border-border bg-background text-xs text-foreground cursor-pointer"
-            >
-              <option value="all">Semua Paket</option>
-              <option value="annual">Tahunan (Annual)</option>
-              <option value="monthly">Bulanan (Monthly)</option>
-              <option value="lifetime">Seumur Hidup (Lifetime)</option>
-              <option value="trial">Uji Coba (Trial)</option>
-            </select>
+            <FormProvider {...filterMethods}>
+              <div className="w-40 sm:w-44">
+                <FormSelect<LicenseFilterFormValues>
+                  name="subscription"
+                  options={SUBSCRIPTION_FILTER_OPTIONS}
+                  placeholder="Semua Paket"
+                  size="sm"
+                  onChange={(val) =>
+                    handleSubscriptionFilterChange(
+                      val as LicenseSubscriptionType | "all"
+                    )
+                  }
+                />
+              </div>
+            </FormProvider>
 
             {/* Status Tabs */}
             <div className="flex items-center gap-1.5 bg-muted/50 p-0.5 rounded-lg border border-border text-xs">
               <button
                 type="button"
-                onClick={() => setStatusFilter("all")}
+                onClick={() => handleStatusFilterChange("all")}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                   statusFilter === "all"
                     ? "bg-background text-foreground shadow-2xs"
@@ -198,7 +232,7 @@ export function LicensesView(): JSX.Element {
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter("active")}
+                onClick={() => handleStatusFilterChange("active")}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                   statusFilter === "active"
                     ? "bg-background text-foreground shadow-2xs"
@@ -209,7 +243,7 @@ export function LicensesView(): JSX.Element {
               </button>
               <button
                 type="button"
-                onClick={() => setStatusFilter("expired")}
+                onClick={() => handleStatusFilterChange("expired")}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
                   statusFilter === "expired"
                     ? "bg-background text-foreground shadow-2xs"
@@ -225,8 +259,18 @@ export function LicensesView(): JSX.Element {
         {/* DataTable */}
         <DataTable
           columns={columns}
-          data={filteredLicenses}
+          data={licenses}
           isLoading={isLoading}
+          isFetching={isFetching}
+          paginationMode="server"
+          page={page}
+          perPage={perPage}
+          onPageChange={setPage}
+          onPerPageChange={(newPerPage) => {
+            setPerPage(newPerPage)
+            setPage(1)
+          }}
+          meta={response?.meta}
           maxActionButtons={5}
           onView={(license) => router.push(`/licenses/${license.id}`)}
           onEdit={(license) => setSelectedForEdit(license)}

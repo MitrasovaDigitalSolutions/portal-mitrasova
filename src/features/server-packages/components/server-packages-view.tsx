@@ -3,6 +3,7 @@
 import { useMemo, useState, type JSX } from "react"
 import { motion } from "framer-motion"
 import { Plus, Search, Server, X } from "lucide-react"
+import { useDebounce } from "@/hooks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -23,26 +24,15 @@ export function ServerPackagesView(): JSX.Element {
   const [selectedForEdit, setSelectedForEdit] = useState<ServerPackage | null>(null)
   const [selectedForDelete, setSelectedForDelete] = useState<ServerPackage | null>(null)
 
-  const { data: response, isLoading } = useServerPackages()
+  const debouncedSearch = useDebounce(search, 400)
+
+  const { data: response, isLoading, isFetching } = useServerPackages({
+    search: debouncedSearch.trim() || undefined,
+    is_active: statusFilter === "all" ? undefined : statusFilter === "active",
+  })
   const deleteMutation = useDeleteServerPackage()
 
   const packages = useMemo(() => response?.data ?? [], [response?.data])
-
-  const filteredPackages = useMemo(() => {
-    return packages.filter((pkg) => {
-      if (statusFilter === "active" && !pkg.is_active) {return false}
-      if (statusFilter === "inactive" && pkg.is_active) {return false}
-
-      if (search.trim()) {
-        const query = search.toLowerCase()
-        const matchCode = pkg.code.toLowerCase().includes(query)
-        const matchName = pkg.nama.toLowerCase().includes(query)
-        const matchDesc = pkg.description?.toLowerCase().includes(query) ?? false
-        return matchCode || matchName || matchDesc
-      }
-      return true
-    })
-  }, [packages, statusFilter, search])
 
   const stats = useMemo(() => {
     const total = packages.length
@@ -167,8 +157,9 @@ export function ServerPackagesView(): JSX.Element {
         {/* DataTable */}
         <DataTable
           columns={columns}
-          data={filteredPackages}
+          data={packages}
           isLoading={isLoading}
+          isFetching={isFetching}
           maxActionButtons={5}
           onEdit={(pkg) => setSelectedForEdit(pkg)}
           onDelete={(pkg) => setSelectedForDelete(pkg)}
