@@ -51,17 +51,17 @@ export const SIDEBAR_SECTIONS: SidebarSectionConfig[] = [
     title: "Layanan & Klien",
     items: [
       {
-        title: "Mitra Klien",
+        title: "Klien",
         href: ROUTES.CLIENTS,
         icon: Users,
       },
       {
-        title: "Lisensi Instance",
+        title: "Lisensi",
         href: ROUTES.LICENSES,
         icon: KeyRound,
       },
       {
-        title: "Invoices Tagihan",
+        title: "Invoices",
         href: ROUTES.INVOICES,
         icon: FileText,
       },
