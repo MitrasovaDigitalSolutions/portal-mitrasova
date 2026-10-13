@@ -75,7 +75,7 @@ export function LicenseCreateAddonsCard({
               </Badge>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Pilih fitur modul tambahan untuk ditambahkan ke lisensi instance
+              Pilih fitur modul tambahan untuk ditambahkan ke Lisensi
               klien.
             </p>
           </div>
@@ -172,18 +172,16 @@ export function LicenseCreateAddonsCard({
                         key={addon.id}
                         type="button"
                         onClick={() => onToggleAddon(addon.id)}
-                        className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 text-left shadow-2xs transition-all ${
-                          isSelected
+                        className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 text-left shadow-2xs transition-all ${isSelected
                             ? "border-primary/50 bg-primary/5 text-foreground ring-1 ring-primary/20"
                             : "border-border bg-card/70 text-foreground hover:border-border/80 hover:bg-muted/40"
-                        }`}
+                          }`}
                       >
                         <div
-                          className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border transition-colors ${
-                            isSelected
+                          className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border transition-colors ${isSelected
                               ? "border-primary bg-primary text-primary-foreground"
                               : "border-muted-foreground/40 bg-background"
-                          }`}
+                            }`}
                         >
                           {isSelected && <Check size={12} strokeWidth={3} />}
                         </div>

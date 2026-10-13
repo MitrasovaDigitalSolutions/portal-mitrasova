@@ -71,7 +71,7 @@ export function LicenseCreateView(): JSX.Element {
 
           <div>
             <h1 className="text-sm font-bold text-foreground sm:text-base">
-              Terbitkan Lisensi Instance Baru
+              Terbitkan Lisensi Baru
             </h1>
             <p className="text-[11px] leading-tight text-muted-foreground">
               Konfigurasi instance, paket server hosting, modul add-on, dan

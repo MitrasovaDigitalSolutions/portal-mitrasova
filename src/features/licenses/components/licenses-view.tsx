@@ -179,7 +179,7 @@ export function LicensesView(): JSX.Element {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-bold text-foreground">
-                Lisensi Instance Software
+                Lisensi Software
               </h1>
               <Badge variant="secondary" className="font-mono text-xs">
                 {stats.total} Lisensi
@@ -252,33 +252,30 @@ export function LicensesView(): JSX.Element {
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("all")}
-                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
-                  statusFilter === "all"
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${statusFilter === "all"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 Semua ({stats.total})
               </button>
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("active")}
-                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
-                  statusFilter === "active"
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${statusFilter === "active"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 Aktif ({stats.active})
               </button>
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("expired")}
-                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
-                  statusFilter === "expired"
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${statusFilter === "expired"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 Kedaluwarsa ({stats.expired})
               </button>
@@ -305,11 +302,11 @@ export function LicensesView(): JSX.Element {
           onSortChange={(col, order) => {
             setSortBy(
               col as
-                | "created_at"
-                | "expires_at"
-                | "nama_instance"
-                | "status"
-                | undefined
+              | "created_at"
+              | "expires_at"
+              | "nama_instance"
+              | "status"
+              | undefined
             )
             setSortOrder(order)
             setPage(1)
@@ -380,7 +377,7 @@ export function LicensesView(): JSX.Element {
       <ConfirmDialog
         open={Boolean(selectedForDelete)}
         onOpenChange={(open) => !open && setSelectedForDelete(null)}
-        title="Hapus Lisensi Instance"
+        title="Hapus Lisensi"
         description={`Hapus lisensi ${selectedForDelete?.nama_instance}? Aplikasi terkait tidak dapat aktif lagi.`}
         confirmText="Hapus Lisensi"
         variant="danger"

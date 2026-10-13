@@ -100,7 +100,7 @@ export function ClientDetailLicensesSection({
         {/* Left: Title & Count Badge */}
         <div className="flex shrink-0 items-center gap-2">
           <h2 className="text-sm font-bold text-foreground">
-            Lisensi Instance & Aplikasi
+            Lisensi & Aplikasi
           </h2>
           <Badge
             variant="secondary"

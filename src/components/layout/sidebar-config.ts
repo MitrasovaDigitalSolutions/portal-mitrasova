@@ -171,7 +171,7 @@ export function getNavTitle(pathname: string): string {
     return "Mitra Klien"
   }
   if (pathname.startsWith("/licenses")) {
-    return "Lisensi Instance"
+    return "Lisensi"
   }
   if (pathname.startsWith("/products")) {
     return "SKU Produk & Addon"

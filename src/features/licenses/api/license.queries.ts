@@ -52,7 +52,7 @@ export function useCreateLicense() {
       licenseApi.createLicense(payload),
     onSuccess: (newLicense) => {
       toast.success(
-        `Lisensi instance "${newLicense.nama_instance}" berhasil diterbitkan`
+        `Lisensi "${newLicense.nama_instance}" berhasil diterbitkan`
       )
       void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
       void queryClient.invalidateQueries({ queryKey: clientKeys.all })
@@ -79,7 +79,7 @@ export function useUpdateLicense() {
     }) => licenseApi.updateLicense(id, payload),
     onSuccess: (updatedLicense) => {
       toast.success(
-        `Lisensi instance "${updatedLicense.nama_instance}" berhasil diperbarui`
+        `Lisensi "${updatedLicense.nama_instance}" berhasil diperbarui`
       )
       void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
       void queryClient.invalidateQueries({

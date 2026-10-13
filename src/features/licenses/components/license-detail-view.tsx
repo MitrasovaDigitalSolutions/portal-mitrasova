@@ -226,12 +226,12 @@ export function LicenseDetailView({
             {(license.licenseAddons?.length ??
               license.license_addons?.length ??
               0) > 0 && (
-              <span className="ml-1 rounded-full bg-background px-1.5 py-0.5 text-[10px] font-medium">
-                {license.licenseAddons?.length ??
-                  license.license_addons?.length ??
-                  0}
-              </span>
-            )}
+                <span className="ml-1 rounded-full bg-background px-1.5 py-0.5 text-[10px] font-medium">
+                  {license.licenseAddons?.length ??
+                    license.license_addons?.length ??
+                    0}
+                </span>
+              )}
           </TabsTrigger>
 
           <TabsTrigger value="logs" className="gap-1.5 text-xs">
@@ -343,7 +343,7 @@ export function LicenseDetailView({
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="Hapus Lisensi Instance"
+        title="Hapus Lisensi"
         description={
           <span>
             Apakah Anda yakin ingin menghapus lisensi{" "}

@@ -145,7 +145,7 @@ export function ClientDetailView({
       <ConfirmDialog
         open={Boolean(licenseToDelete)}
         onOpenChange={(open) => !open && setLicenseToDelete(null)}
-        title="Hapus Lisensi Instance"
+        title="Hapus Lisensi"
         description={`Hapus lisensi ${licenseToDelete?.nama_instance}? Aplikasi terkait tidak dapat aktif lagi.`}
         confirmText="Hapus Lisensi"
         variant="danger"
