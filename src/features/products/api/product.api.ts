@@ -30,6 +30,12 @@ export const productApi = {
     } else if (params?.status === "inactive") {
       cleanParams.is_active = 0
     }
+    if (params?.sort_by) {
+      cleanParams.sort_by = params.sort_by
+    }
+    if (params?.sort_order) {
+      cleanParams.sort_order = params.sort_order
+    }
 
     const response = await apiClient.get<ApiResponse<Product[]>>(
       "/api/v1/admin/products",

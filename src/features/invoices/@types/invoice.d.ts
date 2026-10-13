@@ -56,6 +56,10 @@ export interface Invoice {
   paid_at: string | null
   notes: string | null
   items: InvoiceItem[] | null
+  discount_amount?: number
+  discount_description?: string | null
+  coupon_id?: number | null
+  coupon_code?: string | null
   created_at: string
   updated_at: string
   client?: InvoiceClientRelation
@@ -67,6 +71,17 @@ export interface InvoiceQueryParams {
   status?: InvoiceStatus | "all"
   client_id?: string
   license_id?: string
+  license_key?: string
+  due_from?: string
+  due_to?: string
+  paid_from?: string
+  paid_to?: string
+  created_from?: string
+  created_to?: string
+  min_amount?: number
+  max_amount?: number
+  sort_by?: "created_at" | "due_date" | "paid_at" | "total_amount" | "status" | string
+  sort_order?: "asc" | "desc"
   page?: number
   per_page?: number
 }
@@ -96,4 +111,5 @@ export interface MarkPaidPayload {
   payment_method: string
   paid_at?: string | null
   extend_months?: number | null
+  cash_account_id?: number | null
 }

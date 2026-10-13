@@ -1,7 +1,15 @@
 "use client"
 
 import type React from "react"
-import { Building2, ChevronRight, KeyRound, Mail, Pencil, Phone, Trash2 } from "lucide-react"
+import {
+  Building2,
+  ChevronRight,
+  KeyRound,
+  Mail,
+  Pencil,
+  Phone,
+  Trash2,
+} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Client } from "../@types/client"
@@ -23,17 +31,20 @@ export function ClientMobileCard({
   const active = client.active_licenses_count ?? 0
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3 shadow-2xs space-y-2.5 transition-all hover:border-primary/25">
+    <div className="space-y-2.5 rounded-xl border border-border bg-card p-3 shadow-2xs transition-all hover:border-primary/25">
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <div className="space-y-0.5 min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-0.5">
           <button
             type="button"
             onClick={() => onViewDetail?.(client)}
-            className="font-semibold text-xs text-foreground hover:text-primary transition-colors text-left flex items-center gap-1 cursor-pointer truncate max-w-full"
+            className="flex max-w-full cursor-pointer items-center gap-1 truncate text-left text-xs font-semibold text-foreground transition-colors hover:text-primary"
           >
             <span className="truncate">{client.nama_pemilik}</span>
-            <ChevronRight size={13} className="text-muted-foreground shrink-0" />
+            <ChevronRight
+              size={13}
+              className="shrink-0 text-muted-foreground"
+            />
           </button>
           {client.nama_perusahaan && (
             <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
@@ -45,7 +56,7 @@ export function ClientMobileCard({
 
         <Badge
           variant={total > 0 ? "secondary" : "outline"}
-          className="text-[10px] shrink-0 font-mono gap-1 px-1.5 py-0.2"
+          className="py-0.2 shrink-0 gap-1 px-1.5 font-mono text-[10px]"
         >
           <KeyRound size={10} />
           <span>{total} Lisensi</span>
@@ -53,7 +64,7 @@ export function ClientMobileCard({
       </div>
 
       {/* Contact Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1.5 border-t border-border/60 text-[11px] text-muted-foreground">
+      <div className="grid grid-cols-1 gap-1 border-t border-border/60 pt-1.5 text-[11px] text-muted-foreground sm:grid-cols-2">
         <div className="flex items-center gap-1.5 truncate">
           <Mail size={11} className="shrink-0 opacity-70" />
           <span className="truncate font-mono">{client.email}</span>
@@ -67,10 +78,10 @@ export function ClientMobileCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-1.5 border-t border-border/60">
-        <span className="text-[10px] font-mono text-muted-foreground">
+      <div className="flex items-center justify-between border-t border-border/60 pt-1.5">
+        <span className="font-mono text-[10px] text-muted-foreground">
           {active > 0 ? (
-            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
               ● {active} lisensi aktif
             </span>
           ) : (
@@ -83,7 +94,7 @@ export function ClientMobileCard({
             variant="ghost"
             size="sm"
             onClick={() => onEdit?.(client)}
-            className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground cursor-pointer"
+            className="h-7 w-7 cursor-pointer rounded-lg p-0 text-muted-foreground hover:text-foreground"
             title="Edit Klien"
           >
             <Pencil size={12} />
@@ -93,7 +104,7 @@ export function ClientMobileCard({
             variant="ghost"
             size="sm"
             onClick={() => onDelete?.(client)}
-            className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-destructive cursor-pointer"
+            className="h-7 w-7 cursor-pointer rounded-lg p-0 text-muted-foreground hover:text-destructive"
             title="Hapus Klien"
           >
             <Trash2 size={12} />

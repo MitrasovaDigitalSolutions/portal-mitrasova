@@ -1,13 +1,7 @@
 "use client"
 
 import { useState, type JSX } from "react"
-import {
-  Check,
-  Copy,
-  Eye,
-  EyeOff,
-  KeyRound,
-} from "lucide-react"
+import { Check, Copy, Eye, EyeOff, KeyRound } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import type { License } from "../@types/license"
@@ -42,11 +36,11 @@ export function LicenseDetailCredentialsCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-      <div className="flex items-center justify-between pb-2.5 border-b border-border">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex items-center justify-between border-b border-border pb-2.5">
         <div className="flex items-center gap-2">
           <KeyRound size={15} className="text-muted-foreground" />
-          <h2 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+          <h2 className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Kredensial & Kunci Lisensi
           </h2>
         </div>
@@ -65,14 +59,14 @@ export function LicenseDetailCredentialsCard({
             <input
               readOnly
               value={license.license_key}
-              className="w-full h-9 px-3 font-mono text-xs rounded-lg border border-border bg-muted/40 text-foreground select-all focus:outline-none focus:ring-1 focus:ring-primary/40"
+              className="h-9 w-full rounded-lg border border-border bg-muted/40 px-3 font-mono text-xs text-foreground select-all focus:ring-1 focus:ring-primary/40 focus:outline-none"
             />
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleCopyKey}
-              className="h-9 px-3 text-xs shrink-0 gap-1.5 cursor-pointer"
+              className="h-9 shrink-0 cursor-pointer gap-1.5 px-3 text-xs"
             >
               {copiedKey ? (
                 <>
@@ -104,14 +98,16 @@ export function LicenseDetailCredentialsCard({
               <input
                 readOnly
                 type={showSecret ? "text" : "password"}
-                value={license.license_secret || "••••••••••••••••••••••••••••••••"}
-                className="w-full h-9 px-3 pr-10 font-mono text-xs rounded-lg border border-border bg-muted/40 text-foreground select-all focus:outline-none focus:ring-1 focus:ring-primary/40"
+                value={
+                  license.license_secret || "••••••••••••••••••••••••••••••••"
+                }
+                className="h-9 w-full rounded-lg border border-border bg-muted/40 px-3 pr-10 font-mono text-xs text-foreground select-all focus:ring-1 focus:ring-primary/40 focus:outline-none"
               />
               {license.license_secret && (
                 <button
                   type="button"
                   onClick={() => setShowSecret(!showSecret)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
                   title={showSecret ? "Sembunyikan Secret" : "Tampilkan Secret"}
                 >
                   {showSecret ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -124,7 +120,7 @@ export function LicenseDetailCredentialsCard({
               size="sm"
               disabled={!license.license_secret}
               onClick={handleCopySecret}
-              className="h-9 px-3 text-xs shrink-0 gap-1.5 cursor-pointer"
+              className="h-9 shrink-0 cursor-pointer gap-1.5 px-3 text-xs"
             >
               {copiedSecret ? (
                 <>

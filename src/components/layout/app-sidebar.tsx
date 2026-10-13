@@ -7,7 +7,7 @@ import { ChevronsLeft, ChevronsRight, ShieldCheck } from "lucide-react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { useSidebarStore } from "@/stores/sidebar-store"
 import { cn } from "@/lib/utils"
-import { SIDEBAR_NAV_ITEMS } from "./sidebar-config"
+import { SIDEBAR_SECTIONS } from "./sidebar-config"
 import { SidebarItem } from "./sidebar-item"
 
 export function AppSidebar() {
@@ -31,7 +31,7 @@ export function AppSidebar() {
       {/* Mobile Backdrop Overlay */}
       {mounted && isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300 lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -39,10 +39,12 @@ export function AppSidebar() {
       {/* Main Sidebar Container */}
       <aside
         className={cn(
-          "flex flex-col justify-between border-r border-border bg-card text-foreground transition-all duration-300 select-none h-screen h-[100dvh] shrink-0",
+          "flex h-[100dvh] h-screen shrink-0 flex-col justify-between border-r border-border bg-card text-foreground transition-all duration-300 select-none",
           // Mobile overlay vs Desktop relative layout
-          "fixed inset-y-0 left-0 z-50 lg:relative lg:translate-x-0 lg:z-40",
-          mounted && isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 lg:relative lg:z-40 lg:translate-x-0",
+          mounted && isMobileOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0",
           collapsed ? "w-16" : "w-60"
         )}
       >
@@ -50,7 +52,7 @@ export function AppSidebar() {
         <button
           type="button"
           onClick={toggle}
-          className="absolute top-2 -right-4 z-50 hidden h-12 w-4 items-center justify-center rounded-tr-md rounded-br-md border-y border-r border-border bg-card text-muted-foreground shadow-md transition-all outline-none hover:bg-muted hover:text-foreground cursor-pointer lg:flex"
+          className="absolute top-2 -right-4 z-50 hidden h-12 w-4 cursor-pointer items-center justify-center rounded-tr-md rounded-br-md border-y border-r border-border bg-card text-muted-foreground shadow-md transition-all outline-none hover:bg-muted hover:text-foreground lg:flex"
           title={collapsed ? "Perluas Menu" : "Sembunyikan Menu"}
           aria-label={collapsed ? "Perluas Menu" : "Sembunyikan Menu"}
         >
@@ -65,7 +67,7 @@ export function AppSidebar() {
         <div
           className={cn(
             "flex h-16 items-center border-b border-border transition-all",
-            collapsed ? "justify-center px-0" : "px-4 gap-3"
+            collapsed ? "justify-center px-0" : "gap-3 px-4"
           )}
         >
           <Link
@@ -75,7 +77,7 @@ export function AppSidebar() {
               collapsed && "justify-center"
             )}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold shadow-xs">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary font-bold text-primary-foreground shadow-xs">
               <ShieldCheck size={18} />
             </div>
 
@@ -93,15 +95,28 @@ export function AppSidebar() {
         </div>
 
         {/* Center: Navigation Menu */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-          {SIDEBAR_NAV_ITEMS.map((item) => (
-            <SidebarItem
-              key={item.href}
-              item={item}
-              collapsed={collapsed}
-              pathname={pathname}
-              onClick={() => setMobileOpen(false)}
-            />
+        <div className="flex-1 space-y-3.5 overflow-y-auto px-3 py-3">
+          {SIDEBAR_SECTIONS.map((section, sIdx) => (
+            <div key={section.title} className="space-y-1">
+              {!collapsed ? (
+                <div className="px-2 pt-1 pb-0.5 text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+                  {section.title}
+                </div>
+              ) : (
+                sIdx > 0 && <div className="my-1.5 border-t border-border/50" />
+              )}
+              <div className="space-y-0.5">
+                {section.items.map((item, iIdx) => (
+                  <SidebarItem
+                    key={item.href ?? `${section.title}-${item.title}-${iIdx}`}
+                    item={item}
+                    collapsed={collapsed}
+                    pathname={pathname}
+                    onClick={() => setMobileOpen(false)}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 

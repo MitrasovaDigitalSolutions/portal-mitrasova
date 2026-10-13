@@ -40,17 +40,18 @@ export function LicenseMobileCard({
     license.licenseAddons?.length ?? license.license_addons?.length ?? 0
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
       <div className="flex items-start justify-between gap-2">
-        <div className="space-y-1 min-w-0">
+        <div className="min-w-0 space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm text-foreground truncate">
+            <span className="truncate text-sm font-semibold text-foreground">
               {license.nama_instance}
             </span>
             <StatusBadge status={license.status} className="text-[10px]" />
           </div>
-          <p className="text-xs text-muted-foreground font-mono truncate">
-            {license.product?.nama || "Software"} ({license.product?.code || "APP"})
+          <p className="truncate font-mono text-xs text-muted-foreground">
+            {license.product?.nama || "Software"} (
+            {license.product?.code || "APP"})
           </p>
         </div>
 
@@ -89,7 +90,9 @@ export function LicenseMobileCard({
               <RefreshCw size={13} className="mr-2 text-sky-500" />
               <span>Reset Domain Binding</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => actions.onRegenerateSecret(license)}>
+            <DropdownMenuItem
+              onClick={() => actions.onRegenerateSecret(license)}
+            >
               <ShieldAlert size={13} className="mr-2 text-amber-500" />
               <span>Regenerate Secret</span>
             </DropdownMenuItem>
@@ -106,21 +109,22 @@ export function LicenseMobileCard({
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Globe size={12} className="shrink-0" />
-        <span className="font-mono truncate">
+        <span className="truncate font-mono">
           {license.domain_instance || "Domain belum diikat"}
         </span>
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-border/60 text-xs">
+      <div className="flex items-center justify-between border-t border-border/60 pt-2 text-xs">
         <div className="flex items-center gap-1.5">
           <Badge
             variant={subConfig?.badgeVariant ?? "secondary"}
             className="text-[10px]"
           >
-            {subConfig?.label.split(" ")[0] ?? formatCodeToTitle(license.subscription_type)}
+            {subConfig?.label.split(" ")[0] ??
+              formatCodeToTitle(license.subscription_type)}
           </Badge>
           {count > 0 && (
-            <Badge variant="outline" className="text-[10px] gap-1 font-mono">
+            <Badge variant="outline" className="gap-1 font-mono text-[10px]">
               <Puzzle size={10} />
               <span>{count} Addon</span>
             </Badge>
@@ -132,7 +136,7 @@ export function LicenseMobileCard({
           variant="outline"
           size="sm"
           onClick={() => actions.onInspectDetail(license)}
-          className="h-7 px-2 text-[11px] gap-1 cursor-pointer"
+          className="h-7 cursor-pointer gap-1 px-2 text-[11px]"
         >
           <KeyRound size={12} />
           <span>Lihat Key</span>

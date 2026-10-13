@@ -66,10 +66,7 @@ export function ProductDetailView({
 
       {/* Product Information & Metrics Card */}
       {product && (
-        <ProductDetailInfoCard
-          product={product}
-          addonsCount={addons.length}
-        />
+        <ProductDetailInfoCard product={product} addonsCount={addons.length} />
       )}
 
       {/* Modul Addon Section */}

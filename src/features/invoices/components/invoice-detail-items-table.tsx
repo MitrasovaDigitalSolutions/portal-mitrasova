@@ -20,14 +20,14 @@ export function InvoiceDetailItemsTable({
         <FileText className="size-3.5 text-primary" />
         Rincian Item Faktur
       </div>
-      <div className="rounded-xl border border-border overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="overflow-hidden rounded-xl border border-border">
+        <table className="w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-border bg-muted/40 text-[11px] font-semibold text-muted-foreground">
-              <th className="py-2.5 px-3">Deskripsi</th>
-              <th className="py-2.5 px-3 text-center w-20">Jumlah</th>
-              <th className="py-2.5 px-3 text-right w-36">Harga Satuan</th>
-              <th className="py-2.5 px-3 text-right w-36">Subtotal</th>
+              <th className="px-3 py-2.5">Deskripsi</th>
+              <th className="w-20 px-3 py-2.5 text-center">Jumlah</th>
+              <th className="w-36 px-3 py-2.5 text-right">Harga Satuan</th>
+              <th className="w-36 px-3 py-2.5 text-right">Subtotal</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
@@ -39,16 +39,16 @@ export function InvoiceDetailItemsTable({
 
                 return (
                   <tr key={idx} className="hover:bg-muted/30">
-                    <td className="py-2.5 px-3 font-medium text-foreground">
+                    <td className="px-3 py-2.5 font-medium text-foreground">
                       {item.name || item.description || "Item Tagihan"}
                     </td>
-                    <td className="py-2.5 px-3 text-center text-muted-foreground">
+                    <td className="px-3 py-2.5 text-center text-muted-foreground">
                       {qty}
                     </td>
-                    <td className="py-2.5 px-3 text-right text-muted-foreground font-mono">
+                    <td className="px-3 py-2.5 text-right font-mono text-muted-foreground">
                       {formatCurrency(price)}
                     </td>
-                    <td className="py-2.5 px-3 text-right font-semibold text-foreground font-mono">
+                    <td className="px-3 py-2.5 text-right font-mono font-semibold text-foreground">
                       {formatCurrency(subtotal)}
                     </td>
                   </tr>
@@ -56,10 +56,13 @@ export function InvoiceDetailItemsTable({
               })
             ) : (
               <tr>
-                <td className="py-3 px-3 font-medium text-foreground" colSpan={3}>
+                <td
+                  className="px-3 py-3 font-medium text-foreground"
+                  colSpan={3}
+                >
                   Layanan & Biaya Lisensi Sistem
                 </td>
-                <td className="py-3 px-3 text-right font-bold text-foreground font-mono">
+                <td className="px-3 py-3 text-right font-mono font-bold text-foreground">
                   {formatCurrency(totalAmount)}
                 </td>
               </tr>

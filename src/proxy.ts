@@ -22,6 +22,11 @@ export const proxy = auth((req) => {
     pathname.startsWith("/products") ||
     pathname.startsWith("/server-packages") ||
     pathname.startsWith("/coupons") ||
+    pathname.startsWith("/cash-accounts") ||
+    pathname.startsWith("/cash-ledgers") ||
+    pathname.startsWith("/cashflow") ||
+    pathname.startsWith("/expenses") ||
+    pathname.startsWith("/expense-categories") ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/settings") ||
     pathname.startsWith("/users") ||

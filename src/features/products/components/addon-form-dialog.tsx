@@ -16,10 +16,7 @@ import {
   useCreateProductAddon,
   useUpdateProductAddon,
 } from "../api/product.queries"
-import {
-  addonSchema,
-  type AddonFormValues,
-} from "../validations/addon.schema"
+import { addonSchema, type AddonFormValues } from "../validations/addon.schema"
 import type { ProductAddon } from "../@types/product"
 
 export interface AddonFormDialogProps {
@@ -120,14 +117,21 @@ export function AddonFormDialog({
               {isEdit ? "Edit Modul Addon" : "Tambah Modul Addon"}
             </div>
             <p className="text-[11px] font-normal text-muted-foreground">
-              Produk induk: <span className="font-semibold text-foreground">{productName}</span>
+              Produk induk:{" "}
+              <span className="font-semibold text-foreground">
+                {productName}
+              </span>
             </p>
           </div>
         </div>
       }
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4 pt-2"
+        >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormInput<AddonFormValues>
               name="code"
@@ -170,20 +174,20 @@ export function AddonFormDialog({
             description="Addon aktif dapat dipilih untuk aktivasi pada lisensi"
           />
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 className="size-3.5 animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Tambah Addon"}</span>

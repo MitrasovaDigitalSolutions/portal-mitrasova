@@ -10,7 +10,11 @@ export function useProductAddonsManagement(productId: string) {
   const [selectedAddon, setSelectedAddon] = useState<ProductAddon | null>(null)
   const [addonToDelete, setAddonToDelete] = useState<ProductAddon | null>(null)
 
-  const { data: addons = [], isLoading, isFetching } = useProductAddons(productId)
+  const {
+    data: addons = [],
+    isLoading,
+    isFetching,
+  } = useProductAddons(productId)
   const deleteMutation = useDeleteProductAddon(productId)
 
   // Filter addons by search term

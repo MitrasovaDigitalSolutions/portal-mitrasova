@@ -26,7 +26,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { License } from "../@types/license"
-import { SERVER_TYPES, SUBSCRIPTION_TYPES, formatCodeToTitle } from "../constants"
+import {
+  SERVER_TYPES,
+  SUBSCRIPTION_TYPES,
+  formatCodeToTitle,
+} from "../constants"
 
 interface LicenseDetailHeaderProps {
   license: License
@@ -70,10 +74,13 @@ export function LicenseDetailHeader({
   return (
     <div className="space-y-3">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+      >
         <Link
           href="/clients"
-          className="hover:text-foreground transition-colors"
+          className="transition-colors hover:text-foreground"
         >
           Klien
         </Link>
@@ -81,48 +88,55 @@ export function LicenseDetailHeader({
         {effectiveClientId ? (
           <Link
             href={`/clients/${effectiveClientId}`}
-            className="hover:text-foreground transition-colors truncate max-w-[180px]"
+            className="max-w-[180px] truncate transition-colors hover:text-foreground"
           >
             {effectiveClientName}
           </Link>
         ) : (
-          <span className="truncate max-w-[180px]">{effectiveClientName}</span>
+          <span className="max-w-[180px] truncate">{effectiveClientName}</span>
         )}
         <ChevronRight size={12} className="text-muted-foreground/60" />
-        <span className="text-foreground font-medium truncate max-w-[200px]">
+        <span className="max-w-[200px] truncate font-medium text-foreground">
           {license.nama_instance}
         </span>
         {isFetching && (
-          <span className="inline-flex items-center gap-1 ml-2 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+          <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">
             <RefreshCw size={10} className="animate-spin" /> Memperbarui...
           </span>
         )}
       </nav>
 
       {/* Main Title & Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1 border-b border-border">
-        <div className="flex items-center gap-2.5 flex-wrap">
+      <div className="flex flex-col gap-3 border-b border-border pb-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => router.back()}
-            className="h-8 w-8 p-0 rounded-lg cursor-pointer shrink-0"
+            className="h-8 w-8 shrink-0 cursor-pointer rounded-lg p-0"
             title="Kembali ke halaman sebelumnya"
           >
             <ArrowLeft size={15} />
           </Button>
 
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
                 {license.nama_instance}
               </h1>
               <StatusBadge status={license.status} />
-              <Badge variant={subConfig?.badgeVariant ?? "secondary"} className="text-xs">
-                {subConfig?.label ?? formatCodeToTitle(license.subscription_type)}
+              <Badge
+                variant={subConfig?.badgeVariant ?? "secondary"}
+                className="text-xs"
+              >
+                {subConfig?.label ??
+                  formatCodeToTitle(license.subscription_type)}
               </Badge>
-              <Badge variant="outline" className="text-xs text-muted-foreground">
+              <Badge
+                variant="outline"
+                className="text-xs text-muted-foreground"
+              >
                 {serverName}
               </Badge>
             </div>
@@ -130,13 +144,13 @@ export function LicenseDetailHeader({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+        <div className="flex shrink-0 flex-wrap items-center gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={onEdit}
-            className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
+            className="h-8 cursor-pointer gap-1.5 px-2.5 text-xs"
           >
             <Pencil size={13} />
             <span>Edit</span>
@@ -147,7 +161,7 @@ export function LicenseDetailHeader({
               type="button"
               size="sm"
               onClick={onOrder}
-              className="h-8 px-3 text-xs gap-1.5 cursor-pointer font-medium shadow-xs"
+              className="h-8 cursor-pointer gap-1.5 px-3 text-xs font-medium shadow-xs"
             >
               <CreditCard size={13} />
               <span>Beli / Perpanjang</span>
@@ -158,7 +172,7 @@ export function LicenseDetailHeader({
               variant="outline"
               size="sm"
               onClick={onExtend}
-              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
+              className="h-8 cursor-pointer gap-1.5 px-2.5 text-xs"
             >
               <CalendarClock size={13} />
               <span>Perpanjang</span>

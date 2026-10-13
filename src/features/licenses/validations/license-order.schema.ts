@@ -9,12 +9,10 @@ export const licenseOrderSchema = z
     include_base_product: z.boolean(),
     addon_ids: z.array(z.string()),
   })
-  .refine(
-    (data) => data.include_base_product || data.addon_ids.length > 0,
-    {
-      message: "Pilih setidaknya perpanjangan lisensi atau minimal 1 modul add-on",
-      path: ["include_base_product"],
-    }
-  )
+  .refine((data) => data.include_base_product || data.addon_ids.length > 0, {
+    message:
+      "Pilih setidaknya perpanjangan lisensi atau minimal 1 modul add-on",
+    path: ["include_base_product"],
+  })
 
 export type LicenseOrderValues = z.infer<typeof licenseOrderSchema>

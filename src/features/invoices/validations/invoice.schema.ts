@@ -11,7 +11,9 @@ export const createInvoiceSchema = z.object({
   client_id: z.string().min(1, "Klien wajib dipilih"),
   license_id: z.string().optional().nullable(),
   total_amount: z.number().min(0, "Total tagihan minimal 0"),
-  status: z.enum(["unpaid", "paid", "cancelled", "expired"]),
+  status: z.enum(["unpaid", "paid", "cancelled", "expired"], {
+    error: "Status tagihan wajib dipilih",
+  }),
   payment_method: z.string().optional().nullable(),
   due_date: z.string().min(1, "Tanggal jatuh tempo wajib diisi"),
   paid_at: z.string().optional().nullable(),
@@ -36,6 +38,7 @@ export const markPaidSchema = z.object({
     .min(1, "Durasi perpanjangan minimal 1 bulan")
     .optional()
     .nullable(),
+  cash_account_id: z.number().optional().nullable(),
 })
 
 export type CreateInvoiceFormValues = z.infer<typeof createInvoiceSchema>

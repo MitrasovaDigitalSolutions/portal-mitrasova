@@ -20,7 +20,7 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
     cell: ({ row }) => {
       const addon = row.original
       return (
-        <span className="font-mono text-xs font-bold text-sky-600 dark:text-sky-400 px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 whitespace-nowrap shadow-2xs">
+        <span className="rounded-md border border-sky-500/20 bg-sky-500/10 px-2.5 py-1 font-mono text-xs font-bold whitespace-nowrap text-sky-600 shadow-2xs dark:text-sky-400">
           {addon.code}
         </span>
       )
@@ -34,21 +34,21 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
       const addon = row.original
       return (
         <TooltipProvider delayDuration={200}>
-          <div className="flex items-center gap-2.5 max-w-[290px]">
-            <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shadow-2xs">
+          <div className="flex max-w-[290px] items-center gap-2.5">
+            <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg border border-sky-500/20 bg-sky-500/10 text-sky-600 shadow-2xs dark:text-sky-400">
               <Layers size={14} />
             </div>
             <div className="min-w-0 flex-1 space-y-0.5">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="font-semibold text-xs text-foreground truncate block cursor-default">
+                  <span className="block cursor-default truncate text-xs font-semibold text-foreground">
                     {addon.nama}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-xs text-xs">
                   <p className="font-semibold">{addon.nama}</p>
                   {addon.description && (
-                    <p className="text-zinc-400 text-[11px] leading-relaxed mt-0.5">
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-zinc-400">
                       {addon.description}
                     </p>
                   )}
@@ -56,7 +56,7 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
               </Tooltip>
 
               {addon.description ? (
-                <div className="text-[11px] text-muted-foreground truncate leading-tight">
+                <div className="truncate text-[11px] leading-tight text-muted-foreground">
                   {addon.description}
                 </div>
               ) : (
@@ -77,9 +77,9 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
     cell: ({ row }) => {
       const price = row.original.harga_bulanan
       return (
-        <div className="font-mono text-xs font-semibold text-foreground whitespace-nowrap">
+        <div className="font-mono text-xs font-semibold whitespace-nowrap text-foreground">
           {formatCurrency(price)}
-          <span className="text-[10px] font-normal text-muted-foreground ml-1">
+          <span className="ml-1 text-[10px] font-normal text-muted-foreground">
             /bln
           </span>
         </div>
@@ -93,9 +93,9 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
     cell: ({ row }) => {
       const price = row.original.harga_tahunan
       return (
-        <div className="font-mono text-xs font-semibold text-foreground whitespace-nowrap">
+        <div className="font-mono text-xs font-semibold whitespace-nowrap text-foreground">
           {formatCurrency(price)}
-          <span className="text-[10px] font-normal text-muted-foreground ml-1">
+          <span className="ml-1 text-[10px] font-normal text-muted-foreground">
             /thn
           </span>
         </div>
@@ -109,12 +109,18 @@ export const addonColumns: ColumnDef<ProductAddon>[] = [
     cell: ({ row }) => {
       const isActive = row.original.is_active
       return isActive ? (
-        <Badge variant="success" className="gap-1 text-[10px] whitespace-nowrap">
+        <Badge
+          variant="success"
+          className="gap-1 text-[10px] whitespace-nowrap"
+        >
           <CheckCircle2 className="size-3" />
           Aktif
         </Badge>
       ) : (
-        <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground whitespace-nowrap">
+        <Badge
+          variant="outline"
+          className="gap-1 text-[10px] whitespace-nowrap text-muted-foreground"
+        >
           <XCircle className="size-3" />
           Non-Aktif
         </Badge>

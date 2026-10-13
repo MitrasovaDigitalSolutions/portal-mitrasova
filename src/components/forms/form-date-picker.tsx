@@ -13,6 +13,9 @@ import { DatePicker } from "@/components/ui/date-picker"
 export interface FormDatePickerProps<T extends FieldValues> {
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   placeholder?: string
   disabled?: boolean
   className?: string
@@ -29,6 +32,9 @@ export interface FormDatePickerProps<T extends FieldValues> {
 export function FormDatePicker<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   placeholder,
   disabled = false,
   className,
@@ -63,6 +69,10 @@ export function FormDatePicker<T extends FieldValues>({
   }
 
   const error = getNestedValue(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    error?.message
 
   return (
     <Controller
@@ -77,8 +87,9 @@ export function FormDatePicker<T extends FieldValues>({
           className={className}
           buttonClassName={buttonClassName}
           wrapperClassName={wrapperClassName}
-          error={error?.message}
+          error={displayError}
           label={label}
+          required={required}
           clearable={clearable}
           size={size}
           captionLayout={captionLayout}

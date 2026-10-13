@@ -13,10 +13,13 @@ import React from "react"
 
 interface FormNominalInputProps<T extends FieldValues> extends Omit<
   React.ComponentProps<typeof NominalInput>,
-  "name" | "value" | "onChange" | "isError"
+  "name" | "value" | "onChange" | "isError" | "required"
 > {
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   onValueChange?: (val: number | null) => void
   inputRef?: React.Ref<HTMLInputElement>
 }
@@ -24,6 +27,9 @@ interface FormNominalInputProps<T extends FieldValues> extends Omit<
 export function FormNominalInput<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   className,
   disabled,
   onValueChange,
@@ -52,6 +58,10 @@ export function FormNominalInput<T extends FieldValues>({
   }
 
   const error = getNestedValue(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    (error?.message as string | undefined)
 
   return (
     <Controller
@@ -65,6 +75,7 @@ export function FormNominalInput<T extends FieldValues>({
               className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase"
             >
               {label}
+              {required && <span className="text-destructive"> *</span>}
             </label>
           )}
           <NominalInput
@@ -77,13 +88,13 @@ export function FormNominalInput<T extends FieldValues>({
               onValueChange?.(val)
             }}
             disabled={disabled}
-            isError={!!error}
+            isError={!!displayError}
             className={className}
             {...props}
           />
-          {error && (
+          {displayError && (
             <p className="text-[10px] font-medium text-destructive">
-              {error.message as string}
+              {displayError}
             </p>
           )}
         </div>

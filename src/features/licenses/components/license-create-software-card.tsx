@@ -2,11 +2,7 @@
 
 import { useMemo, type JSX } from "react"
 import { Building2, Package, Sparkles } from "lucide-react"
-import {
-  FormDatePicker,
-  FormNumberInput,
-  FormSelect,
-} from "@/components/forms"
+import { FormDatePicker, FormNumberInput, FormSelect } from "@/components/forms"
 import type { Client } from "@/features/clients/@types/client"
 import type { Product } from "@/features/products/@types/product"
 import { formatCurrency } from "@/utils"
@@ -67,10 +63,10 @@ export function LicenseCreateSoftwareCard({
   )
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-xs space-y-3.5">
+    <div className="space-y-3.5 rounded-xl border border-border bg-card p-3.5 shadow-xs sm:p-4">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-border/60 pb-2.5">
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
           <Building2 size={15} />
         </div>
         <div>
@@ -78,14 +74,15 @@ export function LicenseCreateSoftwareCard({
             Klien, Produk Aplikasi & Skema Langganan
           </h2>
           <p className="text-[11px] text-muted-foreground">
-            Tentukan klien pemilik lisensi, produk software, dan periode aktif lisensi.
+            Tentukan klien pemilik lisensi, produk software, dan periode aktif
+            lisensi.
           </p>
         </div>
       </div>
 
       {/* Row 1: Client & Product Selection */}
       <div className="space-y-2">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <FormSelect
             name="client_id"
             label="Klien / Merchant *"
@@ -111,7 +108,7 @@ export function LicenseCreateSoftwareCard({
         {selectedProduct && (
           <div className="flex flex-wrap items-center justify-between gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-[11px]">
             <div className="flex items-center gap-1.5">
-              <Package size={13} className="text-primary shrink-0" />
+              <Package size={13} className="shrink-0 text-primary" />
               <span className="font-semibold text-foreground">
                 {selectedProduct.nama}
               </span>
@@ -143,10 +140,10 @@ export function LicenseCreateSoftwareCard({
 
       {/* Row 2: Subscription & Expiry (4-cols) */}
       <div className="space-y-1.5 border-t border-border/60 pt-3">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+        <span className="block text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
           Masa Aktif & Ketentuan Langganan
         </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+        <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2">
           <FormSelect
             name="subscription_type"
             label="Tipe Langganan"
@@ -170,7 +167,7 @@ export function LicenseCreateSoftwareCard({
               <label className="text-xs font-medium text-muted-foreground">
                 Tanggal Kedaluwarsa
               </label>
-              <div className="flex h-9 items-center justify-between rounded-lg border border-dashed border-emerald-500/40 bg-emerald-500/5 px-2.5 text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">
+              <div className="flex h-9 items-center justify-between rounded-lg border border-dashed border-emerald-500/40 bg-emerald-500/5 px-2.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
                 <span>Permanen (Lifetime)</span>
                 <Sparkles size={12} />
               </div>

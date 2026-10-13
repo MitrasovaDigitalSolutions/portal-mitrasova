@@ -3,13 +3,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { invoiceApi } from "./invoice.api"
-import type {
-  InvoiceQueryParams,
-  MarkPaidPayload,
-} from "../@types/invoice"
+import type { InvoiceQueryParams, MarkPaidPayload } from "../@types/invoice"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
 import { clientKeys } from "@/features/clients/api/client.queries"
 import { licenseKeys } from "@/features/licenses/api/license.queries"
+import { invalidateCashQueries } from "@/features/cashflow/utils/invalidate-cash-queries"
 
 export const invoiceKeys = {
   all: ["invoices"] as const,
@@ -49,6 +47,7 @@ export function useMarkInvoiceAsPaid() {
       void queryClient.invalidateQueries({ queryKey: licenseKeys.all })
       void queryClient.invalidateQueries({ queryKey: clientKeys.all })
       void queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
+      invalidateCashQueries(queryClient)
     },
     onError: (error: Error) => {
       toast.error(error.message || "Gagal menandai invoice lunas")

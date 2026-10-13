@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function InvoicesSkeleton(): React.JSX.Element {
   return (
-    <div className="space-y-3.5 sm:space-y-4 animate-in fade-in duration-200">
+    <div className="animate-in space-y-3.5 duration-200 fade-in sm:space-y-4">
       {/* Page Header skeleton */}
       <div className="space-y-1">
         <Skeleton className="h-6 w-48 rounded-lg" />
@@ -13,11 +13,11 @@ export function InvoicesSkeleton(): React.JSX.Element {
       </div>
 
       {/* Metric cards skeleton (1-col mobile, 3-col desktop) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2"
+            className="space-y-2 rounded-xl border border-border bg-card p-3 sm:p-3.5"
           >
             <div className="flex items-center justify-between">
               <Skeleton className="h-3.5 w-20 rounded" />
@@ -32,8 +32,8 @@ export function InvoicesSkeleton(): React.JSX.Element {
       </div>
 
       {/* Filter and toolbar skeleton (single-row flex) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2">
+      <div className="flex flex-col items-stretch justify-between gap-2.5 sm:flex-row sm:items-center">
+        <div className="flex flex-1 flex-col items-stretch gap-2 sm:flex-row sm:items-center">
           <Skeleton className="h-9 w-full max-w-sm rounded-xl" />
           <Skeleton className="h-9 w-64 rounded-xl" />
         </div>
@@ -43,16 +43,16 @@ export function InvoicesSkeleton(): React.JSX.Element {
       </div>
 
       {/* Table skeleton */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="p-3 border-b border-border bg-muted/20 flex items-center justify-between">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex items-center justify-between border-b border-border bg-muted/20 p-3">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-4 w-20" />
         </div>
-        <div className="p-3 space-y-2">
+        <div className="space-y-2 p-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="flex items-center justify-between py-2 border-b border-border/40 last:border-0"
+              className="flex items-center justify-between border-b border-border/40 py-2 last:border-0"
             >
               <div className="flex items-center gap-3">
                 <Skeleton className="h-8 w-8 rounded-lg" />

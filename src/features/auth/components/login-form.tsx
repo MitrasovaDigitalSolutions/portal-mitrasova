@@ -72,10 +72,10 @@ export function LoginForm() {
   }
 
   return (
-    <div className="relative w-full max-w-[400px] overflow-hidden rounded-3xl border border-border/80 bg-card/90 p-7 sm:p-8 shadow-2xl backdrop-blur-xl transition-all before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/40 before:to-transparent">
+    <div className="relative w-full max-w-[400px] overflow-hidden rounded-3xl border border-border/80 bg-card/90 p-7 shadow-2xl backdrop-blur-xl transition-all before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/40 before:to-transparent sm:p-8">
       {/* Brand Header */}
       <div className="mb-6 text-center">
-        <div className="mx-auto mb-3.5 flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/20 via-primary/10 to-transparent text-primary shadow-sm shadow-primary/20 ring-1 ring-primary/20">
+        <div className="mx-auto mb-3.5 flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/20 via-primary/10 to-transparent text-primary shadow-sm ring-1 shadow-primary/20 ring-primary/20">
           <ShieldCheck size={22} className="text-primary" />
         </div>
         <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
@@ -96,7 +96,11 @@ export function LoginForm() {
 
       {/* Login Form */}
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4"
+        >
           {/* Email Field */}
           <FormInput<LoginFormValues>
             name="email"
@@ -104,6 +108,7 @@ export function LoginForm() {
             type="email"
             placeholder="Masukkan Email Anda..."
             autoComplete="email"
+            required
             startIcon={<Mail size={16} />}
             className="h-10.5 rounded-xl bg-background/60"
           />
@@ -115,6 +120,7 @@ export function LoginForm() {
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             autoComplete="current-password"
+            required
             startIcon={<Lock size={16} />}
             endIcon={
               <button
@@ -141,7 +147,7 @@ export function LoginForm() {
               onCheckedChange={(checked) =>
                 setValue("remember", Boolean(checked))
               }
-              className="h-4 w-4 rounded-md cursor-pointer"
+              className="h-4 w-4 cursor-pointer rounded-md"
             />
             <label
               htmlFor="remember"

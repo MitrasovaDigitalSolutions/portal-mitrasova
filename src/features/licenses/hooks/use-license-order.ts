@@ -118,10 +118,7 @@ export function useLicenseOrder({
   const billingPeriod = useWatch({ control, name: "billing_period" })
   const includeBase = useWatch({ control, name: "include_base_product" })
   const rawAddonIds = useWatch({ control, name: "addon_ids" })
-  const selectedAddonIds = useMemo(
-    () => rawAddonIds ?? [],
-    [rawAddonIds]
-  )
+  const selectedAddonIds = useMemo(() => rawAddonIds ?? [], [rawAddonIds])
 
   const isAnnual = billingPeriod === "annual"
 
@@ -149,7 +146,8 @@ export function useLicenseOrder({
 
   const currentActiveAddonsMap = useMemo(() => {
     const list = license?.licenseAddons ?? license?.license_addons ?? []
-    const map: Record<string, { status: string; expires_at: string | null }> = {}
+    const map: Record<string, { status: string; expires_at: string | null }> =
+      {}
     list.forEach((item) => {
       map[item.product_addon_id] = {
         status: item.status,
@@ -171,17 +169,19 @@ export function useLicenseOrder({
 
   const basePrice = useMemo(() => {
     const baseMonthlyPrice =
-      license?.product?.harga_bulanan ??
-      product?.harga_bulanan ??
-      0
+      license?.product?.harga_bulanan ?? product?.harga_bulanan ?? 0
 
     const baseAnnualPrice =
-      license?.product?.harga_tahunan ??
-      product?.harga_tahunan ??
-      0
+      license?.product?.harga_tahunan ?? product?.harga_tahunan ?? 0
 
     return isAnnual ? baseAnnualPrice : baseMonthlyPrice
-  }, [license?.product?.harga_bulanan, license?.product?.harga_tahunan, product?.harga_bulanan, product?.harga_tahunan, isAnnual])
+  }, [
+    license?.product?.harga_bulanan,
+    license?.product?.harga_tahunan,
+    product?.harga_bulanan,
+    product?.harga_tahunan,
+    isAnnual,
+  ])
 
   const calculation = useMemo(() => {
     const items: OrderCalculationItem[] = []
@@ -215,7 +215,15 @@ export function useLicenseOrder({
     const grandTotal = items.reduce((sum, it) => sum + it.subtotal, 0)
 
     return { items, grandTotal }
-  }, [includeBase, selectedAddonIds, isAnnual, license, product, availableAddons, basePrice])
+  }, [
+    includeBase,
+    selectedAddonIds,
+    isAnnual,
+    license,
+    product,
+    availableAddons,
+    basePrice,
+  ])
 
   const handleToggleAddon = (addonId: string) => {
     const exists = selectedAddonIds.includes(addonId)

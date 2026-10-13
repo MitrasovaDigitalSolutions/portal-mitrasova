@@ -14,15 +14,14 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { motion } from "framer-motion"
-import {
-  BarChart3,
-  PieChart as PieChartIcon,
-  TrendingUp,
-} from "lucide-react"
+import { BarChart3, PieChart as PieChartIcon, TrendingUp } from "lucide-react"
 
 import { Card } from "@/components/ui/card"
 import { formatRupiah } from "@/hooks/use-format-rupiah"
-import type { DashboardOverview, ExpiringLicenseItem } from "../@types/dashboard"
+import type {
+  DashboardOverview,
+  ExpiringLicenseItem,
+} from "../@types/dashboard"
 import { cn } from "@/lib/utils"
 
 interface DashboardChartsProps {
@@ -93,7 +92,11 @@ export function DashboardCharts({
     { name: "Mitra Klien", jumlah: overview.total_clients, fill: "#0284c7" },
     { name: "SKU Produk", jumlah: overview.total_products, fill: "#6366f1" },
     { name: "Lisensi", jumlah: overview.total_licenses, fill: "#059669" },
-    { name: "Invoice", jumlah: overview.unpaid_invoices_count, fill: "#d97706" },
+    {
+      name: "Invoice",
+      jumlah: overview.unpaid_invoices_count,
+      fill: "#d97706",
+    },
   ]
 
   const [activeTab, setActiveTab] = useState<"finance" | "volume">("finance")
@@ -107,7 +110,7 @@ export function DashboardCharts({
         transition={{ duration: 0.3, delay: 0.08 }}
         className="lg:col-span-5"
       >
-        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs">
+        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 shadow-2xs sm:p-4">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
             <div className="flex items-center gap-2">
@@ -123,7 +126,7 @@ export function DashboardCharts({
                 </p>
               </div>
             </div>
-            <span className="font-mono rounded-md bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+            <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
               {overview.total_licenses} Total
             </span>
           </div>
@@ -174,15 +177,15 @@ export function DashboardCharts({
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-36 w-36 rounded-full border-4 border-muted animate-pulse" />
+              <div className="h-36 w-36 animate-pulse rounded-full border-4 border-muted" />
             )}
 
             {/* Inner Total Pill */}
             <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center">
-              <span className="font-mono text-lg font-black text-foreground leading-none">
+              <span className="font-mono text-lg leading-none font-black text-foreground">
                 {overview.active_licenses}
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground mt-0.5">
+              <span className="mt-0.5 text-[10px] font-semibold text-muted-foreground">
                 Aktif
               </span>
             </div>
@@ -191,7 +194,7 @@ export function DashboardCharts({
           {/* Legend Pills */}
           <div className="grid grid-cols-3 gap-1.5 border-t border-border/60 pt-2.5 text-center">
             <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-1.5">
-              <span className="block text-[9px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-tight">
+              <span className="block text-[9px] font-bold tracking-tight text-emerald-700 uppercase dark:text-emerald-400">
                 Healthy
               </span>
               <span className="font-mono text-xs font-black text-foreground">
@@ -200,7 +203,7 @@ export function DashboardCharts({
             </div>
 
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-1.5">
-              <span className="block text-[9px] font-bold text-amber-800 dark:text-amber-400 uppercase tracking-tight">
+              <span className="block text-[9px] font-bold tracking-tight text-amber-800 uppercase dark:text-amber-400">
                 Expiring
               </span>
               <span className="font-mono text-xs font-black text-foreground">
@@ -209,7 +212,7 @@ export function DashboardCharts({
             </div>
 
             <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-1.5">
-              <span className="block text-[9px] font-bold text-rose-700 dark:text-rose-400 uppercase tracking-tight">
+              <span className="block text-[9px] font-bold tracking-tight text-rose-700 uppercase dark:text-rose-400">
                 Expired
               </span>
               <span className="font-mono text-xs font-black text-foreground">
@@ -227,9 +230,9 @@ export function DashboardCharts({
         transition={{ duration: 0.3, delay: 0.12 }}
         className="lg:col-span-7"
       >
-        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs">
+        <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3.5 shadow-2xs sm:p-4">
           {/* Header with Switcher Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border/60 pb-2.5">
+          <div className="flex flex-col justify-between gap-2.5 border-b border-border/60 pb-2.5 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
               <div className="flex size-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
                 <BarChart3 size={14} />
@@ -249,14 +252,14 @@ export function DashboardCharts({
             </div>
 
             {/* Toggle Tabs */}
-            <div className="flex items-center gap-1 rounded-xl border border-border bg-muted/60 p-0.5 self-start sm:self-auto">
+            <div className="flex items-center gap-1 self-start rounded-xl border border-border bg-muted/60 p-0.5 sm:self-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab("finance")}
                 className={cn(
                   "cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all select-none",
                   activeTab === "finance"
-                    ? "bg-card text-foreground shadow-2xs font-bold"
+                    ? "bg-card font-bold text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -268,7 +271,7 @@ export function DashboardCharts({
                 className={cn(
                   "cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all select-none",
                   activeTab === "volume"
-                    ? "bg-card text-foreground shadow-2xs font-bold"
+                    ? "bg-card font-bold text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -278,7 +281,7 @@ export function DashboardCharts({
           </div>
 
           {/* Bar Chart Area */}
-          <div className="my-2 flex-1 min-h-[175px] w-full">
+          <div className="my-2 min-h-[175px] w-full flex-1">
             {mounted ? (
               <ResponsiveContainer width="100%" height={175}>
                 {activeTab === "finance" ? (
@@ -332,11 +335,7 @@ export function DashboardCharts({
                         return null
                       }}
                     />
-                    <Bar
-                      dataKey="nominal"
-                      radius={[6, 6, 0, 0]}
-                      barSize={40}
-                    >
+                    <Bar dataKey="nominal" radius={[6, 6, 0, 0]} barSize={40}>
                       {financialData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -384,11 +383,7 @@ export function DashboardCharts({
                         return null
                       }}
                     />
-                    <Bar
-                      dataKey="jumlah"
-                      radius={[6, 6, 0, 0]}
-                      barSize={32}
-                    >
+                    <Bar dataKey="jumlah" radius={[6, 6, 0, 0]} barSize={32}>
                       {volumeData.map((entry, index) => (
                         <Cell key={`cell-vol-${index}`} fill={entry.fill} />
                       ))}
@@ -397,14 +392,14 @@ export function DashboardCharts({
                 )}
               </ResponsiveContainer>
             ) : (
-              <div className="h-full w-full bg-muted/30 rounded-xl animate-pulse" />
+              <div className="h-full w-full animate-pulse rounded-xl bg-muted/30" />
             )}
           </div>
 
           {/* Bottom Insights Footnote */}
           <div className="flex items-center justify-between border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-1.5 truncate">
-              <TrendingUp size={13} className="text-primary shrink-0" />
+              <TrendingUp size={13} className="shrink-0 text-primary" />
               <span className="truncate">
                 {overview.unpaid_invoices_count > 0
                   ? `${overview.unpaid_invoices_count} faktur terbuka menunggu penyelesaian`

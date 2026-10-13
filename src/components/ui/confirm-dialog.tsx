@@ -134,12 +134,12 @@ export function ConfirmDialog({
         </div>
 
         {/* Actions container */}
-        <div className="mt-6 flex items-center justify-center gap-2.5 w-full">
+        <div className="mt-6 flex w-full items-center justify-center gap-2.5">
           <Button
             id={cancelBtnId}
             type="button"
             variant="outline"
-            className="h-9 min-w-[90px] px-4 text-xs font-semibold cursor-pointer rounded-xl"
+            className="h-9 min-w-[90px] cursor-pointer rounded-xl px-4 text-xs font-semibold"
             onClick={() => onOpenChange(false)}
             disabled={showLoading}
           >
@@ -150,7 +150,7 @@ export function ConfirmDialog({
             type="button"
             variant={variant === "danger" ? "destructive" : "default"}
             className={cn(
-              "h-9 min-w-[90px] px-4 text-xs font-semibold cursor-pointer rounded-xl gap-2 shadow-xs",
+              "h-9 min-w-[90px] cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs",
               style.confirmBtn
             )}
             onClick={handleConfirm}

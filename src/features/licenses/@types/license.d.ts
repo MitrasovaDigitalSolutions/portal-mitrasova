@@ -4,11 +4,7 @@ import type { Client } from "@/features/clients/@types/client"
 import type { ServerPackage } from "@/features/server-packages/@types/server-package"
 
 export type LicenseSubscriptionType =
-  | "monthly"
-  | "annual"
-  | "lifetime"
-  | "yearly"
-  | "trial"
+  "monthly" | "annual" | "lifetime" | "yearly" | "trial"
 
 export type LicenseServerType =
   | "cloud"
@@ -228,4 +224,3 @@ export interface ToggleLicenseAddonResponse {
   days_remaining: number | null
   active_addons: string[]
 }
-

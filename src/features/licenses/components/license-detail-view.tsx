@@ -61,7 +61,9 @@ export function LicenseDetailView({
   // License Modal States
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isOrderOpen, setIsOrderOpen] = useState(false)
-  const [orderInitialAddonId, setOrderInitialAddonId] = useState<string | null>(null)
+  const [orderInitialAddonId, setOrderInitialAddonId] = useState<string | null>(
+    null
+  )
   const [isResetDomainOpen, setIsResetDomainOpen] = useState(false)
   const [isRegenerateSecretOpen, setIsRegenerateSecretOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -147,14 +149,15 @@ export function LicenseDetailView({
 
   if (!license) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center space-y-3">
+      <div className="space-y-3 rounded-xl border border-dashed border-border bg-card p-10 text-center">
         <AlertCircle size={36} className="mx-auto text-destructive" />
         <div className="space-y-1">
           <h2 className="text-base font-semibold text-foreground">
             Lisensi Tidak Ditemukan
           </h2>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            Lisensi dengan ID tersebut tidak ditemukan di sistem atau mungkin telah dihapus.
+          <p className="mx-auto max-w-sm text-xs text-muted-foreground">
+            Lisensi dengan ID tersebut tidak ditemukan di sistem atau mungkin
+            telah dihapus.
           </p>
         </div>
         <Button
@@ -162,7 +165,7 @@ export function LicenseDetailView({
           variant="outline"
           size="sm"
           onClick={() => router.back()}
-          className="gap-2 cursor-pointer"
+          className="cursor-pointer gap-2"
         >
           <ArrowLeft size={14} />
           <span>Kembali</span>
@@ -201,7 +204,7 @@ export function LicenseDetailView({
 
       {/* 2. Tabs Navigation & Content */}
       <Tabs defaultValue="overview" className="w-full space-y-3">
-        <TabsList className="h-9 p-1 bg-muted/60 border border-border/80">
+        <TabsList className="h-9 border border-border/80 bg-muted/60 p-1">
           <TabsTrigger value="overview" className="gap-1.5 text-xs">
             <Layers size={13} />
             <span>Informasi & Kredensial</span>
@@ -211,7 +214,7 @@ export function LicenseDetailView({
             <Receipt size={13} />
             <span>Tagihan Invoice</span>
             {effectiveInvoices.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-background font-medium">
+              <span className="ml-1 rounded-full bg-background px-1.5 py-0.5 text-[10px] font-medium">
                 {effectiveInvoices.length}
               </span>
             )}
@@ -220,9 +223,13 @@ export function LicenseDetailView({
           <TabsTrigger value="addons" className="gap-1.5 text-xs">
             <Boxes size={13} />
             <span>Modul Addon</span>
-            {(license.licenseAddons?.length ?? license.license_addons?.length ?? 0) > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-background font-medium">
-                {license.licenseAddons?.length ?? license.license_addons?.length ?? 0}
+            {(license.licenseAddons?.length ??
+              license.license_addons?.length ??
+              0) > 0 && (
+              <span className="ml-1 rounded-full bg-background px-1.5 py-0.5 text-[10px] font-medium">
+                {license.licenseAddons?.length ??
+                  license.license_addons?.length ??
+                  0}
               </span>
             )}
           </TabsTrigger>
@@ -231,7 +238,7 @@ export function LicenseDetailView({
             <Activity size={13} />
             <span>Log Aktivitas</span>
             {(license.handshakeLogs?.length ?? 0) > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-background font-medium">
+              <span className="ml-1 rounded-full bg-background px-1.5 py-0.5 text-[10px] font-medium">
                 {license.handshakeLogs?.length ?? 0}
               </span>
             )}
@@ -239,7 +246,7 @@ export function LicenseDetailView({
         </TabsList>
 
         {/* Tab 1: Informasi & Kredensial */}
-        <TabsContent value="overview" className="space-y-3 mt-0">
+        <TabsContent value="overview" className="mt-0 space-y-3">
           <LicenseDetailOverviewCard license={license} />
           <LicenseDetailCredentialsCard license={license} />
         </TabsContent>
@@ -301,8 +308,9 @@ export function LicenseDetailView({
         description={
           <span>
             Apakah Anda yakin ingin melepas ikatan domain untuk instance{" "}
-            <strong className="text-foreground">{license.nama_instance}</strong>? Klien
-            dapat mengikatkan lisensi ke domain atau IP baru pada handshake berikutnya.
+            <strong className="text-foreground">{license.nama_instance}</strong>
+            ? Klien dapat mengikatkan lisensi ke domain atau IP baru pada
+            handshake berikutnya.
           </span>
         }
         confirmText="Ya, Reset Domain"
@@ -319,8 +327,9 @@ export function LicenseDetailView({
         title="Regenerate License Secret"
         description={
           <span>
-            Peringatan: Membuat ulang secret akan memutus handshake instance yang sedang aktif
-            hingga environment server klien diperbarui dengan secret baru. Lanjutkan?
+            Peringatan: Membuat ulang secret akan memutus handshake instance
+            yang sedang aktif hingga environment server klien diperbarui dengan
+            secret baru. Lanjutkan?
           </span>
         }
         confirmText="Ya, Buat Secret Baru"
@@ -338,9 +347,9 @@ export function LicenseDetailView({
         description={
           <span>
             Apakah Anda yakin ingin menghapus lisensi{" "}
-            <strong className="text-foreground">{license.nama_instance}</strong>? Semua modul
-            addon dan riwayat verifikasi terkait akan ikut terhapus. Tindakan ini tidak dapat
-            dibatalkan.
+            <strong className="text-foreground">{license.nama_instance}</strong>
+            ? Semua modul addon dan riwayat verifikasi terkait akan ikut
+            terhapus. Tindakan ini tidak dapat dibatalkan.
           </span>
         }
         confirmText="Ya, Hapus Lisensi"
@@ -383,9 +392,14 @@ export function LicenseDetailView({
         description={
           <span>
             Apakah Anda yakin ingin membatalkan faktur tagihan{" "}
-            <strong className="text-foreground">{invoiceToCancel?.invoice_number}</strong> senilai{" "}
             <strong className="text-foreground">
-              {invoiceToCancel ? formatCurrency(invoiceToCancel.total_amount) : ""}
+              {invoiceToCancel?.invoice_number}
+            </strong>{" "}
+            senilai{" "}
+            <strong className="text-foreground">
+              {invoiceToCancel
+                ? formatCurrency(invoiceToCancel.total_amount)
+                : ""}
             </strong>
             ? Tindakan ini tidak dapat diurungkan.
           </span>

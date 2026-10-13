@@ -17,10 +17,12 @@ import { cn } from "@/lib/utils"
 
 export interface FormRadioChipsProps<T extends FieldValues> extends Omit<
   RadioChipsProps,
-  "value" | "onChange"
+  "value" | "onChange" | "error"
 > {
   id?: string
   name: FieldPath<T>
+  errorMessage?: string
+  error?: string
   onChange?: (value: string) => void
 }
 
@@ -28,6 +30,9 @@ export function FormRadioChips<T extends FieldValues>({
   id,
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   options,
   onChange,
   variant = "segmented",
@@ -59,6 +64,10 @@ export function FormRadioChips<T extends FieldValues>({
   }
 
   const error = getNestedError(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    error?.message
 
   return (
     <div id={id} className={cn("w-full space-y-1.5", wrapperClassName)}>
@@ -82,6 +91,7 @@ export function FormRadioChips<T extends FieldValues>({
               }
             }}
             label={label}
+            required={required}
             disabled={disabled}
             variant={variant}
             size={size}
@@ -90,9 +100,9 @@ export function FormRadioChips<T extends FieldValues>({
           />
         )}
       />
-      {error && (
+      {displayError && (
         <p className="text-[10px] font-medium text-destructive">
-          {error.message}
+          {displayError}
         </p>
       )}
     </div>

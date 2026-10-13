@@ -12,11 +12,16 @@ export const licenseFormSchema = z.object({
     .max(255, "Domain instance maksimal 255 karakter")
     .optional()
     .nullable(),
-  subscription_type: z.enum(["monthly", "annual", "lifetime", "yearly", "trial"]),
+  subscription_type: z.enum(
+    ["monthly", "annual", "lifetime", "yearly", "trial"],
+    { error: "Tipe berlangganan wajib dipilih" }
+  ),
   server_package_id: z.string().min(1, "Paket server wajib dipilih"),
   server_notes: z.string().optional().nullable(),
   server_type: z.string().optional(),
-  status: z.enum(["active", "suspended", "expired", "trial"]),
+  status: z.enum(["active", "suspended", "expired", "trial"], {
+    error: "Status lisensi wajib dipilih",
+  }),
   expires_at: z.string().nullable().optional(),
   grace_period_days: z
     .number()
@@ -43,7 +48,13 @@ export const licenseEditSchema = z.object({
     .max(255, "Domain instance maksimal 255 karakter")
     .optional()
     .nullable(),
-  subscription_type: z.enum(["monthly", "annual", "lifetime", "yearly", "trial"]),
+  subscription_type: z.enum([
+    "monthly",
+    "annual",
+    "lifetime",
+    "yearly",
+    "trial",
+  ]),
   server_package_id: z.string().min(1, "Paket server wajib dipilih"),
   server_notes: z.string().optional().nullable(),
   status: z.enum(["active", "suspended", "expired", "trial"]),

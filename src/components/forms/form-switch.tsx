@@ -36,7 +36,7 @@ export function FormSwitch<T extends FieldValues>({
         className
       )}
     >
-      <div className="space-y-0.5 pr-4 min-w-0 flex-1">
+      <div className="min-w-0 flex-1 space-y-0.5 pr-4">
         <label
           htmlFor={`switch-${name}`}
           className="block cursor-pointer text-xs font-bold text-foreground select-none"
@@ -49,7 +49,7 @@ export function FormSwitch<T extends FieldValues>({
           </div>
         )}
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex shrink-0 items-center gap-3">
         {rightElement}
         <Controller
           name={name}

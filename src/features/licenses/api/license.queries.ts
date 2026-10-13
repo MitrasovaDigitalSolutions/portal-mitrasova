@@ -249,7 +249,9 @@ export function useCreateLicenseOrder() {
       void queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Gagal membuat pesanan perpanjangan / add-on")
+      toast.error(
+        error.message || "Gagal membuat pesanan perpanjangan / add-on"
+      )
     },
   })
 }

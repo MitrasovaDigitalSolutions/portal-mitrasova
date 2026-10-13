@@ -32,6 +32,12 @@ export const couponApi = {
     if (params?.is_active !== undefined && params.is_active !== "all") {
       cleanParams.is_active = params.is_active
     }
+    if (params?.sort_by) {
+      cleanParams.sort_by = params.sort_by
+    }
+    if (params?.sort_order) {
+      cleanParams.sort_order = params.sort_order
+    }
 
     const response = await apiClient.get<PaginatedResponse<Coupon>>(
       "/api/v1/admin/coupons",

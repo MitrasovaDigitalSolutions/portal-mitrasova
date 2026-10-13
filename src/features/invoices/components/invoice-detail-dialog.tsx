@@ -77,20 +77,20 @@ export function InvoiceDetailDialog({
       open={open}
       onOpenChange={onOpenChange}
       scrollable={false}
-      className="sm:max-w-xl md:max-w-2xl max-h-[90vh] flex flex-col"
+      className="flex max-h-[90vh] flex-col sm:max-w-xl md:max-w-2xl"
       title={
         <div className="flex items-center gap-2">
-          <div className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+          <div className="flex size-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
             <FileText className="size-4" />
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="font-mono font-bold text-sm tracking-tight text-foreground">
+            <span className="font-mono text-sm font-bold tracking-tight text-foreground">
               {invoice.invoice_number}
             </span>
             <button
               type="button"
               onClick={() => copyInvoiceNumber(invoice.invoice_number)}
-              className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="cursor-pointer rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Salin Nomor Faktur"
             >
               {copiedInvoiceNumber ? (
@@ -104,11 +104,14 @@ export function InvoiceDetailDialog({
       }
       headerRight={<InvoiceStatusBadge status={invoice.status} />}
     >
-      <div className="flex flex-col flex-1 min-h-0 pt-1 text-xs">
+      <div className="flex min-h-0 flex-1 flex-col pt-1 text-xs">
         {/* Tabs: Tab 1 = Rincian & Biaya, Tab 2 = Item yang Diorder */}
-        <Tabs defaultValue="overview" className="flex flex-col flex-1 min-h-0 w-full">
+        <Tabs
+          defaultValue="overview"
+          className="flex min-h-0 w-full flex-1 flex-col"
+        >
           <div className="shrink-0 pb-1.5">
-            <TabsList className="grid grid-cols-2 w-full h-8.5 p-1 bg-muted/60 border border-border/80 rounded-xl">
+            <TabsList className="grid h-8.5 w-full grid-cols-2 rounded-xl border border-border/80 bg-muted/60 p-1">
               <TabsTrigger value="overview" className="gap-1.5 text-xs">
                 <Receipt className="size-3.5" />
                 <span>Rincian & Total Biaya</span>
@@ -116,7 +119,7 @@ export function InvoiceDetailDialog({
               <TabsTrigger value="items" className="gap-1.5 text-xs">
                 <ShoppingCart className="size-3.5" />
                 <span>Item yang Diorder</span>
-                <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-background font-medium border border-border/60">
+                <span className="py-0.2 ml-1 rounded-full border border-border/60 bg-background px-1.5 text-[10px] font-medium">
                   {itemCount}
                 </span>
               </TabsTrigger>
@@ -124,32 +127,33 @@ export function InvoiceDetailDialog({
           </div>
 
           {/* TAB 1: Rincian & Total Biaya with dedicated Scrollable */}
-          <TabsContent value="overview" className="flex-1 min-h-0 mt-0">
-            <Scrollable className="max-h-[50vh] sm:max-h-[54vh] pr-1.5">
+          <TabsContent value="overview" className="mt-0 min-h-0 flex-1">
+            <Scrollable className="max-h-[50vh] pr-1.5 sm:max-h-[54vh]">
               <div className="space-y-3 pr-1 pb-1">
                 {/* Hero Total Card */}
-                <div className="rounded-xl border border-border/80 bg-gradient-to-br from-emerald-500/5 via-card to-primary/5 p-3.5 space-y-3 shadow-2xs">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-3 rounded-xl border border-border/80 bg-gradient-to-br from-emerald-500/5 via-card to-primary/5 p-3.5 shadow-2xs">
+                  <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                     <div>
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                      <span className="block text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
                         Total Biaya Tagihan
                       </span>
-                      <div className="text-2xl sm:text-3xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tracking-tight">
+                      <div className="font-mono text-2xl font-bold tracking-tight text-emerald-600 sm:text-3xl dark:text-emerald-400">
                         {formatCurrency(invoice.total_amount)}
                       </div>
                     </div>
                     <div>
                       <span
                         className={cn(
-                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border",
+                          "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold",
                           isPaid
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25"
-                            : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/25"
+                            ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                            : "border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400"
                         )}
                       >
                         {isPaid ? (
                           <>
-                            <CheckCircle2 className="size-3.5" /> Lunas / Terverifikasi
+                            <CheckCircle2 className="size-3.5" /> Lunas /
+                            Terverifikasi
                           </>
                         ) : (
                           <>
@@ -161,32 +165,46 @@ export function InvoiceDetailDialog({
                   </div>
 
                   {/* Payment Details Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2.5 border-t border-border/60 text-xs">
+                  <div className="grid grid-cols-2 gap-2 border-t border-border/60 pt-2.5 text-xs sm:grid-cols-4">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground block">Tanggal Terbit</span>
-                      <p className="font-medium text-foreground">{formatDate(invoice.created_at)}</p>
+                      <span className="block text-[10px] text-muted-foreground">
+                        Tanggal Terbit
+                      </span>
+                      <p className="font-medium text-foreground">
+                        {formatDate(invoice.created_at)}
+                      </p>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground block">Jatuh Tempo</span>
-                      <p className="font-medium text-foreground">{formatDate(invoice.due_date)}</p>
+                      <span className="block text-[10px] text-muted-foreground">
+                        Jatuh Tempo
+                      </span>
+                      <p className="font-medium text-foreground">
+                        {formatDate(invoice.due_date)}
+                      </p>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground block">Metode Pembayaran</span>
-                      <p className="font-medium text-foreground truncate">
+                      <span className="block text-[10px] text-muted-foreground">
+                        Metode Pembayaran
+                      </span>
+                      <p className="truncate font-medium text-foreground">
                         {invoice.payment_method || "—"}
                       </p>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-muted-foreground block">Status Pelunasan</span>
+                      <span className="block text-[10px] text-muted-foreground">
+                        Status Pelunasan
+                      </span>
                       <p
                         className={cn(
-                          "font-medium truncate",
+                          "truncate font-medium",
                           invoice.paid_at
-                            ? "text-emerald-600 dark:text-emerald-400 font-semibold"
+                            ? "font-semibold text-emerald-600 dark:text-emerald-400"
                             : "text-muted-foreground"
                         )}
                       >
-                        {invoice.paid_at ? formatDate(invoice.paid_at) : "Belum lunas"}
+                        {invoice.paid_at
+                          ? formatDate(invoice.paid_at)
+                          : "Belum lunas"}
                       </p>
                     </div>
                   </div>
@@ -200,11 +218,11 @@ export function InvoiceDetailDialog({
 
                 {/* Notes if present */}
                 {invoice.notes && (
-                  <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-1">
-                    <span className="font-semibold text-foreground text-xs block">
+                  <div className="space-y-1 rounded-xl border border-border/80 bg-muted/20 p-3">
+                    <span className="block text-xs font-semibold text-foreground">
                       Catatan Faktur:
                     </span>
-                    <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                    <p className="text-xs whitespace-pre-wrap text-muted-foreground">
                       {invoice.notes}
                     </p>
                   </div>
@@ -214,8 +232,8 @@ export function InvoiceDetailDialog({
           </TabsContent>
 
           {/* TAB 2: Item yang Diorder with dedicated Scrollable */}
-          <TabsContent value="items" className="flex-1 min-h-0 mt-0">
-            <Scrollable className="max-h-[50vh] sm:max-h-[54vh] pr-1.5">
+          <TabsContent value="items" className="mt-0 min-h-0 flex-1">
+            <Scrollable className="max-h-[50vh] pr-1.5 sm:max-h-[54vh]">
               <div className="space-y-3 pr-1 pb-1">
                 <InvoiceDetailItemsTable
                   items={invoice.items}
@@ -227,13 +245,13 @@ export function InvoiceDetailDialog({
         </Tabs>
 
         {/* Bottom Actions Footer (Fixed at the bottom of dialog) */}
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-border shrink-0 mt-2">
+        <div className="mt-2 flex shrink-0 items-center justify-end gap-2 border-t border-border pt-3">
           {!isPaid && onCancelClick && (
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-8 px-3.5 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl text-destructive hover:bg-destructive/10 border-destructive/20"
+              className="h-8 cursor-pointer gap-1.5 rounded-xl border-destructive/20 px-3.5 text-xs font-semibold text-destructive hover:bg-destructive/10"
               onClick={() => {
                 onOpenChange(false)
                 onCancelClick(invoice)
@@ -248,7 +266,7 @@ export function InvoiceDetailDialog({
             type="button"
             variant="outline"
             size="sm"
-            className="h-8 px-3.5 gap-1.5 text-xs font-medium cursor-pointer rounded-xl"
+            className="h-8 cursor-pointer gap-1.5 rounded-xl px-3.5 text-xs font-medium"
             onClick={handleDownloadPdf}
             disabled={isDownloadingPdf}
           >
@@ -264,7 +282,7 @@ export function InvoiceDetailDialog({
             <Button
               type="button"
               size="sm"
-              className="h-8 px-4 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+              className="h-8 cursor-pointer gap-1.5 rounded-xl bg-emerald-600 px-4 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700"
               onClick={() => {
                 onOpenChange(false)
                 onMarkPaidClick(invoice)
@@ -279,4 +297,3 @@ export function InvoiceDetailDialog({
     </BaseDialog>
   )
 }
-

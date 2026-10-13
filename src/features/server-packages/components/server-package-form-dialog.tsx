@@ -112,8 +112,12 @@ export function ServerPackageFormDialog({
       className="sm:max-w-xl"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4"
+        >
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormInput
               name="code"
               label="Kode Paket Server"
@@ -129,7 +133,7 @@ export function ServerPackageFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <FormInput
               name="cpu"
               label="Spesifikasi CPU"
@@ -147,7 +151,7 @@ export function ServerPackageFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormNominalInput
               name="harga_bulanan"
               label="Biaya Sewa Bulanan"
@@ -183,14 +187,14 @@ export function ServerPackageFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 size={14} className="animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Tambah Paket Server"}</span>

@@ -45,16 +45,16 @@ export function InvoicesMetricsGrid({
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
       {cards.map((card) => {
         const Icon = card.icon
         return (
           <div
             key={card.title}
-            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs flex flex-col justify-between"
+            className="flex flex-col justify-between rounded-xl border border-border bg-card p-3 shadow-2xs transition-all hover:border-primary/25 hover:shadow-xs sm:p-3.5"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[11px] font-medium text-muted-foreground truncate">
+              <span className="truncate text-[11px] font-medium text-muted-foreground">
                 {card.title}
               </span>
               <div
@@ -64,10 +64,10 @@ export function InvoicesMetricsGrid({
               </div>
             </div>
             <div className="mt-2 flex items-baseline justify-between gap-2">
-              <div className="text-lg sm:text-xl font-bold tracking-tight text-foreground font-mono">
+              <div className="font-mono text-lg font-bold tracking-tight text-foreground sm:text-xl">
                 {card.value}
               </div>
-              <p className="text-[10px] text-muted-foreground truncate">
+              <p className="truncate text-[10px] text-muted-foreground">
                 {card.description}
               </p>
             </div>
@@ -77,4 +77,3 @@ export function InvoicesMetricsGrid({
     </div>
   )
 }
-

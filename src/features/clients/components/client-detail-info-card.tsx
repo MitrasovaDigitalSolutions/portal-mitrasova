@@ -15,7 +15,7 @@ import {
   Mail,
   MapPin,
   Phone,
-  Puzzle
+  Puzzle,
 } from "lucide-react"
 import { useState, type JSX } from "react"
 import { toast } from "sonner"
@@ -50,34 +50,34 @@ export function ClientDetailInfoCard({
 
   const initials = client.nama_pemilik
     ? client.nama_pemilik
-      .split(" ")
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase()
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
     : "CL"
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
       {/* 1. Profile Contacts Strip */}
-      <div className="p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="flex flex-col justify-between gap-3 p-3.5 sm:p-4 md:flex-row md:items-center">
         {/* Avatar + Name Info */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary font-bold text-xs border border-primary/20 shadow-2xs">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-xs font-bold text-primary shadow-2xs">
             {initials}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-foreground text-sm truncate">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {client.nama_pemilik}
               </span>
               {client.nama_perusahaan && (
-                <span className="text-xs text-muted-foreground hidden sm:inline truncate">
+                <span className="hidden truncate text-xs text-muted-foreground sm:inline">
                   • {client.nama_perusahaan}
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-muted-foreground truncate">
+            <p className="truncate text-[11px] text-muted-foreground">
               {client.nama_perusahaan || "Pelanggan Terdaftar"}
             </p>
           </div>
@@ -89,17 +89,17 @@ export function ClientDetailInfoCard({
           <button
             type="button"
             onClick={() => handleCopy(client.email, "Email")}
-            className="group flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/80 bg-muted/30 hover:bg-muted/70 text-foreground transition-colors cursor-pointer text-xs"
+            className="group flex cursor-pointer items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted/70"
             title="Klik untuk menyalin email"
           >
-            <Mail size={12} className="text-muted-foreground shrink-0" />
-            <span className="truncate max-w-[180px]">{client.email}</span>
+            <Mail size={12} className="shrink-0 text-muted-foreground" />
+            <span className="max-w-[180px] truncate">{client.email}</span>
             {copiedField === "Email" ? (
-              <Check size={11} className="text-emerald-500 shrink-0" />
+              <Check size={11} className="shrink-0 text-emerald-500" />
             ) : (
               <Copy
                 size={11}
-                className="text-muted-foreground/60 group-hover:text-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="shrink-0 text-muted-foreground/60 opacity-0 transition-opacity group-hover:text-foreground group-hover:opacity-100"
               />
             )}
           </button>
@@ -109,17 +109,17 @@ export function ClientDetailInfoCard({
             <button
               type="button"
               onClick={() => handleCopy(client.telepon, "Nomor telepon")}
-              className="group flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/80 bg-muted/30 hover:bg-muted/70 text-foreground transition-colors cursor-pointer text-xs"
+              className="group flex cursor-pointer items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted/70"
               title="Klik untuk menyalin nomor telepon"
             >
-              <Phone size={12} className="text-muted-foreground shrink-0" />
+              <Phone size={12} className="shrink-0 text-muted-foreground" />
               <span>{client.telepon}</span>
               {copiedField === "Nomor telepon" ? (
-                <Check size={11} className="text-emerald-500 shrink-0" />
+                <Check size={11} className="shrink-0 text-emerald-500" />
               ) : (
                 <Copy
                   size={11}
-                  className="text-muted-foreground/60 group-hover:text-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="shrink-0 text-muted-foreground/60 opacity-0 transition-opacity group-hover:text-foreground group-hover:opacity-100"
                 />
               )}
             </button>
@@ -130,12 +130,15 @@ export function ClientDetailInfoCard({
             <TooltipProvider delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/80 bg-muted/30 text-foreground text-xs max-w-[220px] cursor-default">
-                    <MapPin size={12} className="text-muted-foreground shrink-0" />
+                  <div className="flex max-w-[220px] cursor-default items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-1 text-xs text-foreground">
+                    <MapPin
+                      size={12}
+                      className="shrink-0 text-muted-foreground"
+                    />
                     <span className="truncate">{client.alamat}</span>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs max-w-xs">
+                <TooltipContent side="top" className="max-w-xs text-xs">
                   {client.alamat}
                 </TooltipContent>
               </Tooltip>
@@ -145,74 +148,74 @@ export function ClientDetailInfoCard({
       </div>
 
       {/* 2. Metrics Strip (4 Compact Columns) */}
-      <div className="border-t border-border/70 bg-muted/15 grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+      <div className="grid grid-cols-2 divide-y divide-border/60 border-t border-border/70 bg-muted/15 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
         {/* Metric 1: Total Lisensi */}
-        <div className="p-3 sm:px-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 p-3 sm:px-4">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
             <KeyRound size={16} />
           </div>
           <div className="min-w-0">
-            <div className="text-lg font-bold tracking-tight text-foreground leading-none">
+            <div className="text-lg leading-none font-bold tracking-tight text-foreground">
               {licenseStats.total}
             </div>
-            <div className="text-[11px] font-medium text-foreground mt-0.5">
+            <div className="mt-0.5 text-[11px] font-medium text-foreground">
               Total Lisensi
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">
+            <p className="truncate text-[10px] text-muted-foreground">
               Instance terdaftar
             </p>
           </div>
         </div>
 
         {/* Metric 2: Lisensi Aktif */}
-        <div className="p-3 sm:px-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 p-3 sm:px-4">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
             <CheckCircle2 size={16} />
           </div>
           <div className="min-w-0">
-            <div className="text-lg font-bold tracking-tight text-emerald-600 dark:text-emerald-400 leading-none">
+            <div className="text-lg leading-none font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
               {licenseStats.active}
             </div>
-            <div className="text-[11px] font-medium text-foreground mt-0.5">
+            <div className="mt-0.5 text-[11px] font-medium text-foreground">
               Lisensi Aktif
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">
+            <p className="truncate text-[10px] text-muted-foreground">
               Siap beroperasi
             </p>
           </div>
         </div>
 
         {/* Metric 3: Perlu Perhatian (Trial / Expired) */}
-        <div className="p-3 sm:px-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 p-3 sm:px-4">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400">
             <AlertCircle size={16} />
           </div>
           <div className="min-w-0">
-            <div className="text-lg font-bold tracking-tight text-amber-600 dark:text-amber-400 leading-none">
+            <div className="text-lg leading-none font-bold tracking-tight text-amber-600 dark:text-amber-400">
               {licenseStats.expired + licenseStats.trial}
             </div>
-            <div className="text-[11px] font-medium text-foreground mt-0.5">
+            <div className="mt-0.5 text-[11px] font-medium text-foreground">
               Perlu Perhatian
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">
+            <p className="truncate text-[10px] text-muted-foreground">
               {licenseStats.expired} expired, {licenseStats.trial} trial
             </p>
           </div>
         </div>
 
         {/* Metric 4: Modul Addon */}
-        <div className="p-3 sm:px-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 p-3 sm:px-4">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
             <Puzzle size={16} />
           </div>
           <div className="min-w-0">
-            <div className="text-lg font-bold tracking-tight text-indigo-600 dark:text-indigo-400 leading-none">
+            <div className="text-lg leading-none font-bold tracking-tight text-indigo-600 dark:text-indigo-400">
               {licenseStats.addonsCount}
             </div>
-            <div className="text-[11px] font-medium text-foreground mt-0.5">
+            <div className="mt-0.5 text-[11px] font-medium text-foreground">
               Modul Addon
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">
+            <p className="truncate text-[10px] text-muted-foreground">
               Fitur tambahan terpasang
             </p>
           </div>

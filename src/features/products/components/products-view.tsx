@@ -38,6 +38,10 @@ export function ProductsView(): React.JSX.Element {
     handleViewDetail,
     handleDeleteClick,
     handleDeleteConfirm,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
   } = useProductsManagement()
 
   // Setup columns
@@ -60,13 +64,14 @@ export function ProductsView(): React.JSX.Element {
       className="space-y-3.5 sm:space-y-4"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground">
             Katalog Produk & Layanan
           </h1>
           <p className="text-xs text-muted-foreground">
-            Kelola master produk sistem Mitrasova dan modul product add-on terhubung.
+            Kelola master produk sistem Mitrasova dan modul product add-on
+            terhubung.
           </p>
         </div>
       </div>
@@ -97,6 +102,12 @@ export function ProductsView(): React.JSX.Element {
         isLoading={isLoading}
         isFetching={isFetching}
         paginationMode="client"
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(col, order) => {
+          setSortBy(col)
+          setSortOrder(order)
+        }}
         actionColumnSize={110}
         entityName="Produk"
         emptyMessage="Belum ada data produk software yang sesuai kriteria pencarian."

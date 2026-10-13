@@ -14,10 +14,13 @@ import {
 
 interface FormNumberInputProps<T extends FieldValues> extends Omit<
   React.ComponentProps<typeof NumberInput>,
-  "name" | "value" | "onChange"
+  "name" | "value" | "onChange" | "required"
 > {
   name: FieldPath<T>
   label?: React.ReactNode
+  required?: boolean
+  errorMessage?: string
+  error?: string
   helperText?: React.ReactNode
   onValueChange?: (val: number | null) => void
   inputRef?: React.Ref<HTMLInputElement>
@@ -34,6 +37,9 @@ function setRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
 export function FormNumberInput<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   helperText,
   className,
   disabled,
@@ -64,6 +70,10 @@ export function FormNumberInput<T extends FieldValues>({
   }
 
   const error = getNestedValue(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    (error?.message as string | undefined)
 
   const handleRef = React.useCallback(
     (
@@ -89,14 +99,16 @@ export function FormNumberInput<T extends FieldValues>({
                 className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase"
               >
                 {label}
+                {required && <span className="text-destructive"> *</span>}
               </label>
             )}
             <NumberInput
               id={name}
               ref={(node) => handleRef(node, ref)}
-              value={typeof value === "string" ? (Number(value) || 0) : value}
+              value={typeof value === "string" ? Number(value) || 0 : value}
               onChange={(val) => {
-                const numericVal = val !== null && val !== undefined ? Number(val) : null
+                const numericVal =
+                  val !== null && val !== undefined ? Number(val) : null
                 onChange(numericVal)
                 onValueChange?.(numericVal)
               }}
@@ -104,20 +116,21 @@ export function FormNumberInput<T extends FieldValues>({
               disabled={disabled}
               className={cn(
                 "h-10 rounded-xl border-input text-xs focus-visible:ring-ring disabled:border-input disabled:bg-muted disabled:text-muted-foreground",
-                error && "border-destructive focus-visible:ring-destructive",
+                displayError &&
+                  "border-destructive focus-visible:ring-destructive",
                 className
               )}
-              aria-invalid={!!error}
+              aria-invalid={!!displayError}
               {...props}
             />
-            {helperText && !error && (
+            {helperText && !displayError && (
               <div className="mt-0.5 text-xs text-muted-foreground">
                 {helperText}
               </div>
             )}
-            {error && (
+            {displayError && (
               <p className="text-[10px] font-medium text-destructive">
-                {error.message as string}
+                {displayError}
               </p>
             )}
           </div>

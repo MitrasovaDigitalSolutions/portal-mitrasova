@@ -6,7 +6,10 @@ import { useForm, useWatch, type FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { useClients } from "@/features/clients/api/client.queries"
-import { useProducts, useProduct } from "@/features/products/api/product.queries"
+import {
+  useProducts,
+  useProduct,
+} from "@/features/products/api/product.queries"
 import { useServerPackages } from "@/features/server-packages/api/server-package.queries"
 import { couponApi } from "@/features/coupons/api/coupon.api"
 import { formatCurrency } from "@/utils"
@@ -15,7 +18,10 @@ import {
   licenseFormSchema,
   type LicenseFormValues,
 } from "../validations/license.schema"
-import type { CheckCouponResponse, CreateLicensePayload } from "../@types/license"
+import type {
+  CheckCouponResponse,
+  CreateLicensePayload,
+} from "../@types/license"
 
 export function useCreateLicenseForm() {
   const router = useRouter()
@@ -31,13 +37,17 @@ export function useCreateLicenseForm() {
   const { data: productsData, isLoading: isLoadingProducts } = useProducts({
     status: "active",
   })
-  const { data: serverPackagesData, isLoading: isLoadingServers } = useServerPackages({
-    is_active: true,
-  })
+  const { data: serverPackagesData, isLoading: isLoadingServers } =
+    useServerPackages({
+      is_active: true,
+    })
 
   const clients = useMemo(() => clientsData?.data ?? [], [clientsData?.data])
   const products = useMemo(() => productsData?.data ?? [], [productsData?.data])
-  const serverPackages = useMemo(() => serverPackagesData?.data ?? [], [serverPackagesData?.data])
+  const serverPackages = useMemo(
+    () => serverPackagesData?.data ?? [],
+    [serverPackagesData?.data]
+  )
 
   const methods = useForm<LicenseFormValues>({
     resolver: zodResolver(licenseFormSchema),
@@ -73,13 +83,14 @@ export function useCreateLicenseForm() {
   const createInvoice = useWatch({ control, name: "create_invoice" })
   const enteredCouponCode = useWatch({ control, name: "coupon_code" })
 
-  const selectedAddonIds = useMemo(() => watchedAddonIds ?? [], [watchedAddonIds])
+  const selectedAddonIds = useMemo(
+    () => watchedAddonIds ?? [],
+    [watchedAddonIds]
+  )
 
   // Fetch product detail for addons
-  const { data: detailedProduct, isLoading: isLoadingProductDetail } = useProduct(
-    selectedProductId,
-    Boolean(selectedProductId)
-  )
+  const { data: detailedProduct, isLoading: isLoadingProductDetail } =
+    useProduct(selectedProductId, Boolean(selectedProductId))
 
   // Selected client object
   const selectedClient = useMemo(
@@ -101,14 +112,20 @@ export function useCreateLicenseForm() {
 
   // Built-in non-purchasable addons vs purchasable addons
   const { builtInAddons, purchasableAddons } = useMemo(() => {
-    const builtIn = productAddons.filter((a) => (a as { is_purchasable?: boolean }).is_purchasable === false)
-    const purchasable = productAddons.filter((a) => (a as { is_purchasable?: boolean }).is_purchasable !== false)
+    const builtIn = productAddons.filter(
+      (a) => (a as { is_purchasable?: boolean }).is_purchasable === false
+    )
+    const purchasable = productAddons.filter(
+      (a) => (a as { is_purchasable?: boolean }).is_purchasable !== false
+    )
     return { builtInAddons: builtIn, purchasableAddons: purchasable }
   }, [productAddons])
 
   // Coupon state
   const [isCheckingCoupon, setIsCheckingCoupon] = useState(false)
-  const [couponResult, setCouponResult] = useState<CheckCouponResponse["coupon"] | null>(null)
+  const [couponResult, setCouponResult] = useState<
+    CheckCouponResponse["coupon"] | null
+  >(null)
   const [couponError, setCouponError] = useState<string | null>(null)
 
   const isAnnual = billingPeriod === "annual"
@@ -270,7 +287,10 @@ export function useCreateLicenseForm() {
 
     try {
       const code = enteredCouponCode.trim()
-      const couponsRes = await couponApi.getCoupons({ search: code, per_page: 20 })
+      const couponsRes = await couponApi.getCoupons({
+        search: code,
+        per_page: 20,
+      })
       const matchingCoupon = couponsRes.data?.find(
         (c) => c.code.toUpperCase() === code.toUpperCase()
       )
@@ -292,7 +312,10 @@ export function useCreateLicenseForm() {
       }
 
       const now = new Date()
-      if (matchingCoupon.starts_at && new Date(matchingCoupon.starts_at) > now) {
+      if (
+        matchingCoupon.starts_at &&
+        new Date(matchingCoupon.starts_at) > now
+      ) {
         setCouponError("Kupon promo ini belum dapat digunakan")
         setCouponResult(null)
         setValue("discount_amount", 0)
@@ -300,7 +323,10 @@ export function useCreateLicenseForm() {
         return
       }
 
-      if (matchingCoupon.expires_at && new Date(matchingCoupon.expires_at) < now) {
+      if (
+        matchingCoupon.expires_at &&
+        new Date(matchingCoupon.expires_at) < now
+      ) {
         setCouponError("Kupon promo ini telah kedaluwarsa")
         setCouponResult(null)
         setValue("discount_amount", 0)
@@ -326,7 +352,9 @@ export function useCreateLicenseForm() {
       ) {
         const periodLabel =
           matchingCoupon.applicable_period === "annual" ? "Tahunan" : "Bulanan"
-        setCouponError(`Kupon ini hanya berlaku untuk siklus penagihan ${periodLabel}`)
+        setCouponError(
+          `Kupon ini hanya berlaku untuk siklus penagihan ${periodLabel}`
+        )
         setCouponResult(null)
         setValue("discount_amount", 0)
         setValue("discount_description", null)
@@ -349,7 +377,8 @@ export function useCreateLicenseForm() {
       // Calculate discount amount ensuring pure numeric types
       const rawDiscValue = Number(matchingCoupon.discount_value) || 0
       const rawMaxDisc =
-        matchingCoupon.max_discount_amount !== null && matchingCoupon.max_discount_amount !== undefined
+        matchingCoupon.max_discount_amount !== null &&
+        matchingCoupon.max_discount_amount !== undefined
           ? Number(matchingCoupon.max_discount_amount)
           : null
 
@@ -378,12 +407,20 @@ export function useCreateLicenseForm() {
         discount_amount: numericDiscountAmount,
         formatted_discount: formatCurrency(numericDiscountAmount),
         subtotal: orderCalculation.grossSubtotal,
-        final_amount: Math.max(0, orderCalculation.grossSubtotal - numericDiscountAmount),
+        final_amount: Math.max(
+          0,
+          orderCalculation.grossSubtotal - numericDiscountAmount
+        ),
       }
 
       setCouponResult(couponObj)
-      setValue("discount_amount", numericDiscountAmount, { shouldValidate: true })
-      setValue("discount_description", `Kupon: ${matchingCoupon.code} (${matchingCoupon.name})`)
+      setValue("discount_amount", numericDiscountAmount, {
+        shouldValidate: true,
+      })
+      setValue(
+        "discount_description",
+        `Kupon: ${matchingCoupon.code} (${matchingCoupon.name})`
+      )
       toast.success(
         `Kupon ${matchingCoupon.code} berhasil diterapkan! Hemat ${formatCurrency(numericDiscountAmount)}`
       )
@@ -420,9 +457,13 @@ export function useCreateLicenseForm() {
         expires_at: isLifetime ? null : values.expires_at || null,
         create_invoice: true,
         coupon_code: couponResult?.code ?? values.coupon_code ?? undefined,
-        discount_amount: Number(couponResult?.discount_amount ?? values.discount_amount ?? 0) || 0,
-        discount_description:
-          couponResult ? `Kupon: ${couponResult.code} (${couponResult.name})` : values.discount_description ?? null,
+        discount_amount:
+          Number(
+            couponResult?.discount_amount ?? values.discount_amount ?? 0
+          ) || 0,
+        discount_description: couponResult
+          ? `Kupon: ${couponResult.code} (${couponResult.name})`
+          : (values.discount_description ?? null),
       }
 
       const created = await createMutation.mutateAsync(payload)
@@ -461,7 +502,8 @@ export function useCreateLicenseForm() {
 
     const [firstField, firstErr] = errorEntries[0]
     const fieldLabel = FIELD_LABELS[firstField] || firstField
-    const message = (firstErr?.message as string) || "Harap lengkapi data wajib pada formulir"
+    const message =
+      (firstErr?.message as string) || "Harap lengkapi data wajib pada formulir"
     toast.error(`Formulir belum lengkap pada kolom ${fieldLabel}: ${message}`)
 
     // Smoothly scroll to the first invalid field

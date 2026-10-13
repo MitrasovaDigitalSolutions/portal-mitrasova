@@ -17,6 +17,9 @@ import { cn } from "@/lib/utils"
 interface FormChipsSelectProps<T extends FieldValues> {
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   options: ChipsSelectOption[]
   onChange?: (value: string[]) => void
   className?: string
@@ -27,6 +30,9 @@ interface FormChipsSelectProps<T extends FieldValues> {
 export function FormChipsSelect<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   options,
   onChange,
   className,
@@ -55,6 +61,10 @@ export function FormChipsSelect<T extends FieldValues>({
   }
 
   const error = getNestedError(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    error?.message
 
   return (
     <div className={cn("w-full space-y-1.5", wrapperClassName)}>
@@ -72,14 +82,15 @@ export function FormChipsSelect<T extends FieldValues>({
               }
             }}
             label={label}
+            required={required}
             disabled={disabled}
             className={className}
           />
         )}
       />
-      {error && (
+      {displayError && (
         <p className="text-[10px] font-medium text-destructive">
-          {error.message}
+          {displayError}
         </p>
       )}
     </div>

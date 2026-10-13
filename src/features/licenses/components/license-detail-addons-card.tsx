@@ -41,7 +41,8 @@ export function LicenseDetailAddonsCard({
   )
 
   const activeMap = useMemo(() => {
-    const map: Record<string, { status: string; expires_at: string | null }> = {}
+    const map: Record<string, { status: string; expires_at: string | null }> =
+      {}
     currentAddons.forEach((item) => {
       map[item.product_addon_id] = {
         status: item.status,
@@ -103,17 +104,17 @@ export function LicenseDetailAddonsCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2.5 border-b border-border">
+      <div className="flex flex-col gap-2 border-b border-border pb-2.5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <Puzzle size={15} className="text-muted-foreground shrink-0" />
-          <h2 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+          <Puzzle size={15} className="shrink-0 text-muted-foreground" />
+          <h2 className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Modul Addon Instance
           </h2>
           <Badge
             variant="secondary"
-            className="text-[11px] font-mono px-2 py-0.5 rounded-md"
+            className="rounded-md px-2 py-0.5 font-mono text-[11px]"
           >
             {activeCount} dari {availableAddons.length} Aktif
           </Badge>
@@ -124,7 +125,7 @@ export function LicenseDetailAddonsCard({
             type="button"
             size="sm"
             onClick={() => onOrderAddon()}
-            className="h-8 px-3 text-xs gap-1.5 cursor-pointer font-medium self-start sm:self-auto shadow-xs"
+            className="h-8 cursor-pointer gap-1.5 self-start px-3 text-xs font-medium shadow-xs sm:self-auto"
           >
             <CreditCard size={13} />
             <span>Beli / Tambah Add-on</span>
@@ -138,9 +139,9 @@ export function LicenseDetailAddonsCard({
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="p-3 rounded-xl border border-border bg-muted/20 flex items-center justify-between gap-3 animate-pulse"
+              className="flex animate-pulse items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3"
             >
-              <div className="space-y-1.5 flex-1">
+              <div className="flex-1 space-y-1.5">
                 <Skeleton className="h-4 w-36 rounded" />
                 <Skeleton className="h-3 w-56 rounded" />
               </div>
@@ -149,13 +150,12 @@ export function LicenseDetailAddonsCard({
           ))}
         </div>
       ) : availableAddons.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/80 bg-muted/20 p-6 text-center text-xs text-muted-foreground space-y-1.5">
-          <Puzzle size={24} className="mx-auto opacity-40 mb-1" />
-          <p className="font-medium text-foreground">
-            Belum Ada Modul Addon
-          </p>
-          <p className="text-[11px] text-muted-foreground max-w-sm mx-auto">
-            Produk software ini belum memiliki modul pelengkap yang terdaftar di sistem.
+        <div className="space-y-1.5 rounded-xl border border-dashed border-border/80 bg-muted/20 p-6 text-center text-xs text-muted-foreground">
+          <Puzzle size={24} className="mx-auto mb-1 opacity-40" />
+          <p className="font-medium text-foreground">Belum Ada Modul Addon</p>
+          <p className="mx-auto max-w-sm text-[11px] text-muted-foreground">
+            Produk software ini belum memiliki modul pelengkap yang terdaftar di
+            sistem.
           </p>
         </div>
       ) : (
@@ -166,7 +166,7 @@ export function LicenseDetailAddonsCard({
               const isPurchased = Boolean(currentItem)
               const isExpired = Boolean(
                 currentItem?.expires_at &&
-                  new Date(currentItem.expires_at).getTime() < Date.now()
+                new Date(currentItem.expires_at).getTime() < Date.now()
               )
               const isActive = currentItem?.status === "active" && !isExpired
               const isDisabled = currentItem?.status === "disabled"
@@ -175,8 +175,7 @@ export function LicenseDetailAddonsCard({
               const knownAddon = KNOWN_PRODUCT_ADDONS[addon.code]
               const addonName =
                 addon.nama || knownAddon?.nama || formatCodeToTitle(addon.code)
-              const addonDesc =
-                addon.description || knownAddon?.description
+              const addonDesc = addon.description || knownAddon?.description
 
               // Tooltip reason if toggle is disabled
               let toggleDisabledReason: string | null = null
@@ -191,22 +190,22 @@ export function LicenseDetailAddonsCard({
               return (
                 <div
                   key={addon.id}
-                  className={`p-3 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                  className={`flex flex-col justify-between gap-3 rounded-xl border p-3 transition-all sm:flex-row sm:items-center ${
                     isActive
-                      ? "bg-primary/5 border-primary/30 shadow-2xs"
-                      : "bg-muted/15 border-border/70 hover:border-border"
+                      ? "border-primary/30 bg-primary/5 shadow-2xs"
+                      : "border-border/70 bg-muted/15 hover:border-border"
                   }`}
                 >
                   {/* Left: Info */}
-                  <div className="space-y-1 min-w-0 flex-1 pr-2">
+                  <div className="min-w-0 flex-1 space-y-1 pr-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-xs text-foreground truncate">
+                      <span className="truncate text-xs font-semibold text-foreground">
                         {addonName}
                       </span>
 
                       <Badge
                         variant="outline"
-                        className="font-mono text-[10px] px-1.5 py-0 bg-background/60 text-muted-foreground border-border/80"
+                        className="border-border/80 bg-background/60 px-1.5 py-0 font-mono text-[10px] text-muted-foreground"
                       >
                         {addon.code}
                       </Badge>
@@ -216,28 +215,28 @@ export function LicenseDetailAddonsCard({
                         isExpired ? (
                           <Badge
                             variant="destructive"
-                            className="text-[10px] px-1.5 py-0 font-medium"
+                            className="px-1.5 py-0 text-[10px] font-medium"
                           >
                             Kedaluwarsa
                           </Badge>
                         ) : isActive ? (
                           <Badge
                             variant="default"
-                            className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] px-1.5 py-0 font-medium"
+                            className="border border-emerald-500/20 bg-emerald-500/15 px-1.5 py-0 text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
                           >
                             Aktif
                           </Badge>
                         ) : isDisabled ? (
                           <Badge
                             variant="secondary"
-                            className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] px-1.5 py-0 font-medium"
+                            className="border border-amber-500/20 bg-amber-500/15 px-1.5 py-0 text-[10px] font-medium text-amber-600 dark:text-amber-400"
                           >
                             Dinonaktifkan
                           </Badge>
                         ) : (
                           <Badge
                             variant="secondary"
-                            className="text-[10px] px-1.5 py-0 font-medium text-muted-foreground"
+                            className="px-1.5 py-0 text-[10px] font-medium text-muted-foreground"
                           >
                             Nonaktif
                           </Badge>
@@ -245,7 +244,7 @@ export function LicenseDetailAddonsCard({
                       ) : (
                         <Badge
                           variant="secondary"
-                          className="text-[10px] px-1.5 py-0 font-medium text-muted-foreground"
+                          className="px-1.5 py-0 text-[10px] font-medium text-muted-foreground"
                         >
                           Belum Dibeli
                         </Badge>
@@ -253,23 +252,23 @@ export function LicenseDetailAddonsCard({
                     </div>
 
                     {addonDesc && (
-                      <p className="text-[11px] text-muted-foreground line-clamp-1">
+                      <p className="line-clamp-1 text-[11px] text-muted-foreground">
                         {addonDesc}
                       </p>
                     )}
 
-                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground pt-0.5">
+                    <div className="flex flex-wrap items-center gap-3 pt-0.5 text-[11px] text-muted-foreground">
                       {addon.harga_bulanan > 0 && (
                         <span>
                           Harga:{" "}
-                          <strong className="text-foreground font-semibold font-mono">
+                          <strong className="font-mono font-semibold text-foreground">
                             {formatCurrency(addon.harga_bulanan)}
                           </strong>
                           /bln
                           {addon.harga_tahunan > 0 && (
                             <span className="ml-1 text-muted-foreground">
                               •{" "}
-                              <strong className="text-foreground font-semibold font-mono">
+                              <strong className="font-mono font-semibold text-foreground">
                                 {formatCurrency(addon.harga_tahunan)}
                               </strong>
                               /thn
@@ -281,19 +280,21 @@ export function LicenseDetailAddonsCard({
                       {currentItem?.expires_at && (
                         <span className="flex items-center gap-1">
                           <Calendar size={11} />
-                          <span>Masa Aktif: {formatDate(currentItem.expires_at)}</span>
+                          <span>
+                            Masa Aktif: {formatDate(currentItem.expires_at)}
+                          </span>
                         </span>
                       )}
                     </div>
                   </div>
 
                   {/* Right: Actions */}
-                  <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                  <div className="flex shrink-0 items-center gap-3 self-end sm:self-center">
                     {/* Toggle Switch for Purchased Addons */}
                     {isPurchased && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-background/80 border border-border/80">
+                          <div className="flex items-center gap-2 rounded-lg border border-border/80 bg-background/80 px-2 py-1">
                             {isItemToggling ? (
                               <Loader2
                                 size={13}
@@ -333,7 +334,7 @@ export function LicenseDetailAddonsCard({
                         variant={isPurchased ? "outline" : "default"}
                         size="sm"
                         onClick={() => onOrderAddon(addon.id)}
-                        className="h-8 px-2.5 text-xs cursor-pointer gap-1 shadow-2xs"
+                        className="h-8 cursor-pointer gap-1 px-2.5 text-xs shadow-2xs"
                       >
                         <CreditCard size={12} />
                         <span>{isPurchased ? "Perpanjang" : "Beli Addon"}</span>
@@ -349,4 +350,3 @@ export function LicenseDetailAddonsCard({
     </div>
   )
 }
-

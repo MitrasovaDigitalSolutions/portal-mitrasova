@@ -12,11 +12,11 @@ export function LicenseDetailLogsCard({
   logs = [],
 }: LicenseDetailLogsCardProps): JSX.Element {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-      <div className="flex items-center justify-between pb-2.5 border-b border-border">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex items-center justify-between border-b border-border pb-2.5">
         <div className="flex items-center gap-2">
           <Activity size={15} className="text-muted-foreground" />
-          <h2 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+          <h2 className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Log Aktivitas Handshake ({logs.length})
           </h2>
         </div>
@@ -36,26 +36,26 @@ export function LicenseDetailLogsCard({
             return (
               <div
                 key={log.id}
-                className="py-2.5 flex items-center justify-between gap-3 text-xs"
+                className="flex items-center justify-between gap-3 py-2.5 text-xs"
               >
-                <div className="space-y-0.5 min-w-0">
+                <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground truncate">
+                    <span className="truncate font-medium text-foreground">
                       {log.domain || "Semua Domain"}
                     </span>
                     <Badge
                       variant={isSuccess ? "default" : "destructive"}
-                      className="text-[10px] px-1.5 py-0"
+                      className="px-1.5 py-0 text-[10px]"
                     >
                       {log.status}
                     </Badge>
                   </div>
-                  <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 truncate">
+                  <p className="flex items-center gap-1.5 truncate text-[11px] text-muted-foreground">
                     <Globe size={11} /> IP: {log.ip_address}
                   </p>
                 </div>
 
-                <span className="text-[11px] text-muted-foreground shrink-0 flex items-center gap-1">
+                <span className="flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
                   <Clock size={11} />
                   {formatDate(log.created_at)}
                 </span>

@@ -19,11 +19,36 @@ import { id } from "date-fns/locale"
 export function parseToDate(
   dateInput?: Date | string | number | null
 ): Date | null {
-  if (dateInput === null || dateInput === undefined) {
+  if (dateInput === null || dateInput === undefined || dateInput === "") {
     return null
+  }
+  if (
+    typeof dateInput === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(dateInput.trim())
+  ) {
+    const [year, month, day] = dateInput.trim().split("-").map(Number)
+    const date = new Date(year, month - 1, day)
+    return fnsIsValid(date) ? date : null
   }
   const date = dateInput instanceof Date ? dateInput : new Date(dateInput)
   return fnsIsValid(date) ? date : null
+}
+
+/**
+ * Mengecek apakah input tanggal memiliki komponen waktu (jam/menit) yang sebenarnya.
+ */
+export function hasTime(dateInput?: Date | string | number | null): boolean {
+  if (!dateInput) {
+    return false
+  }
+  if (typeof dateInput === "string") {
+    const trimmed = dateInput.trim()
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      return false
+    }
+    return trimmed.includes(":") || trimmed.includes("T")
+  }
+  return dateInput instanceof Date || typeof dateInput === "number"
 }
 
 /**
@@ -114,10 +139,11 @@ export function addDaysStr(days: number): string {
 
 /**
  * Memformat tanggal dengan format custom (default locale Indonesia).
+ * Format default: "dd MMMM yyyy" (contoh: 15 Januari 2026).
  */
 export function formatDate(
   dateInput?: Date | string | number | null,
-  formatStr: string = "dd MMM yyyy",
+  formatStr: string = "dd MMMM yyyy",
   options?: { useLocale?: boolean }
 ): string {
   const date = parseToDate(dateInput)
@@ -143,20 +169,28 @@ export function formatToReadableDate(
 /**
  * Format ke tanggal & waktu lengkap yang mudah dibaca (Bahasa Indonesia).
  * Contoh: 06 Juli 2026, 08:44
+ * Jika input tidak memiliki komponen waktu, mengembalikan tanggal saja.
  */
 export function formatToReadableDateTime(
   dateInput?: Date | string | number | null
 ): string {
+  if (typeof dateInput === "string" && !hasTime(dateInput)) {
+    return formatToReadableDate(dateInput)
+  }
   return formatDate(dateInput, "dd MMMM yyyy, HH:mm")
 }
 
 /**
- * Format ke waktu saja.
+ * Format ke waktu saja (HH:mm atau HH:mm:ss).
+ * Mengembalikan string kosong jika input tidak memiliki komponen waktu.
  */
 export function formatToTime(
   dateInput?: Date | string | number | null,
   includeSeconds = false
 ): string {
+  if (typeof dateInput === "string" && !hasTime(dateInput)) {
+    return ""
+  }
   return formatDate(dateInput, includeSeconds ? "HH:mm:ss" : "HH:mm")
 }
 

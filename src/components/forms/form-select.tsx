@@ -34,6 +34,9 @@ export interface FormSelectProps<T extends FieldValues, TData = unknown> {
   id?: string
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   options?: CommandOption[]
   useAsyncQuery?: (params: AsyncQueryParams) => AsyncQueryResult<TData>
   mapOption?: (item: TData) => CommandOption
@@ -70,6 +73,9 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
   id,
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   options,
   useAsyncQuery,
   mapOption,
@@ -190,6 +196,10 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
   }
 
   const error = getNestedValue(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    error?.message
 
   return (
     <div id={id} className={cn("space-y-1.5", wrapperClassName)}>
@@ -199,6 +209,7 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
           className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase"
         >
           {label}
+          {required && <span className="text-destructive"> *</span>}
         </label>
       )}
       <Controller
@@ -256,7 +267,7 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
               hasMore={effectiveHasMore}
               isLoadingMore={effectiveIsLoadingMore}
               className={cn(
-                error &&
+                displayError &&
                   "border-destructive focus:border-destructive focus:ring-destructive/20",
                 className
               )}
@@ -271,9 +282,9 @@ export function FormSelect<T extends FieldValues, TData = unknown>({
           )
         }}
       />
-      {error && (
+      {displayError && (
         <p className="text-[10px] font-medium text-destructive">
-          {error.message}
+          {displayError}
         </p>
       )}
     </div>

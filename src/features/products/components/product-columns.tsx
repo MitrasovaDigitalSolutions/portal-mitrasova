@@ -30,10 +30,10 @@ export function getProductColumns(
           <button
             type="button"
             onClick={() => actions?.onViewDetail?.(product)}
-            className="flex items-center gap-2 cursor-pointer group text-left"
+            className="group flex cursor-pointer items-center gap-2 text-left"
             title="Buka detail produk"
           >
-            <span className="font-mono text-xs font-bold text-primary px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors whitespace-nowrap shadow-2xs">
+            <span className="rounded-md border border-primary/20 bg-primary/10 px-2.5 py-1 font-mono text-xs font-bold whitespace-nowrap text-primary shadow-2xs transition-colors group-hover:bg-primary/20">
               {product.code}
             </span>
           </button>
@@ -48,8 +48,8 @@ export function getProductColumns(
         const product = row.original
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-2.5 max-w-[290px]">
-              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-2xs">
+            <div className="flex max-w-[290px] items-center gap-2.5">
+              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary shadow-2xs">
                 <Package size={14} />
               </div>
               <div className="min-w-0 flex-1 space-y-0.5">
@@ -58,7 +58,7 @@ export function getProductColumns(
                     <button
                       type="button"
                       onClick={() => actions?.onViewDetail?.(product)}
-                      className="font-semibold text-xs text-foreground hover:text-primary hover:underline text-left cursor-pointer transition-colors block truncate max-w-full"
+                      className="block max-w-full cursor-pointer truncate text-left text-xs font-semibold text-foreground transition-colors hover:text-primary hover:underline"
                     >
                       {product.nama}
                     </button>
@@ -66,7 +66,7 @@ export function getProductColumns(
                   <TooltipContent side="top" className="max-w-xs text-xs">
                     <p className="font-semibold">{product.nama}</p>
                     {product.description && (
-                      <p className="text-zinc-400 text-[11px] leading-relaxed mt-0.5">
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-zinc-400">
                         {product.description}
                       </p>
                     )}
@@ -74,7 +74,7 @@ export function getProductColumns(
                 </Tooltip>
 
                 {product.description ? (
-                  <div className="text-[11px] text-muted-foreground truncate leading-tight">
+                  <div className="truncate text-[11px] leading-tight text-muted-foreground">
                     {product.description}
                   </div>
                 ) : (
@@ -91,6 +91,7 @@ export function getProductColumns(
     {
       id: "pricing",
       header: "Harga Pokok",
+      enableSorting: false,
       size: 160,
       cell: ({ row }) => {
         const product = row.original
@@ -126,7 +127,7 @@ export function getProductColumns(
           <button
             type="button"
             onClick={() => actions?.onViewDetail?.(product)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-400 dark:border-sky-500/20 hover:bg-sky-500/20 transition-colors cursor-pointer whitespace-nowrap shadow-2xs"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-sky-700 shadow-2xs transition-colors hover:bg-sky-500/20 dark:border-sky-500/20 dark:text-sky-400"
             title="Buka detail produk dan kelola modul addon"
           >
             <Layers className="size-3.5 shrink-0" />
@@ -144,7 +145,7 @@ export function getProductColumns(
         return (
           <Badge
             variant={count > 0 ? "secondary" : "outline"}
-            className="text-[10px] gap-1 font-mono font-medium px-2 py-0.5 whitespace-nowrap"
+            className="gap-1 px-2 py-0.5 font-mono text-[10px] font-medium whitespace-nowrap"
           >
             <KeyRound size={11} className="text-muted-foreground" />
             <span>{count} Lisensi</span>
@@ -159,12 +160,18 @@ export function getProductColumns(
       cell: ({ row }) => {
         const isActive = row.original.is_active
         return isActive ? (
-          <Badge variant="success" className="gap-1 whitespace-nowrap text-[10px]">
+          <Badge
+            variant="success"
+            className="gap-1 text-[10px] whitespace-nowrap"
+          >
             <CheckCircle2 className="size-3" />
             Aktif
           </Badge>
         ) : (
-          <Badge variant="outline" className="gap-1 text-muted-foreground whitespace-nowrap text-[10px]">
+          <Badge
+            variant="outline"
+            className="gap-1 text-[10px] whitespace-nowrap text-muted-foreground"
+          >
             <XCircle className="size-3" />
             Non-Aktif
           </Badge>

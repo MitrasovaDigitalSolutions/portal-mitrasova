@@ -122,11 +122,15 @@ export function LicenseExtendDialog({
       className="max-w-md"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4 text-xs"
+        >
           {/* Current status */}
-          <div className="p-3 rounded-xl border border-border bg-muted/30 flex items-center justify-between">
+          <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-3">
             <span className="text-muted-foreground">Masa Aktif Saat Ini:</span>
-            <span className="font-semibold text-foreground font-mono">
+            <span className="font-mono font-semibold text-foreground">
               {currentExpiry}
             </span>
           </div>
@@ -149,7 +153,7 @@ export function LicenseExtendDialog({
                   size="sm"
                   disabled={extendMutation.isPending}
                   onClick={() => handleQuickSelect(opt.days)}
-                  className="h-8 text-xs justify-center cursor-pointer gap-1.5 font-medium"
+                  className="h-8 cursor-pointer justify-center gap-1.5 text-xs font-medium"
                 >
                   <CalendarClock size={13} />
                   <span>{opt.label}</span>
@@ -159,7 +163,7 @@ export function LicenseExtendDialog({
           </div>
 
           {/* Custom Date Option */}
-          <div className="space-y-2 pt-2 border-t border-border">
+          <div className="space-y-2 border-t border-border pt-2">
             <label className="text-xs font-semibold text-foreground">
               Atau Tentukan Tanggal Kedaluwarsa Baru
             </label>
@@ -172,20 +176,20 @@ export function LicenseExtendDialog({
           </div>
 
           {/* Dialog Action Buttons */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
               disabled={extendMutation.isPending}
               onClick={() => onOpenChange(false)}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isSubmitDisabled}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {extendMutation.isPending && (
                 <Loader2 size={14} className="animate-spin" />

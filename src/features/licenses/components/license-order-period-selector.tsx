@@ -23,14 +23,14 @@ export function LicenseOrderPeriodSelector({
           type="button"
           onClick={() => onSelectPeriod("monthly")}
           className={cn(
-            "flex items-center justify-between rounded-xl border p-3 text-left transition-all cursor-pointer",
+            "flex cursor-pointer items-center justify-between rounded-xl border p-3 text-left transition-all",
             billingPeriod === "monthly"
               ? "border-primary bg-primary/10 text-foreground ring-1 ring-primary"
               : "border-border bg-card/60 text-muted-foreground hover:bg-muted/40 hover:text-foreground"
           )}
         >
           <div>
-            <div className="font-semibold text-xs text-foreground">
+            <div className="text-xs font-semibold text-foreground">
               Bulanan (Monthly)
             </div>
             <div className="text-[11px] text-muted-foreground">
@@ -46,7 +46,7 @@ export function LicenseOrderPeriodSelector({
           type="button"
           onClick={() => onSelectPeriod("annual")}
           className={cn(
-            "flex items-center justify-between rounded-xl border p-3 text-left transition-all cursor-pointer relative",
+            "relative flex cursor-pointer items-center justify-between rounded-xl border p-3 text-left transition-all",
             billingPeriod === "annual"
               ? "border-primary bg-primary/10 text-foreground ring-1 ring-primary"
               : "border-border bg-card/60 text-muted-foreground hover:bg-muted/40 hover:text-foreground"
@@ -54,7 +54,7 @@ export function LicenseOrderPeriodSelector({
         >
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-xs text-foreground">
+              <span className="text-xs font-semibold text-foreground">
                 Tahunan (Annual)
               </span>
               <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">

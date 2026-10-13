@@ -25,7 +25,11 @@ import {
   useResetLicenseDomain,
 } from "../api/license.queries"
 import { SUBSCRIPTION_TYPES } from "../constants"
-import type { License, LicenseStatus, LicenseSubscriptionType } from "../@types/license"
+import type {
+  License,
+  LicenseStatus,
+  LicenseSubscriptionType,
+} from "../@types/license"
 
 interface LicenseFilterFormValues {
   subscription: LicenseSubscriptionType | "all"
@@ -45,7 +49,13 @@ export function LicensesView(): JSX.Element {
   const [perPage, setPerPage] = useState(15)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<LicenseStatus | "all">("all")
-  const [subscriptionFilter, setSubscriptionFilter] = useState<LicenseSubscriptionType | "all">("all")
+  const [subscriptionFilter, setSubscriptionFilter] = useState<
+    LicenseSubscriptionType | "all"
+  >("all")
+  const [sortBy, setSortBy] = useState<
+    "created_at" | "expires_at" | "nama_instance" | "status" | undefined
+  >("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | undefined>("desc")
 
   const debouncedSearch = useDebounce(search, 400)
 
@@ -60,7 +70,9 @@ export function LicensesView(): JSX.Element {
     setPage(1)
   }
 
-  const handleSubscriptionFilterChange = (sub: LicenseSubscriptionType | "all") => {
+  const handleSubscriptionFilterChange = (
+    sub: LicenseSubscriptionType | "all"
+  ) => {
     setSubscriptionFilter(sub)
     setPage(1)
   }
@@ -78,16 +90,27 @@ export function LicensesView(): JSX.Element {
 
   const [selectedForEdit, setSelectedForEdit] = useState<License | null>(null)
   const [selectedForOrder, setSelectedForOrder] = useState<License | null>(null)
-  const [selectedForDelete, setSelectedForDelete] = useState<License | null>(null)
-  const [selectedForResetDomain, setSelectedForResetDomain] = useState<License | null>(null)
-  const [selectedForRegenerateSecret, setSelectedForRegenerateSecret] = useState<License | null>(null)
+  const [selectedForDelete, setSelectedForDelete] = useState<License | null>(
+    null
+  )
+  const [selectedForResetDomain, setSelectedForResetDomain] =
+    useState<License | null>(null)
+  const [selectedForRegenerateSecret, setSelectedForRegenerateSecret] =
+    useState<License | null>(null)
 
-  const { data: response, isLoading, isFetching } = useLicenses({
+  const {
+    data: response,
+    isLoading,
+    isFetching,
+  } = useLicenses({
     page,
     per_page: perPage,
     search: debouncedSearch.trim() || undefined,
     status: statusFilter === "all" ? undefined : statusFilter,
-    subscription_type: subscriptionFilter === "all" ? undefined : subscriptionFilter,
+    subscription_type:
+      subscriptionFilter === "all" ? undefined : subscriptionFilter,
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
 
   const deleteMutation = useDeleteLicense()
@@ -106,7 +129,9 @@ export function LicensesView(): JSX.Element {
   const columns = useMemo(() => getLicenseColumns(), [])
 
   const handleDeleteConfirm = async () => {
-    if (!selectedForDelete) {return}
+    if (!selectedForDelete) {
+      return
+    }
     try {
       await deleteMutation.mutateAsync(selectedForDelete.id)
       setSelectedForDelete(null)
@@ -116,7 +141,9 @@ export function LicensesView(): JSX.Element {
   }
 
   const handleResetDomainConfirm = async () => {
-    if (!selectedForResetDomain) {return}
+    if (!selectedForResetDomain) {
+      return
+    }
     try {
       await resetDomainMutation.mutateAsync(selectedForResetDomain.id)
       setSelectedForResetDomain(null)
@@ -126,7 +153,9 @@ export function LicensesView(): JSX.Element {
   }
 
   const handleRegenerateSecretConfirm = async () => {
-    if (!selectedForRegenerateSecret) {return}
+    if (!selectedForRegenerateSecret) {
+      return
+    }
     try {
       await regenerateSecretMutation.mutateAsync(selectedForRegenerateSecret.id)
       setSelectedForRegenerateSecret(null)
@@ -142,9 +171,9 @@ export function LicensesView(): JSX.Element {
       className="space-y-4"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
             <KeyRound size={20} />
           </div>
           <div>
@@ -157,7 +186,8 @@ export function LicensesView(): JSX.Element {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground">
-              Kelola seluruh instance software klien, verifikasi aktivasi, server, dan modul addon.
+              Kelola seluruh instance software klien, verifikasi aktivasi,
+              server, dan modul addon.
             </p>
           </div>
         </div>
@@ -165,7 +195,7 @@ export function LicensesView(): JSX.Element {
         <Button
           type="button"
           onClick={() => router.push("/licenses/create")}
-          className="h-9 px-4 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl shadow-xs shrink-0"
+          className="h-9 shrink-0 cursor-pointer gap-1.5 rounded-xl px-4 text-xs font-semibold shadow-xs"
         >
           <Plus size={14} />
           <span>Terbitkan Lisensi Baru</span>
@@ -173,25 +203,25 @@ export function LicensesView(): JSX.Element {
       </div>
 
       {/* Table Container & Filter Toolbar */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="space-y-3.5 rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           {/* Search Input */}
           <div className="relative w-full sm:w-64">
             <Search
               size={13}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
             />
             <Input
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Cari instance, klien, key..."
-              className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
+              className="h-8 rounded-lg bg-background pr-7 pl-8 text-xs"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => handleSearchChange("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 title="Hapus pencarian"
               >
                 <X size={12} />
@@ -218,11 +248,11 @@ export function LicensesView(): JSX.Element {
             </FormProvider>
 
             {/* Status Tabs */}
-            <div className="flex items-center gap-1.5 bg-muted/50 p-0.5 rounded-lg border border-border text-xs">
+            <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/50 p-0.5 text-xs">
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("all")}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                   statusFilter === "all"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -233,7 +263,7 @@ export function LicensesView(): JSX.Element {
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("active")}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                   statusFilter === "active"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -244,7 +274,7 @@ export function LicensesView(): JSX.Element {
               <button
                 type="button"
                 onClick={() => handleStatusFilterChange("expired")}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                   statusFilter === "expired"
                     ? "bg-background text-foreground shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
@@ -268,6 +298,20 @@ export function LicensesView(): JSX.Element {
           onPageChange={setPage}
           onPerPageChange={(newPerPage) => {
             setPerPage(newPerPage)
+            setPage(1)
+          }}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={(col, order) => {
+            setSortBy(
+              col as
+                | "created_at"
+                | "expires_at"
+                | "nama_instance"
+                | "status"
+                | undefined
+            )
+            setSortOrder(order)
             setPage(1)
           }}
           meta={response?.meta}
@@ -308,7 +352,8 @@ export function LicensesView(): JSX.Element {
                 onEdit: (lic) => setSelectedForEdit(lic),
                 onOrder: (lic) => setSelectedForOrder(lic),
                 onResetDomain: (lic) => setSelectedForResetDomain(lic),
-                onRegenerateSecret: (lic) => setSelectedForRegenerateSecret(lic),
+                onRegenerateSecret: (lic) =>
+                  setSelectedForRegenerateSecret(lic),
                 onDelete: (lic) => setSelectedForDelete(lic),
               }}
             />

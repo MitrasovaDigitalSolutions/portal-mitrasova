@@ -1,13 +1,7 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
-import {
-  Check,
-  Copy,
-  Globe,
-  Puzzle,
-  Server,
-} from "lucide-react"
+import { Check, Copy, Globe, Puzzle, Server } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +12,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { SUBSCRIPTION_TYPES, SERVER_TYPES, formatCodeToTitle } from "../constants"
+import {
+  SUBSCRIPTION_TYPES,
+  SERVER_TYPES,
+  formatCodeToTitle,
+} from "../constants"
 import type { License } from "../@types/license"
 
 export interface LicenseColumnActions {
@@ -48,18 +46,18 @@ function LicenseKeyCell({ licenseKey }: { licenseKey: string }) {
       <div className="flex items-center gap-1.5">
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-muted/60 text-foreground border border-border/80 truncate max-w-[150px]">
+            <span className="max-w-[150px] truncate rounded-md border border-border/80 bg-muted/60 px-2 py-0.5 font-mono text-xs font-semibold text-foreground">
               {licenseKey}
             </span>
           </TooltipTrigger>
-          <TooltipContent side="top" className="text-xs font-mono">
+          <TooltipContent side="top" className="font-mono text-xs">
             {licenseKey}
           </TooltipContent>
         </Tooltip>
         <button
           type="button"
           onClick={handleCopy}
-          className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer transition-colors"
+          className="cursor-pointer rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           title="Salin License Key"
         >
           {copied ? (
@@ -78,17 +76,18 @@ export function getLicenseColumns(): ColumnDef<License>[] {
     {
       accessorKey: "product",
       header: "Produk Software",
+      enableSorting: false,
       size: 220,
       cell: ({ row }) => {
         const license = row.original
         const product = license.product
         return (
           <div className="space-y-1">
-            <span className="font-semibold text-xs text-foreground block truncate">
+            <span className="block truncate text-xs font-semibold text-foreground">
               {product?.nama || "Software Instance"}
             </span>
             {product?.code && (
-              <span className="font-mono text-[10px] font-bold text-primary px-1.5 py-0.5 rounded bg-primary/10 border border-primary/20">
+              <span className="rounded border border-primary/20 bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-primary">
                 {product.code}
               </span>
             )}
@@ -106,10 +105,10 @@ export function getLicenseColumns(): ColumnDef<License>[] {
 
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="space-y-1 max-w-[240px]">
+            <div className="max-w-[240px] space-y-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <p className="font-medium text-xs text-foreground truncate cursor-default">
+                  <p className="cursor-default truncate text-xs font-medium text-foreground">
                     {license.nama_instance}
                   </p>
                 </TooltipTrigger>
@@ -118,13 +117,13 @@ export function getLicenseColumns(): ColumnDef<License>[] {
                 </TooltipContent>
               </Tooltip>
 
-              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground truncate">
+              <div className="flex items-center gap-1.5 truncate text-[11px] text-muted-foreground">
                 <Globe size={11} className="shrink-0 text-muted-foreground" />
                 <span className="truncate font-mono">
                   {license.domain_instance || "Belum terikat"}
                 </span>
                 {hasDomain && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span className="py-0.2 rounded-full bg-emerald-500/10 px-1.5 text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
                     Bound
                   </span>
                 )}
@@ -145,6 +144,7 @@ export function getLicenseColumns(): ColumnDef<License>[] {
     {
       id: "subscription_server",
       header: "Paket & Server",
+      enableSorting: false,
       size: 180,
       cell: ({ row }) => {
         const license = row.original
@@ -159,11 +159,15 @@ export function getLicenseColumns(): ColumnDef<License>[] {
           <div className="space-y-1">
             <Badge
               variant={subConfig?.badgeVariant ?? "secondary"}
-              className="text-[10px] py-0 font-medium"
+              className="py-0 text-[10px] font-medium"
             >
-              {subConfig?.label.split(" ")[0] ?? formatCodeToTitle(license.subscription_type)}
+              {subConfig?.label.split(" ")[0] ??
+                formatCodeToTitle(license.subscription_type)}
             </Badge>
-            <div className="flex items-center gap-1 text-[11px] text-muted-foreground truncate max-w-[170px]" title={serverName}>
+            <div
+              className="flex max-w-[170px] items-center gap-1 truncate text-[11px] text-muted-foreground"
+              title={serverName}
+            >
               <Server size={10} className="shrink-0" />
               <span className="truncate">{serverName}</span>
             </div>
@@ -177,7 +181,9 @@ export function getLicenseColumns(): ColumnDef<License>[] {
       size: 130,
       cell: ({ row }) => {
         const status = row.original.status
-        return <StatusBadge status={status} className="capitalize text-[11px]" />
+        return (
+          <StatusBadge status={status} className="text-[11px] capitalize" />
+        )
       },
     },
     {
@@ -188,7 +194,10 @@ export function getLicenseColumns(): ColumnDef<License>[] {
         const license = row.original
         if (license.subscription_type === "lifetime" || !license.expires_at) {
           return (
-            <Badge variant="outline" className="text-[10px] font-normal text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
+            <Badge
+              variant="outline"
+              className="border-emerald-500/30 text-[10px] font-normal text-emerald-600 dark:text-emerald-400"
+            >
               Lifetime
             </Badge>
           )
@@ -206,14 +215,14 @@ export function getLicenseColumns(): ColumnDef<License>[] {
         return (
           <div className="space-y-0.5">
             <span
-              className={`text-xs font-mono ${
-                isPast ? "text-destructive font-semibold" : "text-foreground"
+              className={`font-mono text-xs ${
+                isPast ? "font-semibold text-destructive" : "text-foreground"
               }`}
             >
               {formatted}
             </span>
             {isPast && (
-              <span className="block text-[10px] text-amber-500 font-medium">
+              <span className="block text-[10px] font-medium text-amber-500">
                 Grace period {license.grace_period_days} hari
               </span>
             )}
@@ -231,7 +240,7 @@ export function getLicenseColumns(): ColumnDef<License>[] {
           row.original.license_addons?.length ??
           0
         return (
-          <Badge variant="outline" className="text-[11px] font-mono gap-1">
+          <Badge variant="outline" className="gap-1 font-mono text-[11px]">
             <Puzzle size={10} />
             <span>{count}</span>
           </Badge>

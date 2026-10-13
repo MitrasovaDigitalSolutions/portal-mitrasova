@@ -18,10 +18,16 @@ export function CouponsView(): JSX.Element {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(15)
   const [search, setSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all")
+  const [sortBy, setSortBy] = useState<string | undefined>("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | undefined>("desc")
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [selectedForEdit, setSelectedForEdit] = useState<Coupon | null>(null)
-  const [selectedForDelete, setSelectedForDelete] = useState<Coupon | null>(null)
+  const [selectedForDelete, setSelectedForDelete] = useState<Coupon | null>(
+    null
+  )
 
   const debouncedSearch = useDebounce(search, 400)
 
@@ -35,11 +41,17 @@ export function CouponsView(): JSX.Element {
     setPage(1)
   }
 
-  const { data: response, isLoading, isFetching } = useCoupons({
+  const {
+    data: response,
+    isLoading,
+    isFetching,
+  } = useCoupons({
     page,
     per_page: perPage,
     search: debouncedSearch.trim() || undefined,
     is_active: statusFilter === "all" ? undefined : statusFilter === "active",
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
   const deleteMutation = useDeleteCoupon()
 
@@ -54,7 +66,9 @@ export function CouponsView(): JSX.Element {
   const columns = useMemo(() => getCouponColumns(), [])
 
   const handleDelete = async () => {
-    if (!selectedForDelete) {return}
+    if (!selectedForDelete) {
+      return
+    }
     try {
       await deleteMutation.mutateAsync(selectedForDelete.id)
       setSelectedForDelete(null)
@@ -70,9 +84,9 @@ export function CouponsView(): JSX.Element {
       className="space-y-4"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400">
             <Tag size={20} />
           </div>
           <div>
@@ -85,7 +99,8 @@ export function CouponsView(): JSX.Element {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground">
-              Kelola voucher diskon, potongan biaya langganan, dan promo pesanan lisensi klien.
+              Kelola voucher diskon, potongan biaya langganan, dan promo pesanan
+              lisensi klien.
             </p>
           </div>
         </div>
@@ -93,7 +108,7 @@ export function CouponsView(): JSX.Element {
         <Button
           type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="h-9 px-4 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl shadow-xs shrink-0"
+          className="h-9 shrink-0 cursor-pointer gap-1.5 rounded-xl px-4 text-xs font-semibold shadow-xs"
         >
           <Plus size={14} />
           <span>Buat Kupon Baru</span>
@@ -101,25 +116,25 @@ export function CouponsView(): JSX.Element {
       </div>
 
       {/* Table Container & Filter Toolbar */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="space-y-3.5 rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           {/* Search Input */}
           <div className="relative w-full sm:w-64">
             <Search
               size={13}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
             />
             <Input
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Cari kode promo, nama..."
-              className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
+              className="h-8 rounded-lg bg-background pr-7 pl-8 text-xs"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => handleSearchChange("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 title="Hapus pencarian"
               >
                 <X size={12} />
@@ -128,11 +143,11 @@ export function CouponsView(): JSX.Element {
           </div>
 
           {/* Status Tabs */}
-          <div className="flex items-center gap-1.5 bg-muted/50 p-0.5 rounded-lg border border-border text-xs">
+          <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/50 p-0.5 text-xs">
             <button
               type="button"
               onClick={() => handleStatusFilterChange("all")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "all"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -143,7 +158,7 @@ export function CouponsView(): JSX.Element {
             <button
               type="button"
               onClick={() => handleStatusFilterChange("active")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "active"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -154,7 +169,7 @@ export function CouponsView(): JSX.Element {
             <button
               type="button"
               onClick={() => handleStatusFilterChange("inactive")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "inactive"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -177,6 +192,13 @@ export function CouponsView(): JSX.Element {
           onPageChange={setPage}
           onPerPageChange={(newPerPage) => {
             setPerPage(newPerPage)
+            setPage(1)
+          }}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={(col, order) => {
+            setSortBy(col)
+            setSortOrder(order)
             setPage(1)
           }}
           meta={response?.meta}

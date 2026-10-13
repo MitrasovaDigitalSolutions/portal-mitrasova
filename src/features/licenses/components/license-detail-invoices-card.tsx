@@ -33,11 +33,11 @@ export function LicenseDetailInvoicesCard({
   onViewDetail,
 }: LicenseDetailInvoicesCardProps): JSX.Element {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-      <div className="flex items-center justify-between pb-2.5 border-b border-border">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex items-center justify-between border-b border-border pb-2.5">
         <div className="flex items-center gap-2">
           <Receipt size={15} className="text-muted-foreground" />
-          <h2 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+          <h2 className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Tagihan & Faktur Invoice ({invoices.length})
           </h2>
         </div>
@@ -56,23 +56,24 @@ export function LicenseDetailInvoicesCard({
             return (
               <div
                 key={inv.id}
-                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                className="flex flex-col justify-between gap-3 py-3 text-xs sm:flex-row sm:items-center"
               >
                 {/* Left: Invoice info */}
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={() => onViewDetail(inv)}
-                      className="font-semibold text-xs text-primary hover:underline cursor-pointer"
+                      className="cursor-pointer text-xs font-semibold text-primary hover:underline"
                     >
                       {inv.invoice_number}
                     </button>
                     <InvoiceStatusBadge status={inv.status} />
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground flex-wrap">
+                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Clock size={11} /> Jatuh tempo: {formatDate(inv.due_date)}
+                      <Clock size={11} /> Jatuh tempo:{" "}
+                      {formatDate(inv.due_date)}
                     </span>
                     {inv.paid_at && (
                       <span className="text-emerald-600 dark:text-emerald-400">
@@ -83,14 +84,14 @@ export function LicenseDetailInvoicesCard({
                 </div>
 
                 {/* Right: Amount & Actions */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
                   <div className="text-left sm:text-right">
-                    <span className="font-semibold text-xs text-foreground block">
+                    <span className="block text-xs font-semibold text-foreground">
                       {formatCurrency(inv.total_amount)}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex shrink-0 items-center gap-1">
                     {/* Mark Paid button for unpaid */}
                     {isUnpaid && (
                       <Button
@@ -98,7 +99,7 @@ export function LicenseDetailInvoicesCard({
                         variant="default"
                         size="sm"
                         onClick={() => onMarkPaid(inv)}
-                        className="h-7 px-2.5 text-xs gap-1 bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                        className="h-7 cursor-pointer gap-1 bg-emerald-600 px-2.5 text-xs text-white hover:bg-emerald-700"
                       >
                         <CheckCircle2 size={12} />
                         <span>Bayar</span>
@@ -112,7 +113,7 @@ export function LicenseDetailInvoicesCard({
                         variant="outline"
                         size="sm"
                         onClick={() => onCancelInvoice(inv)}
-                        className="h-7 px-2 text-xs gap-1 text-destructive hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+                        className="h-7 cursor-pointer gap-1 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Ban size={12} />
                         <span>Batal</span>
@@ -126,11 +127,14 @@ export function LicenseDetailInvoicesCard({
                       size="sm"
                       disabled={isDownloading}
                       onClick={() => onDownloadPdf(inv)}
-                      className="h-7 px-2 text-xs gap-1 cursor-pointer"
+                      className="h-7 cursor-pointer gap-1 px-2 text-xs"
                       title="Unduh PDF Faktur"
                     >
                       {isDownloading ? (
-                        <Loader2 size={12} className="animate-spin text-primary" />
+                        <Loader2
+                          size={12}
+                          className="animate-spin text-primary"
+                        />
                       ) : (
                         <Download size={12} />
                       )}
@@ -143,7 +147,7 @@ export function LicenseDetailInvoicesCard({
                       variant="ghost"
                       size="sm"
                       onClick={() => onViewDetail(inv)}
-                      className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground cursor-pointer"
+                      className="h-7 cursor-pointer gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
                       title="Lihat Rincian Faktur"
                     >
                       <FileText size={12} />

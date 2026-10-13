@@ -44,7 +44,7 @@ export function DashboardView() {
           onClick={() => void refetch()}
           variant="outline"
           size="sm"
-          className="mt-4 rounded-xl font-bold cursor-pointer"
+          className="mt-4 cursor-pointer rounded-xl font-bold"
         >
           <RotateCw size={14} className="mr-1.5" />
           Coba Lagi
@@ -56,18 +56,18 @@ export function DashboardView() {
   return (
     <div className="space-y-4">
       {/* ─── Compact Top Controls ─────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
               Executive Overview
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
               Sistem Aktif
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             Statistik operasional, utilisasi lisensi, dan arus kas langganan.
           </p>
         </div>
@@ -77,13 +77,16 @@ export function DashboardView() {
           size="sm"
           onClick={handleRefresh}
           disabled={isFetching || isManualRefreshing}
-          className="h-8.5 px-3 rounded-xl border-border bg-card text-xs font-semibold text-muted-foreground shadow-2xs hover:bg-muted hover:text-foreground cursor-pointer shrink-0 self-start sm:self-auto"
+          className="h-8.5 shrink-0 cursor-pointer self-start rounded-xl border-border bg-card px-3 text-xs font-semibold text-muted-foreground shadow-2xs hover:bg-muted hover:text-foreground sm:self-auto"
           title="Sinkronisasi ulang data metrik terkini"
         >
           <RotateCw
             size={12}
-            className={`mr-1.5 ${isFetching || isManualRefreshing ? "animate-spin text-primary" : ""
-              }`}
+            className={`mr-1.5 ${
+              isFetching || isManualRefreshing
+                ? "animate-spin text-primary"
+                : ""
+            }`}
           />
           <span>Segarkan Data</span>
         </Button>

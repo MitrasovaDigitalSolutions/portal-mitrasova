@@ -28,13 +28,13 @@ export function InvoiceMobileCard({
   const isUnpaid = invoice.status === "unpaid"
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2.5 shadow-2xs hover:border-primary/40 transition-colors">
+    <div className="space-y-2.5 rounded-xl border border-border bg-card p-3 shadow-2xs transition-colors hover:border-primary/40 sm:p-3.5">
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1">
           <button
             type="button"
             onClick={() => onViewDetail(invoice)}
-            className="font-mono font-bold text-xs text-primary hover:underline text-left cursor-pointer"
+            className="cursor-pointer text-left font-mono text-xs font-bold text-primary hover:underline"
           >
             {invoice.invoice_number}
           </button>
@@ -45,10 +45,12 @@ export function InvoiceMobileCard({
         <InvoiceStatusBadge status={invoice.status} />
       </div>
 
-      <div className="space-y-1 text-xs border-y border-border/60 py-2">
+      <div className="space-y-1 border-y border-border/60 py-2 text-xs">
         <div className="flex items-center gap-1.5 font-medium text-foreground">
           <Building className="size-3.5 text-muted-foreground" />
-          <span>{invoice.client?.nama_pemilik || invoice.client?.nama_usaha || "—"}</span>
+          <span>
+            {invoice.client?.nama_pemilik || invoice.client?.nama_usaha || "—"}
+          </span>
         </div>
         <div className="flex items-center justify-between text-muted-foreground">
           <span className="flex items-center gap-1">
@@ -60,7 +62,7 @@ export function InvoiceMobileCard({
         </div>
         <div className="flex items-center justify-between pt-1 font-bold">
           <span className="text-foreground">Total:</span>
-          <span className="text-primary font-mono">
+          <span className="font-mono text-primary">
             {formatCurrency(invoice.total_amount)}
           </span>
         </div>
@@ -72,7 +74,7 @@ export function InvoiceMobileCard({
           type="button"
           variant="outline"
           size="sm"
-          className="h-7 text-[11px] px-2 cursor-pointer"
+          className="h-7 cursor-pointer px-2 text-[11px]"
           onClick={() => onViewDetail(invoice)}
         >
           Detail
@@ -81,7 +83,7 @@ export function InvoiceMobileCard({
           <Button
             type="button"
             size="sm"
-            className="h-7 text-[11px] px-2 bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-500 cursor-pointer font-medium"
+            className="h-7 cursor-pointer bg-emerald-600 px-2 text-[11px] font-medium text-white hover:bg-emerald-700 dark:bg-emerald-500"
             onClick={() => onMarkPaid(invoice)}
           >
             Lunasi
@@ -92,7 +94,7 @@ export function InvoiceMobileCard({
             type="button"
             variant="outline"
             size="sm"
-            className="h-7 text-[11px] px-2 text-destructive hover:bg-destructive/10 cursor-pointer"
+            className="h-7 cursor-pointer px-2 text-[11px] text-destructive hover:bg-destructive/10"
             onClick={() => onCancel(invoice)}
           >
             Batal
@@ -102,7 +104,7 @@ export function InvoiceMobileCard({
           type="button"
           variant="outline"
           size="sm"
-          className="h-7 text-[11px] px-2 cursor-pointer text-muted-foreground hover:text-foreground"
+          className="h-7 cursor-pointer px-2 text-[11px] text-muted-foreground hover:text-foreground"
           onClick={() => onDownloadPdf(invoice)}
         >
           PDF
@@ -112,7 +114,7 @@ export function InvoiceMobileCard({
             type="button"
             variant="destructive"
             size="sm"
-            className="h-7 text-[11px] px-2 cursor-pointer"
+            className="h-7 cursor-pointer px-2 text-[11px]"
             onClick={() => onDelete(invoice)}
           >
             Hapus

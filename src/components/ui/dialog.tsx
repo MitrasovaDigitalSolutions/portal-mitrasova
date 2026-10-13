@@ -109,7 +109,13 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close
-          render={<Button variant="outline" size="sm" className="cursor-pointer text-xs" />}
+          render={
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer text-xs"
+            />
+          }
         >
           Tutup
         </DialogPrimitive.Close>

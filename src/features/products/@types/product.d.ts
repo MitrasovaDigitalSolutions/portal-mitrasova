@@ -36,6 +36,8 @@ export interface ProductQueryParams {
   status?: "all" | "active" | "inactive"
   page?: number
   per_page?: number
+  sort_by?: string
+  sort_order?: "asc" | "desc"
 }
 
 export interface CreateProductPayload {

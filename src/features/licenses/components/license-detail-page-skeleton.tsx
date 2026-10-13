@@ -3,9 +3,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function LicenseDetailPageSkeleton(): JSX.Element {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="animate-pulse space-y-4">
       {/* 1. Header Skeleton */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-border">
+      <div className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
           {/* Breadcrumb back link */}
           <div className="flex items-center gap-1.5">
@@ -30,7 +30,7 @@ export function LicenseDetailPageSkeleton(): JSX.Element {
       </div>
 
       {/* 2. Tabs Bar Skeleton */}
-      <div className="h-9 p-1 rounded-lg bg-muted/60 border border-border/80 flex items-center gap-1.5 w-fit">
+      <div className="flex h-9 w-fit items-center gap-1.5 rounded-lg border border-border/80 bg-muted/60 p-1">
         <Skeleton className="h-7 w-32 rounded-md" />
         <Skeleton className="h-7 w-28 rounded-md" />
         <Skeleton className="h-7 w-24 rounded-md" />
@@ -38,19 +38,19 @@ export function LicenseDetailPageSkeleton(): JSX.Element {
       </div>
 
       {/* 3. Overview Card Skeleton (Tab 1) */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-        <div className="flex items-center justify-between pb-2.5 border-b border-border">
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex items-center justify-between border-b border-border pb-2.5">
           <div className="flex items-center gap-2">
             <Skeleton className="size-4 rounded" />
             <Skeleton className="h-4 w-44 rounded" />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-2"
+              className="space-y-2 rounded-lg border border-border/70 bg-muted/20 p-3"
             >
               <Skeleton className="h-3 w-20 rounded" />
               <Skeleton className="h-4 w-32 rounded" />
@@ -61,8 +61,8 @@ export function LicenseDetailPageSkeleton(): JSX.Element {
       </div>
 
       {/* 4. Credentials Card Skeleton (Tab 1) */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-        <div className="flex items-center justify-between pb-2.5 border-b border-border">
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex items-center justify-between border-b border-border pb-2.5">
           <div className="flex items-center gap-2">
             <Skeleton className="size-4 rounded" />
             <Skeleton className="h-4 w-48 rounded" />
@@ -89,7 +89,7 @@ export function LicenseDetailPageSkeleton(): JSX.Element {
           </div>
 
           {/* Binding card */}
-          <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1.5 mt-1">
+          <div className="mt-1 space-y-1.5 rounded-lg border border-border/70 bg-muted/20 p-3">
             <div className="flex items-center justify-between">
               <Skeleton className="h-3 w-24 rounded" />
               <Skeleton className="h-3 w-16 rounded" />

@@ -13,6 +13,7 @@ interface ChipsSelectProps {
   value: string[]
   onChange: (value: string[]) => void
   label?: string
+  required?: boolean
   className?: string
   wrapperClassName?: string
   disabled?: boolean
@@ -23,6 +24,7 @@ export function ChipsSelect({
   value = [],
   onChange,
   label,
+  required,
   className,
   wrapperClassName,
   disabled = false,
@@ -42,6 +44,7 @@ export function ChipsSelect({
       {label && (
         <label className="block text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
           {label}
+          {required && <span className="text-destructive"> *</span>}
         </label>
       )}
       <div className={cn("flex flex-wrap gap-2", className)}>

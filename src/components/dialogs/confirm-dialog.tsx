@@ -49,11 +49,11 @@ export function ConfirmDialog() {
           {description}
         </p>
 
-        <div className="flex items-center justify-end gap-2 pt-4 border-t border-border mt-4">
+        <div className="mt-4 flex items-center justify-end gap-2 border-t border-border pt-4">
           <Button
             onClick={closeConfirmDialog}
             variant="outline"
-            className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+            className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
           >
             Batal
           </Button>
@@ -61,8 +61,9 @@ export function ConfirmDialog() {
             onClick={handleConfirm}
             variant={variant === "destructive" ? "destructive" : "default"}
             className={cn(
-              "h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl gap-2 shadow-xs",
-              variant === "destructive" && "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              "h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs",
+              variant === "destructive" &&
+                "text-destructive-foreground bg-destructive hover:bg-destructive/90"
             )}
           >
             Konfirmasi

@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         {/* SVG Isometric / Cyber Grid Lines */}
         <svg
-          className="absolute inset-0 h-full w-full stroke-foreground/[0.05] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]"
+          className="absolute inset-0 h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)] stroke-foreground/[0.05]"
           aria-hidden="true"
         >
           <defs>
@@ -21,10 +21,20 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             >
               <path d="M.5 48V.5H48" fill="none" />
               {/* Subtle tech node points */}
-              <circle cx="0.5" cy="0.5" r="1" className="fill-foreground/[0.12]" />
+              <circle
+                cx="0.5"
+                cy="0.5"
+                r="1"
+                className="fill-foreground/[0.12]"
+              />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" strokeWidth="0" fill="url(#techno-grid-pattern)" />
+          <rect
+            width="100%"
+            height="100%"
+            strokeWidth="0"
+            fill="url(#techno-grid-pattern)"
+          />
         </svg>
 
         {/* Ambient Techno Radial Glows */}

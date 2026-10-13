@@ -94,4 +94,3 @@ declare global {
 
   type MutationResponse<T = unknown> = MutationResult<T>
 }
-

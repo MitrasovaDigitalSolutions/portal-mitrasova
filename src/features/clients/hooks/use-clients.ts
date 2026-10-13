@@ -12,6 +12,8 @@ export function useClientsManagement() {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
+  const [sortBy, setSortBy] = useState<string | undefined>("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | undefined>("desc")
 
   const debouncedSearch = useDebounce(search, 400)
 
@@ -20,6 +22,8 @@ export function useClientsManagement() {
     page,
     per_page: perPage,
     search: debouncedSearch,
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
 
   // Dialog states
@@ -104,5 +108,9 @@ export function useClientsManagement() {
     handleOpenEdit,
     handleDeleteConfirm,
     refetch,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
   }
 }

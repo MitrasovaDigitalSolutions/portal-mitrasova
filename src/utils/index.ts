@@ -22,22 +22,7 @@ export function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
-/**
- * Format a Date or ISO string to a localized Indonesian date string.
- *
- * @example
- * ```ts
- * formatDate("2026-01-15") // "15 Januari 2026"
- * ```
- */
-export function formatDate(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : date
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(d)
-}
+export * from "./date-utils"
 
 /**
  * Truncate a string to a maximum length and append ellipsis.

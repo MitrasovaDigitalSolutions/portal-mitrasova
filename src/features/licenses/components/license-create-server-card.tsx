@@ -27,10 +27,10 @@ export function LicenseCreateServerCard({
   )
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-xs space-y-3.5">
+    <div className="space-y-3.5 rounded-xl border border-border bg-card p-3.5 shadow-xs sm:p-4">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-border/60 pb-2.5">
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
           <Server size={15} />
         </div>
         <div>
@@ -38,13 +38,14 @@ export function LicenseCreateServerCard({
             Alokasi Instance & Hosting Server
           </h2>
           <p className="text-[11px] text-muted-foreground">
-            Konfigurasi identitas instance cabang dan alokasi paket hosting server.
+            Konfigurasi identitas instance cabang dan alokasi paket hosting
+            server.
           </p>
         </div>
       </div>
 
       {/* Row 1: Instance Name & Domain */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormInput
           name="nama_instance"
           label="Nama Instance / Cabang"
@@ -60,7 +61,7 @@ export function LicenseCreateServerCard({
       </div>
 
       {/* Row 2: Server Package & Server Notes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormSelect
           name="server_package_id"
           label="Paket Hosting Server *"
@@ -83,7 +84,10 @@ export function LicenseCreateServerCard({
         <div className="flex flex-wrap items-center justify-between gap-1.5 rounded-lg border border-indigo-500/20 bg-indigo-500/5 px-2.5 py-1.5 text-[11px]">
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 font-semibold text-foreground">
-              <Server size={13} className="text-indigo-600 dark:text-indigo-400" />
+              <Server
+                size={13}
+                className="text-indigo-600 dark:text-indigo-400"
+              />
               <span>{selectedServerPackage.nama}</span>
             </div>
             <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
@@ -109,13 +113,17 @@ export function LicenseCreateServerCard({
             <span className="text-muted-foreground">
               Bulanan:{" "}
               <strong className="text-foreground">
-                {formatCurrency(Number(selectedServerPackage.harga_bulanan) || 0)}
+                {formatCurrency(
+                  Number(selectedServerPackage.harga_bulanan) || 0
+                )}
               </strong>
             </span>
             <span className="text-muted-foreground">
               Tahunan:{" "}
               <strong className="text-indigo-600 dark:text-indigo-400">
-                {formatCurrency(Number(selectedServerPackage.harga_tahunan) || 0)}
+                {formatCurrency(
+                  Number(selectedServerPackage.harga_tahunan) || 0
+                )}
               </strong>
             </span>
           </div>

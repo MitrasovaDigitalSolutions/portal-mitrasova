@@ -4,10 +4,7 @@ import type { JSX } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import {
-  useClientDetailManagement,
-  useLicenseActions,
-} from "../hooks"
+import { useClientDetailManagement, useLicenseActions } from "../hooks"
 import { ClientDetailHeader } from "./client-detail-header"
 import { ClientDetailInfoCard } from "./client-detail-info-card"
 import { ClientDetailLicensesSection } from "./client-detail-licenses-section"

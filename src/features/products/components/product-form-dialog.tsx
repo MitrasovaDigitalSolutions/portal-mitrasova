@@ -13,7 +13,10 @@ import {
   FormSwitch,
 } from "@/components/forms"
 import { useCreateProduct, useUpdateProduct } from "../api/product.queries"
-import { productSchema, type ProductFormValues } from "../validations/product.schema"
+import {
+  productSchema,
+  type ProductFormValues,
+} from "../validations/product.schema"
 import type { Product } from "../@types/product"
 
 export interface ProductFormDialogProps {
@@ -119,7 +122,11 @@ export function ProductFormDialog({
       }
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4 pt-2"
+        >
           <FormInput<ProductFormValues>
             name="code"
             label="Kode Produk"
@@ -161,20 +168,20 @@ export function ProductFormDialog({
             description="Produk aktif dapat dihubungkan ke lisensi klien baru"
           />
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
               disabled={isPending}
               onClick={() => onOpenChange(false)}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 className="size-3.5 animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Buat Produk"}</span>

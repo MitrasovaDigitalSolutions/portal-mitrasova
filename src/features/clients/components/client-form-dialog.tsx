@@ -96,8 +96,12 @@ export function ClientFormDialog({
       className="max-w-md"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 pt-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-3 pt-1"
+        >
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormInput
               name="nama_pemilik"
               label="Nama Pemilik / Kontak"
@@ -113,7 +117,7 @@ export function ClientFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormInput
               name="telepon"
               label="Nomor Telepon / WhatsApp"
@@ -136,20 +140,20 @@ export function ClientFormDialog({
             required
           />
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 size={14} className="animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Tambah Klien"}</span>

@@ -28,7 +28,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table"
 import { useDeviceResponsive } from "@/hooks/use-device"
 import { cn } from "@/lib/utils"
@@ -56,10 +56,13 @@ import {
   Trash2,
 } from "lucide-react"
 import * as React from "react"
-import { DataTableActionButton, type DataTableActionVariant } from "./data-table-actions"
+import {
+  DataTableActionButton,
+  type DataTableActionVariant,
+} from "./data-table-actions"
 export {
   DataTableActionButton,
-  DataTableTextActionButton
+  DataTableTextActionButton,
 } from "./data-table-actions"
 export type { DataTableActionVariant } from "./data-table-actions"
 
@@ -457,8 +460,8 @@ export function DataTable<TData, TValue = unknown>({
         : autoActionWidth)
     const actionColWidthClass =
       actionColumnWidth &&
-        typeof actionColumnWidth === "string" &&
-        isNaN(Number(actionColumnWidth))
+      typeof actionColumnWidth === "string" &&
+      isNaN(Number(actionColumnWidth))
         ? actionColumnWidth
         : undefined
 
@@ -470,7 +473,7 @@ export function DataTable<TData, TValue = unknown>({
       size: dynamicActionSize,
       meta: {
         headerClassName: cn(
-          "sticky top-0 right-0 z-30 border-l border-b border-border bg-muted dark:bg-card text-center shadow-[-1px_0_0_0_var(--border),0_1px_0_0_var(--border)]",
+          "sticky top-0 right-0 z-30 border-b border-l border-border bg-muted text-center shadow-[-1px_0_0_0_var(--border),0_1px_0_0_var(--border)] dark:bg-card",
           actionColWidthClass
         ),
         cellClassName:
@@ -590,7 +593,9 @@ export function DataTable<TData, TValue = unknown>({
           const extra = extraActions(item)
           if (extra) {
             const flatten = (node: React.ReactNode) => {
-              if (!node) { return }
+              if (!node) {
+                return
+              }
               if (React.isValidElement(node) && node.type === React.Fragment) {
                 const fragProps = node.props as { children?: React.ReactNode }
                 React.Children.forEach(fragProps.children, flatten)
@@ -612,7 +617,9 @@ export function DataTable<TData, TValue = unknown>({
                   "Aksi Tambahan"
 
                 actionsList.push({
-                  key: node.key ? String(node.key) : `extra-${actionsList.length}`,
+                  key: node.key
+                    ? String(node.key)
+                    : `extra-${actionsList.length}`,
                   label,
                   icon: p.children,
                   onClick: p.onClick,
@@ -655,7 +662,9 @@ export function DataTable<TData, TValue = unknown>({
           return (
             <div className="flex items-center justify-center gap-1.5">
               {actionsList.map((action) => (
-                <React.Fragment key={action.key}>{action.element}</React.Fragment>
+                <React.Fragment key={action.key}>
+                  {action.element}
+                </React.Fragment>
               ))}
             </div>
           )
@@ -688,14 +697,14 @@ export function DataTable<TData, TValue = unknown>({
                     onClick={action.onClick}
                     disabled={action.disabled}
                     className={cn(
-                      "flex items-center gap-2.5 px-2.5 py-2 cursor-pointer rounded-lg text-xs transition-colors",
+                      "flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs transition-colors",
                       action.isDestructive
                         ? "text-destructive focus:bg-destructive/10 focus:text-destructive"
                         : "text-foreground hover:bg-muted"
                     )}
                   >
                     {action.icon && (
-                      <span className="size-4 shrink-0 flex items-center justify-center text-muted-foreground [&>svg]:size-3.5">
+                      <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground [&>svg]:size-3.5">
                         {action.icon}
                       </span>
                     )}
@@ -773,13 +782,13 @@ export function DataTable<TData, TValue = unknown>({
   const [paddingTop, paddingBottom] =
     virtualize && virtualItems.length > 0
       ? [
-        Math.max(0, virtualItems[0].start),
-        Math.max(
-          0,
-          rowVirtualizer.getTotalSize() -
-          virtualItems[virtualItems.length - 1].end
-        ),
-      ]
+          Math.max(0, virtualItems[0].start),
+          Math.max(
+            0,
+            rowVirtualizer.getTotalSize() -
+              virtualItems[virtualItems.length - 1].end
+          ),
+        ]
       : [0, 0]
 
   const renderPaginationItems = () => {
@@ -917,14 +926,14 @@ export function DataTable<TData, TValue = unknown>({
           style={{ maxHeight: maxHeight ?? "450px" }}
         >
           <table
-            className={cn("relative w-full border-separate border-spacing-0 caption-bottom text-sm", tableClassName)}
+            className={cn(
+              "relative w-full caption-bottom border-separate border-spacing-0 text-sm",
+              tableClassName
+            )}
           >
             <TableHeader className="sticky top-0 z-20">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="hover:bg-transparent"
-                >
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
                   {headerGroup.headers.map((header) => {
                     const isSortable = header.column.getCanSort()
                     const sortDirection = header.column.getIsSorted()
@@ -933,7 +942,7 @@ export function DataTable<TData, TValue = unknown>({
                       <TableHead
                         key={header.id}
                         className={cn(
-                          "sticky top-0 z-20 bg-muted dark:bg-card py-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase border-b border-border shadow-[0_1px_0_0_var(--border)]",
+                          "sticky top-0 z-20 border-b border-border bg-muted py-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase shadow-[0_1px_0_0_var(--border)] dark:bg-card",
                           header.column.columnDef.meta?.headerClassName
                         )}
                         style={{
@@ -953,7 +962,7 @@ export function DataTable<TData, TValue = unknown>({
                                 "text-right"
                               ) && "justify-end",
                               isSortable &&
-                              "cursor-pointer transition-colors select-none hover:text-foreground"
+                                "cursor-pointer transition-colors select-none hover:text-foreground"
                             )}
                             onClick={
                               isSortable
@@ -1071,7 +1080,7 @@ export function DataTable<TData, TValue = unknown>({
                           <TableCell
                             key={cell.id}
                             className={cn(
-                              "px-4 py-3.5 text-xs font-medium text-foreground border-b border-border",
+                              "border-b border-border px-4 py-3.5 text-xs font-medium text-foreground",
                               cell.column.columnDef.meta?.cellClassName
                             )}
                             style={{
@@ -1115,7 +1124,7 @@ export function DataTable<TData, TValue = unknown>({
                         <TableCell
                           key={cell.id}
                           className={cn(
-                            "px-4 py-3.5 text-xs font-medium text-foreground border-b border-border",
+                            "border-b border-border px-4 py-3.5 text-xs font-medium text-foreground",
                             cell.column.columnDef.meta?.cellClassName
                           )}
                           style={{

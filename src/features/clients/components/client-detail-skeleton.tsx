@@ -5,10 +5,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function ClientDetailSkeleton(): React.JSX.Element {
   return (
-    <div className="space-y-3.5 animate-pulse">
+    <div className="animate-pulse space-y-3.5">
       {/* 1. Header Skeleton */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-border gap-3">
-        <div className="space-y-1.5 min-w-0">
+      <div className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0 space-y-1.5">
           <div className="flex items-center gap-1.5">
             <Skeleton className="h-3 w-3.5 rounded" />
             <Skeleton className="h-3 w-32 rounded" />
@@ -16,7 +16,7 @@ export function ClientDetailSkeleton(): React.JSX.Element {
           <div className="flex items-center gap-2">
             <Skeleton className="h-6 w-48 rounded-lg" />
             <Skeleton className="h-5 w-28 rounded-md" />
-            <Skeleton className="h-5 w-24 rounded-md hidden md:inline-flex" />
+            <Skeleton className="hidden h-5 w-24 rounded-md md:inline-flex" />
           </div>
         </div>
 
@@ -28,11 +28,11 @@ export function ClientDetailSkeleton(): React.JSX.Element {
       </div>
 
       {/* 2. Compact Profile & Metrics Card Skeleton */}
-      <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
         {/* Profile Contacts Row */}
-        <div className="p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="flex flex-col justify-between gap-3 p-3.5 sm:p-4 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+            <Skeleton className="h-10 w-10 shrink-0 rounded-xl" />
             <div className="space-y-1">
               <Skeleton className="h-4 w-36 rounded" />
               <Skeleton className="h-3 w-28 rounded" />
@@ -47,11 +47,11 @@ export function ClientDetailSkeleton(): React.JSX.Element {
         </div>
 
         {/* 4-Column Metric Ribbon */}
-        <div className="border-t border-border/70 bg-muted/15 grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+        <div className="grid grid-cols-2 divide-y divide-border/60 border-t border-border/70 bg-muted/15 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="p-3 sm:px-4 flex items-center gap-3">
-              <Skeleton className="h-9 w-9 rounded-lg shrink-0" />
-              <div className="space-y-1 min-w-0">
+            <div key={i} className="flex items-center gap-3 p-3 sm:px-4">
+              <Skeleton className="h-9 w-9 shrink-0 rounded-lg" />
+              <div className="min-w-0 space-y-1">
                 <Skeleton className="h-5 w-10 rounded" />
                 <Skeleton className="h-3 w-20 rounded" />
                 <Skeleton className="h-2.5 w-16 rounded" />
@@ -62,9 +62,9 @@ export function ClientDetailSkeleton(): React.JSX.Element {
       </div>
 
       {/* 3. Licenses Section Skeleton */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
+      <div className="space-y-3.5 rounded-xl border border-border bg-card p-4 shadow-xs">
         {/* Toolbar Skeleton */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-2">
             <Skeleton className="h-5 w-44 rounded" />
             <Skeleton className="h-5 w-20 rounded-md" />

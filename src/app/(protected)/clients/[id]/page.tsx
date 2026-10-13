@@ -3,7 +3,8 @@ import { ClientDetailView } from "@/features/clients"
 
 export const metadata: Metadata = {
   title: "Detail Klien & Manajemen Lisensi | Portal Mitrasova",
-  description: "Profil lengkap klien, integrasi lisensi instance, dan modul addon Portal Mitrasova",
+  description:
+    "Profil lengkap klien, integrasi lisensi instance, dan modul addon Portal Mitrasova",
 }
 
 interface ClientDetailPageProps {

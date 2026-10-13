@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/axios"
 import type {
   Invoice,
   InvoiceQueryParams,
-  MarkPaidPayload
+  MarkPaidPayload,
 } from "../@types/invoice"
 
 export const invoiceApi = {
@@ -29,6 +29,39 @@ export const invoiceApi = {
     }
     if (params?.license_id) {
       cleanParams.license_id = params.license_id
+    }
+    if (params?.license_key) {
+      cleanParams.license_key = params.license_key
+    }
+    if (params?.due_from) {
+      cleanParams.due_from = params.due_from
+    }
+    if (params?.due_to) {
+      cleanParams.due_to = params.due_to
+    }
+    if (params?.paid_from) {
+      cleanParams.paid_from = params.paid_from
+    }
+    if (params?.paid_to) {
+      cleanParams.paid_to = params.paid_to
+    }
+    if (params?.created_from) {
+      cleanParams.created_from = params.created_from
+    }
+    if (params?.created_to) {
+      cleanParams.created_to = params.created_to
+    }
+    if (params?.min_amount !== undefined) {
+      cleanParams.min_amount = params.min_amount
+    }
+    if (params?.max_amount !== undefined) {
+      cleanParams.max_amount = params.max_amount
+    }
+    if (params?.sort_by) {
+      cleanParams.sort_by = params.sort_by
+    }
+    if (params?.sort_order) {
+      cleanParams.sort_order = params.sort_order
     }
 
     const response = await apiClient.get<PaginatedResponse<Invoice>>(
@@ -68,11 +101,12 @@ export const invoiceApi = {
 
   /** Download / stream invoice PDF */
   downloadPdf: async (id: string, invoiceNumber: string): Promise<void> => {
-    const response = await apiClient.get(
-      `/api/v1/admin/invoices/${id}/pdf`,
-      { responseType: "blob" }
-    )
-    const blob = new Blob([response.data as BlobPart], { type: "application/pdf" })
+    const response = await apiClient.get(`/api/v1/admin/invoices/${id}/pdf`, {
+      responseType: "blob",
+    })
+    const blob = new Blob([response.data as BlobPart], {
+      type: "application/pdf",
+    })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url

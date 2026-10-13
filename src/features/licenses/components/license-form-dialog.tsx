@@ -20,11 +20,12 @@ import {
   licenseFormSchema,
   type LicenseFormValues,
 } from "../validations/license.schema"
-import {
-  SUBSCRIPTION_TYPES,
-  LICENSE_STATUSES,
-} from "../constants"
-import type { CreateLicensePayload, License, UpdateLicensePayload } from "../@types/license"
+import { SUBSCRIPTION_TYPES, LICENSE_STATUSES } from "../constants"
+import type {
+  CreateLicensePayload,
+  License,
+  UpdateLicensePayload,
+} from "../@types/license"
 
 export interface LicenseFormDialogProps {
   open: boolean
@@ -62,9 +63,10 @@ export function LicenseFormDialog({
   const { data: productsData, isLoading: isLoadingProducts } = useProducts({
     status: "active",
   })
-  const { data: serverPackagesData, isLoading: isLoadingServers } = useServerPackages({
-    is_active: true,
-  })
+  const { data: serverPackagesData, isLoading: isLoadingServers } =
+    useServerPackages({
+      is_active: true,
+    })
 
   const productOptions = useMemo(
     () =>
@@ -130,7 +132,8 @@ export function LicenseFormDialog({
           expires_at: license.expires_at ?? undefined,
           grace_period_days: license.grace_period_days ?? 7,
           create_invoice: false,
-          billing_period: license.subscription_type === "monthly" ? "monthly" : "annual",
+          billing_period:
+            license.subscription_type === "monthly" ? "monthly" : "annual",
         })
       } else {
         reset({ ...defaultValues, client_id: clientId })
@@ -187,7 +190,11 @@ export function LicenseFormDialog({
       className="sm:max-w-xl"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4"
+        >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {!isEdit ? (
               <FormSelect
@@ -198,6 +205,7 @@ export function LicenseFormDialog({
                 emptyMessage="Produk tidak ditemukan."
                 options={productOptions}
                 isLoading={isLoadingProducts}
+                required
               />
             ) : (
               <div className="space-y-1.5">
@@ -229,6 +237,7 @@ export function LicenseFormDialog({
               placeholder="Pilih paket server..."
               options={serverOptions}
               isLoading={isLoadingServers}
+              required
             />
           </div>
 
@@ -237,11 +246,13 @@ export function LicenseFormDialog({
               name="subscription_type"
               label="Tipe Berlangganan"
               options={subscriptionOptions}
+              required
             />
             <FormSelect
               name="status"
               label="Status Lisensi"
               options={statusOptions}
+              required
             />
           </div>
 
@@ -286,14 +297,14 @@ export function LicenseFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 size={14} className="animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Terbitkan Lisensi"}</span>

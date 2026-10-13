@@ -48,33 +48,34 @@ export function LicenseCreateView(): JSX.Element {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-3.5 max-w-7xl mx-auto pb-10"
+      className="mx-auto max-w-7xl space-y-3.5 pb-10"
     >
       {/* Top Header Bar (Ultra-Compact) */}
-      <div className="flex items-center justify-between gap-2.5 rounded-xl border border-border bg-card py-2.5 px-3.5 shadow-xs">
+      <div className="flex items-center justify-between gap-2.5 rounded-xl border border-border bg-card px-3.5 py-2.5 shadow-xs">
         <div className="flex items-center gap-2.5">
           <Link href="/licenses">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-lg cursor-pointer shrink-0"
+              className="h-8 w-8 shrink-0 cursor-pointer rounded-lg p-0"
               title="Kembali ke Daftar Lisensi"
             >
               <ArrowLeft size={15} />
             </Button>
           </Link>
 
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
             <KeyRound size={17} />
           </div>
 
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-foreground">
+            <h1 className="text-sm font-bold text-foreground sm:text-base">
               Terbitkan Lisensi Instance Baru
             </h1>
-            <p className="text-[11px] text-muted-foreground leading-tight">
-              Konfigurasi instance, paket server hosting, modul add-on, dan terbitkan faktur otomatis.
+            <p className="text-[11px] leading-tight text-muted-foreground">
+              Konfigurasi instance, paket server hosting, modul add-on, dan
+              terbitkan faktur otomatis.
             </p>
           </div>
         </div>
@@ -83,9 +84,9 @@ export function LicenseCreateView(): JSX.Element {
       {/* Main Form Area */}
       <FormProvider {...methods}>
         <form id="license-create-form" onSubmit={submitForm}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
+          <div className="grid grid-cols-1 items-start gap-3.5 sm:gap-4 lg:grid-cols-12">
             {/* Left Column: Form Details (8 cols) */}
-            <div className="lg:col-span-7 xl:col-span-8 space-y-3.5">
+            <div className="space-y-3.5 lg:col-span-7 xl:col-span-8">
               <LicenseCreateSoftwareCard
                 clients={clients}
                 products={products}
@@ -115,7 +116,7 @@ export function LicenseCreateView(): JSX.Element {
             </div>
 
             {/* Right Column: Invoice & Summary (4 cols) - Sticky when scrolling */}
-            <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-3 self-start">
+            <div className="self-start lg:sticky lg:top-3 lg:col-span-5 xl:col-span-4">
               <LicenseCreateInvoiceSummaryCard
                 isAnnual={isAnnual}
                 isSubmitting={isSubmitting}
@@ -129,7 +130,9 @@ export function LicenseCreateView(): JSX.Element {
                     shouldValidate: true,
                   })
                 }
-                onCouponCodeChange={(code) => methods.setValue("coupon_code", code)}
+                onCouponCodeChange={(code) =>
+                  methods.setValue("coupon_code", code)
+                }
                 onCheckCoupon={handleCheckCoupon}
                 onRemoveCoupon={handleRemoveCoupon}
                 onSubmitLicense={submitForm}

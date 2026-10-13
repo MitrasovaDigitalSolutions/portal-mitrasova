@@ -23,6 +23,7 @@ export interface DatePickerProps {
   wrapperClassName?: string
   error?: string
   label?: string
+  required?: boolean
   clearable?: boolean
   size?: "sm" | "md" | "lg"
   captionLayout?: "label" | "dropdown" | "dropdown-months" | "dropdown-years"
@@ -43,6 +44,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
       wrapperClassName,
       error,
       label,
+      required,
       clearable = true,
       size = "md",
       captionLayout = "dropdown",
@@ -117,6 +119,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
         {label && (
           <label className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             {label}
+            {required && <span className="text-destructive"> *</span>}
           </label>
         )}
 
@@ -163,7 +166,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
                 onSelect={handleSelect}
                 month={month}
                 onMonthChange={setMonth}
-                className="p-3 w-[280px]"
+                className="w-[280px] p-3"
                 captionLayout={captionLayout}
                 startMonth={resolvedStartMonth}
                 endMonth={resolvedEndMonth}

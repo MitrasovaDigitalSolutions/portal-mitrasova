@@ -53,10 +53,10 @@ const PaginationLink = ({
         variant: isActive ? "default" : "ghost",
         size: "icon-sm",
       }),
-      "cursor-pointer text-xs rounded-xl transition-all select-none disabled:pointer-events-none disabled:opacity-40",
+      "cursor-pointer rounded-xl text-xs transition-all select-none disabled:pointer-events-none disabled:opacity-40",
       isActive
-        ? "bg-primary text-primary-foreground font-bold shadow-2xs border border-transparent hover:bg-primary/90 hover:text-primary-foreground"
-        : "text-muted-foreground hover:bg-muted hover:text-foreground font-medium border border-transparent",
+        ? "border border-transparent bg-primary font-bold text-primary-foreground shadow-2xs hover:bg-primary/90 hover:text-primary-foreground"
+        : "border border-transparent font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
       className
     )}
     type="button"
@@ -72,7 +72,7 @@ const PaginationPrevious = ({
   <PaginationLink
     aria-label="Go to previous page"
     className={cn(
-      "h-8 w-auto gap-1.5 px-3 text-xs font-medium rounded-xl border border-border/80 bg-card hover:bg-muted hover:text-foreground shadow-2xs transition-all",
+      "h-8 w-auto gap-1.5 rounded-xl border border-border/80 bg-card px-3 text-xs font-medium shadow-2xs transition-all hover:bg-muted hover:text-foreground",
       className
     )}
     {...props}
@@ -90,7 +90,7 @@ const PaginationNext = ({
   <PaginationLink
     aria-label="Go to next page"
     className={cn(
-      "h-8 w-auto gap-1.5 px-3 text-xs font-medium rounded-xl border border-border/80 bg-card hover:bg-muted hover:text-foreground shadow-2xs transition-all",
+      "h-8 w-auto gap-1.5 rounded-xl border border-border/80 bg-card px-3 text-xs font-medium shadow-2xs transition-all hover:bg-muted hover:text-foreground",
       className
     )}
     {...props}

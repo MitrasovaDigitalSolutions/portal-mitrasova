@@ -2,7 +2,11 @@ import type { JSX } from "react"
 import { Calendar, Globe, Layers, Radio, Server } from "lucide-react"
 import { formatDate } from "@/utils"
 import type { License } from "../@types/license"
-import { SERVER_TYPES, SUBSCRIPTION_TYPES, formatCodeToTitle } from "../constants"
+import {
+  SERVER_TYPES,
+  SUBSCRIPTION_TYPES,
+  formatCodeToTitle,
+} from "../constants"
 
 interface LicenseDetailOverviewCardProps {
   license: License
@@ -12,7 +16,9 @@ export function LicenseDetailOverviewCard({
   license,
 }: LicenseDetailOverviewCardProps): JSX.Element {
   const subConfig = SUBSCRIPTION_TYPES[license.subscription_type]
-  const serverConfig = license.server_type ? SERVER_TYPES[license.server_type] : undefined
+  const serverConfig = license.server_type
+    ? SERVER_TYPES[license.server_type]
+    : undefined
 
   // Calculate days remaining
   let daysRemaining: number | null = null
@@ -22,20 +28,20 @@ export function LicenseDetailOverviewCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-      <div className="flex items-center justify-between pb-2.5 border-b border-border">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex items-center justify-between border-b border-border pb-2.5">
         <div className="flex items-center gap-2">
           <Layers size={15} className="text-muted-foreground" />
-          <h2 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+          <h2 className="text-xs font-semibold tracking-wider text-foreground uppercase">
             Informasi & Konfigurasi Lisensi
           </h2>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+      <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 lg:grid-cols-3">
         {/* 1. Produk Software */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground block">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="block text-[11px] text-muted-foreground">
             Produk Software
           </span>
           <p className="font-semibold text-foreground">
@@ -47,8 +53,8 @@ export function LicenseDetailOverviewCard({
         </div>
 
         {/* 2. Paket & Grace Period */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground block">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="block text-[11px] text-muted-foreground">
             Paket Langganan
           </span>
           <p className="font-semibold text-foreground">
@@ -60,21 +66,23 @@ export function LicenseDetailOverviewCard({
         </div>
 
         {/* 3. Masa Berlaku */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Calendar size={11} /> Masa Berlaku
           </span>
           <p className="font-semibold text-foreground">
-            {license.expires_at ? formatDate(license.expires_at) : "Permanen (Lifetime)"}
+            {license.expires_at
+              ? formatDate(license.expires_at)
+              : "Permanen (Lifetime)"}
           </p>
           <p className="text-[11px]">
             {daysRemaining !== null ? (
               daysRemaining > 0 ? (
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                <span className="font-medium text-emerald-600 dark:text-emerald-400">
                   Sisa {daysRemaining} hari aktif
                 </span>
               ) : (
-                <span className="text-destructive font-medium">
+                <span className="font-medium text-destructive">
                   Kedaluwarsa ({Math.abs(daysRemaining)} hari lalu)
                 </span>
               )
@@ -85,21 +93,21 @@ export function LicenseDetailOverviewCard({
         </div>
 
         {/* 4. Domain & IP Terikat */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Globe size={11} /> Domain Binding
           </span>
-          <p className="font-semibold text-foreground truncate">
+          <p className="truncate font-semibold text-foreground">
             {license.domain_instance || "Semua domain diizinkan"}
           </p>
-          <p className="text-[11px] text-muted-foreground truncate">
+          <p className="truncate text-[11px] text-muted-foreground">
             IP Terakhir: {license.last_ip_address || "Belum terekam"}
           </p>
         </div>
 
         {/* 5. Tipe Server Hosting */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Server size={11} /> Hosting Server
           </span>
           <p className="font-semibold text-foreground">
@@ -112,13 +120,13 @@ export function LicenseDetailOverviewCard({
             {license.serverPackage
               ? `${license.serverPackage.cpu || ""} ${license.serverPackage.ram || ""} ${license.serverPackage.storage || ""}`.trim() ||
                 license.serverPackage.code
-              : serverConfig?.description ?? "Verifikasi instance otomatis"}
+              : (serverConfig?.description ?? "Verifikasi instance otomatis")}
           </p>
         </div>
 
         {/* 6. Heartbeat Terakhir */}
-        <div className="p-3 rounded-lg border border-border/70 bg-muted/20 space-y-1">
-          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <Radio size={11} /> Verifikasi Terakhir
           </span>
           <p className="font-semibold text-foreground">

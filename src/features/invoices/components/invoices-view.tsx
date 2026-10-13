@@ -8,7 +8,11 @@ import { DataTable } from "@/components/ui/data-table"
 import { DataTableActionButton } from "@/components/ui/data-table-actions"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Ban, CheckCircle2, Download } from "lucide-react"
-import { useInvoices, useDeleteInvoice, useCancelInvoice } from "../api/invoice.queries"
+import {
+  useInvoices,
+  useDeleteInvoice,
+  useCancelInvoice,
+} from "../api/invoice.queries"
 import { invoiceApi } from "../api/invoice.api"
 import { getInvoiceColumns } from "./invoice-columns"
 import { InvoicesMetricsGrid } from "./invoices-metrics-grid"
@@ -25,7 +29,15 @@ export function InvoicesView(): React.JSX.Element {
   const [perPage, setPerPage] = React.useState<number>(10)
   const [searchInput, setSearchInput] = React.useState<string>("")
   const [searchQuery, setSearchQuery] = React.useState<string>("")
-  const [statusFilter, setStatusFilter] = React.useState<"all" | InvoiceStatus>("all")
+  const [statusFilter, setStatusFilter] = React.useState<"all" | InvoiceStatus>(
+    "all"
+  )
+  const [sortBy, setSortBy] = React.useState<string | undefined>("created_at")
+  const [sortOrder, setSortOrder] = React.useState<"asc" | "desc" | undefined>(
+    "desc"
+  )
+  const [createdFrom, setCreatedFrom] = React.useState<string>("")
+  const [createdTo, setCreatedTo] = React.useState<string>("")
 
   // Debounce search input
   React.useEffect(() => {
@@ -42,12 +54,25 @@ export function InvoicesView(): React.JSX.Element {
     setPage(1)
   }
 
+  const handleResetFilters = () => {
+    setSearchInput("")
+    setSearchQuery("")
+    setStatusFilter("all")
+    setCreatedFrom("")
+    setCreatedTo("")
+    setPage(1)
+  }
+
   // Fetch paginated invoices
   const { data, isLoading, isFetching, refetch } = useInvoices({
     page,
     per_page: perPage,
     search: searchQuery || undefined,
     status: statusFilter === "all" ? undefined : statusFilter,
+    created_from: createdFrom || undefined,
+    created_to: createdTo || undefined,
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
 
   // Delete & Cancel mutations
@@ -55,10 +80,18 @@ export function InvoicesView(): React.JSX.Element {
   const cancelMutation = useCancelInvoice()
 
   // Modal dialog states
-  const [selectedInvoice, setSelectedInvoice] = React.useState<Invoice | null>(null)
-  const [markPaidInvoice, setMarkPaidInvoice] = React.useState<Invoice | null>(null)
-  const [invoiceToCancel, setInvoiceToCancel] = React.useState<Invoice | null>(null)
-  const [invoiceToDelete, setInvoiceToDelete] = React.useState<Invoice | null>(null)
+  const [selectedInvoice, setSelectedInvoice] = React.useState<Invoice | null>(
+    null
+  )
+  const [markPaidInvoice, setMarkPaidInvoice] = React.useState<Invoice | null>(
+    null
+  )
+  const [invoiceToCancel, setInvoiceToCancel] = React.useState<Invoice | null>(
+    null
+  )
+  const [invoiceToDelete, setInvoiceToDelete] = React.useState<Invoice | null>(
+    null
+  )
 
   const handleDownloadPdf = React.useCallback(async (invoice: Invoice) => {
     try {
@@ -96,7 +129,9 @@ export function InvoicesView(): React.JSX.Element {
 
   // Computed metrics
   const invoicesList = data?.data ?? []
-  const unpaidCount = invoicesList.filter((inv) => inv.status === "unpaid").length
+  const unpaidCount = invoicesList.filter(
+    (inv) => inv.status === "unpaid"
+  ).length
   const paidCount = invoicesList.filter((inv) => inv.status === "paid").length
 
   if (isLoading && !data) {
@@ -110,13 +145,14 @@ export function InvoicesView(): React.JSX.Element {
       className="space-y-3.5 sm:space-y-4"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground">
             Manajemen Invoices
           </h1>
           <p className="text-xs text-muted-foreground">
-            Kelola penerbitan faktur tagihan, status pelunasan, dan aktivasi perpanjangan lisensi.
+            Kelola penerbitan faktur tagihan, status pelunasan, dan aktivasi
+            perpanjangan lisensi.
           </p>
         </div>
       </div>
@@ -134,6 +170,17 @@ export function InvoicesView(): React.JSX.Element {
         onSearchChange={setSearchInput}
         statusFilter={statusFilter}
         onStatusChange={handleStatusChange}
+        createdFrom={createdFrom}
+        onCreatedFromChange={(val) => {
+          setCreatedFrom(val)
+          setPage(1)
+        }}
+        createdTo={createdTo}
+        onCreatedToChange={(val) => {
+          setCreatedTo(val)
+          setPage(1)
+        }}
+        onResetFilters={handleResetFilters}
         isFetching={isFetching}
         onRefresh={() => void refetch()}
       />
@@ -150,6 +197,13 @@ export function InvoicesView(): React.JSX.Element {
         onPageChange={setPage}
         onPerPageChange={(newPerPage) => {
           setPerPage(newPerPage)
+          setPage(1)
+        }}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(col, order) => {
+          setSortBy(col)
+          setSortOrder(order)
           setPage(1)
         }}
         meta={data?.meta}
@@ -238,7 +292,7 @@ export function InvoicesView(): React.JSX.Element {
         description={
           <span>
             Apakah Anda yakin ingin membatalkan invoice{" "}
-            <strong className="text-foreground font-mono">
+            <strong className="font-mono text-foreground">
               {invoiceToCancel?.invoice_number}
             </strong>
             ? Status invoice akan diubah menjadi dibatalkan.
@@ -263,7 +317,7 @@ export function InvoicesView(): React.JSX.Element {
         description={
           <span>
             Apakah Anda yakin ingin menghapus invoice{" "}
-            <strong className="text-foreground font-mono">
+            <strong className="font-mono text-foreground">
               {invoiceToDelete?.invoice_number}
             </strong>
             ? Tindakan ini tidak dapat dibatalkan.

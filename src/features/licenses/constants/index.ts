@@ -2,7 +2,11 @@ import type { LicenseStatus, LicenseSubscriptionType } from "../@types/license"
 
 export const SUBSCRIPTION_TYPES: Record<
   LicenseSubscriptionType,
-  { label: string; badgeVariant: "default" | "secondary" | "outline"; description?: string }
+  {
+    label: string
+    badgeVariant: "default" | "secondary" | "outline"
+    description?: string
+  }
 > = {
   trial: {
     label: "Uji Coba (Trial)",
@@ -101,13 +105,15 @@ export const KNOWN_PRODUCT_ADDONS: Record<
   purchasing: {
     code: "purchasing",
     nama: "Pembelian & Supplier",
-    description: "Purchase Order (PO), Penerimaan Barang, Selisih Harga, Retur.",
+    description:
+      "Purchase Order (PO), Penerimaan Barang, Selisih Harga, Retur.",
     category: "inventory",
   },
   debts: {
     code: "debts",
     nama: "Hutang & Piutang",
-    description: "Hutang Usaha Supplier, Penjualan Tempo/Kredit, Riwayat Cicilan.",
+    description:
+      "Hutang Usaha Supplier, Penjualan Tempo/Kredit, Riwayat Cicilan.",
     category: "finance",
   },
   expenses: {
@@ -125,19 +131,22 @@ export const KNOWN_PRODUCT_ADDONS: Record<
   stock_opname: {
     code: "stock_opname",
     nama: "Stock Opname Scanner & Excel",
-    description: "Audit Stok Fisik via Barcode Scanner Handheld, Import/Export Excel.",
+    description:
+      "Audit Stok Fisik via Barcode Scanner Handheld, Import/Export Excel.",
     category: "inventory",
   },
   reports: {
     code: "reports",
     nama: "Laporan & Analisis Bisnis",
-    description: "Laporan Laba Bersih/Kotor, Valuasi Nilai Stok, Tren Penjualan.",
+    description:
+      "Laporan Laba Bersih/Kotor, Valuasi Nilai Stok, Tren Penjualan.",
     category: "analytics",
   },
   accounting: {
     code: "accounting",
     nama: "Akuntansi Lengkap (ERP)",
-    description: "Chart of Accounts (COA), Jurnal Umum Double-Entry, Neraca, Laba Rugi.",
+    description:
+      "Chart of Accounts (COA), Jurnal Umum Double-Entry, Neraca, Laba Rugi.",
     category: "finance",
   },
   consignment: {
@@ -149,7 +158,8 @@ export const KNOWN_PRODUCT_ADDONS: Record<
   production: {
     code: "production",
     nama: "Produksi & Manufaktur (BOM)",
-    description: "Bill of Materials (BOM/Resep), SPK Order Produksi, Penguraian Bahan Baku.",
+    description:
+      "Bill of Materials (BOM/Resep), SPK Order Produksi, Penguraian Bahan Baku.",
     category: "manufacturing",
   },
   assets: {
@@ -161,7 +171,8 @@ export const KNOWN_PRODUCT_ADDONS: Record<
   multi_store: {
     code: "multi_store",
     nama: "Multi-Store & Cabang",
-    description: "Sinkronisasi antar cabang toko, transfer stok antar gudang & outlet.",
+    description:
+      "Sinkronisasi antar cabang toko, transfer stok antar gudang & outlet.",
     category: "operations",
   },
 }
@@ -213,7 +224,11 @@ export function getSubscriptionBadgeVariant(
     return "secondary"
   }
   return (
-    (SUBSCRIPTION_TYPES as Record<string, { badgeVariant: "default" | "secondary" | "outline" }>)[type]?.badgeVariant ??
-    "secondary"
+    (
+      SUBSCRIPTION_TYPES as Record<
+        string,
+        { badgeVariant: "default" | "secondary" | "outline" }
+      >
+    )[type]?.badgeVariant ?? "secondary"
   )
 }

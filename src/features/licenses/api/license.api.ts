@@ -117,9 +117,9 @@ export const licenseApi = {
 
   /** Regenerate license secret token */
   regenerateSecret: async (id: string): Promise<RegenerateSecretResponse> => {
-    const response = await apiClient.post<ApiResponse<RegenerateSecretResponse>>(
-      `/api/v1/admin/licenses/${id}/regenerate-secret`
-    )
+    const response = await apiClient.post<
+      ApiResponse<RegenerateSecretResponse>
+    >(`/api/v1/admin/licenses/${id}/regenerate-secret`)
     return response.data.data
   },
 
@@ -149,7 +149,9 @@ export const licenseApi = {
     productAddonId: string,
     payload?: ToggleLicenseAddonPayload
   ): Promise<ToggleLicenseAddonResponse> => {
-    const response = await apiClient.post<ApiResponse<ToggleLicenseAddonResponse>>(
+    const response = await apiClient.post<
+      ApiResponse<ToggleLicenseAddonResponse>
+    >(
       `/api/v1/admin/licenses/${licenseId}/addons/${productAddonId}/toggle`,
       payload ?? {}
     )
@@ -162,11 +164,19 @@ export const licenseApi = {
     payload: ExtendLicensePayload
   ): Promise<License> => {
     const cleanPayload: Record<string, string | number> = {}
-    if (payload.days) {cleanPayload.days = payload.days}
-    if (payload.months) {cleanPayload.months = payload.months}
-    if (payload.years) {cleanPayload.years = payload.years}
+    if (payload.days) {
+      cleanPayload.days = payload.days
+    }
+    if (payload.months) {
+      cleanPayload.months = payload.months
+    }
+    if (payload.years) {
+      cleanPayload.years = payload.years
+    }
     const exactDate = payload.exact_date ?? payload.expires_at
-    if (exactDate) {cleanPayload.exact_date = exactDate}
+    if (exactDate) {
+      cleanPayload.exact_date = exactDate
+    }
 
     const response = await apiClient.post<ApiResponse<License>>(
       `/api/v1/admin/licenses/${id}/extend`,

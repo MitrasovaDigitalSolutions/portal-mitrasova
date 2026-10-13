@@ -1,4 +1,9 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { toast } from "sonner"
 import { dashboardKeys } from "@/features/dashboard/api/dashboard.queries"
 import { clientApi } from "./client.api"
@@ -59,7 +64,8 @@ export function useCreateClient() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (payload: CreateClientPayload) => clientApi.createClient(payload),
+    mutationFn: (payload: CreateClientPayload) =>
+      clientApi.createClient(payload),
     onSuccess: (newClient) => {
       toast.success(`Klien "${newClient.nama_pemilik}" berhasil ditambahkan`)
       void queryClient.invalidateQueries({ queryKey: clientKeys.all })
@@ -76,10 +82,17 @@ export function useUpdateClient() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UpdateClientPayload }) =>
-      clientApi.updateClient(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string
+      payload: UpdateClientPayload
+    }) => clientApi.updateClient(id, payload),
     onSuccess: (updatedClient) => {
-      toast.success(`Data klien "${updatedClient.nama_pemilik}" berhasil diperbarui`)
+      toast.success(
+        `Data klien "${updatedClient.nama_pemilik}" berhasil diperbarui`
+      )
       void queryClient.invalidateQueries({ queryKey: clientKeys.all })
       void queryClient.invalidateQueries({
         queryKey: clientKeys.detail(updatedClient.id),

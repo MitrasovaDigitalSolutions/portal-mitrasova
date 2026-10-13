@@ -13,11 +13,11 @@ export function ClientsSkeleton(): React.JSX.Element {
       </div>
 
       {/* Metrics Grid Skeleton */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2"
+            className="space-y-2 rounded-xl border border-border bg-card p-3 sm:p-3.5"
           >
             <div className="flex items-center justify-between">
               <Skeleton className="h-3.5 w-20 rounded" />
@@ -41,11 +41,11 @@ export function ClientsSkeleton(): React.JSX.Element {
       </div>
 
       {/* Table Skeleton */}
-      <div className="rounded-xl border border-border bg-card p-3.5 space-y-2.5">
+      <div className="space-y-2.5 rounded-xl border border-border bg-card p-3.5">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="flex items-center justify-between py-2 border-b border-border/50 last:border-0"
+            className="flex items-center justify-between border-b border-border/50 py-2 last:border-0"
           >
             <div className="flex items-center gap-2.5">
               <Skeleton className="size-7.5 rounded-lg" />

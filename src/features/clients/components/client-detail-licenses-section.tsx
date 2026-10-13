@@ -94,17 +94,17 @@ export function ClientDetailLicensesSection({
   }, [subscriptionFilter, filterMethods])
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
+    <div className="space-y-3.5 rounded-xl border border-border bg-card p-4 shadow-xs">
       {/* Unified Section Header & Filter Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Left: Title & Count Badge */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex shrink-0 items-center gap-2">
           <h2 className="text-sm font-bold text-foreground">
             Lisensi Instance & Aplikasi
           </h2>
           <Badge
             variant="secondary"
-            className="font-mono text-xs px-2 py-0.5 rounded-md"
+            className="rounded-md px-2 py-0.5 font-mono text-xs"
           >
             {licenses.length} Terdaftar
           </Badge>
@@ -116,19 +116,19 @@ export function ClientDetailLicensesSection({
           <div className="relative w-full sm:w-48 md:w-56">
             <Search
               size={13}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
             />
             <Input
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Cari instance, domain, key..."
-              className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
+              className="h-8 rounded-lg bg-background pr-7 pl-8 text-xs"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => onSearchChange("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 title="Hapus pencarian"
               >
                 <X size={12} />
@@ -172,7 +172,7 @@ export function ClientDetailLicensesSection({
             type="button"
             size="sm"
             onClick={onCreateLicense}
-            className="h-8 px-3 rounded-lg gap-1.5 cursor-pointer text-xs font-medium shadow-xs"
+            className="h-8 cursor-pointer gap-1.5 rounded-lg px-3 text-xs font-medium shadow-xs"
           >
             <Plus size={13} />
             <span>Tambah Lisensi</span>

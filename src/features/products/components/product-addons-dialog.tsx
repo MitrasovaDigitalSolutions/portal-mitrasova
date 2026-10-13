@@ -59,7 +59,7 @@ export function ProductAddonsDialog({
                   Modul Addon
                 </span>
                 {product && (
-                  <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted text-muted-foreground border border-border">
+                  <span className="rounded border border-border bg-muted px-2 py-0.5 font-mono text-xs font-semibold text-muted-foreground">
                     {product.code}
                   </span>
                 )}
@@ -74,21 +74,21 @@ export function ProductAddonsDialog({
       >
         <div className="space-y-4 pt-1">
           {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
             <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <Search className="absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Cari kode atau nama addon..."
-                className="pl-9 h-8 text-xs bg-background"
+                className="h-8 bg-background pl-9 text-xs"
               />
             </div>
 
             <Button
               type="button"
               onClick={handleCreate}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs w-full sm:w-auto"
+              className="h-9 w-full cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs sm:w-auto"
             >
               <Plus className="size-3.5" />
               <span>Tambah Addon</span>
@@ -98,7 +98,7 @@ export function ProductAddonsDialog({
           {/* Addons Table */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <Loader2 className="size-6 animate-spin mb-2 text-primary" />
+              <Loader2 className="mb-2 size-6 animate-spin text-primary" />
               <p className="text-xs">Memuat daftar addon...</p>
             </div>
           ) : (

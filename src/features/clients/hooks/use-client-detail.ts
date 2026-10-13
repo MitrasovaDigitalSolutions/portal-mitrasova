@@ -5,14 +5,22 @@ import { useRouter } from "next/navigation"
 import { useDebounce } from "@/hooks"
 import { useClient, useDeleteClient } from "../api/client.queries"
 import { useLicenses } from "../api/license.queries"
-import type { License, LicenseStatus, LicenseSubscriptionType } from "../@types/license"
+import type {
+  License,
+  LicenseStatus,
+  LicenseSubscriptionType,
+} from "../@types/license"
 
 export function useClientDetailManagement(clientId: string) {
   const router = useRouter()
 
   const [licenseSearch, setLicenseSearch] = useState("")
-  const [licenseStatusFilter, setLicenseStatusFilter] = useState<LicenseStatus | "all">("all")
-  const [licenseSubscriptionFilter, setLicenseSubscriptionFilter] = useState<LicenseSubscriptionType | "all">("all")
+  const [licenseStatusFilter, setLicenseStatusFilter] = useState<
+    LicenseStatus | "all"
+  >("all")
+  const [licenseSubscriptionFilter, setLicenseSubscriptionFilter] = useState<
+    LicenseSubscriptionType | "all"
+  >("all")
 
   const debouncedLicenseSearch = useDebounce(licenseSearch, 400)
 
@@ -34,7 +42,10 @@ export function useClientDetailManagement(clientId: string) {
     client_id: clientId,
     search: debouncedLicenseSearch.trim() || undefined,
     status: licenseStatusFilter === "all" ? undefined : licenseStatusFilter,
-    subscription_type: licenseSubscriptionFilter === "all" ? undefined : licenseSubscriptionFilter,
+    subscription_type:
+      licenseSubscriptionFilter === "all"
+        ? undefined
+        : licenseSubscriptionFilter,
     per_page: 100,
   })
 
@@ -51,11 +62,21 @@ export function useClientDetailManagement(clientId: string) {
       return licensesData.data
     }
     // Fallback to client.licenses only if no search/filter was applied
-    if (!debouncedLicenseSearch && licenseStatusFilter === "all" && licenseSubscriptionFilter === "all") {
+    if (
+      !debouncedLicenseSearch &&
+      licenseStatusFilter === "all" &&
+      licenseSubscriptionFilter === "all"
+    ) {
       return client?.licenses ?? []
     }
     return []
-  }, [licensesData?.data, client?.licenses, debouncedLicenseSearch, licenseStatusFilter, licenseSubscriptionFilter])
+  }, [
+    licensesData?.data,
+    client?.licenses,
+    debouncedLicenseSearch,
+    licenseStatusFilter,
+    licenseSubscriptionFilter,
+  ])
 
   // Compute license stats for this client
   const licenseStats = useMemo(() => {
@@ -123,4 +144,3 @@ export function useClientDetailManagement(clientId: string) {
     handleRefreshAll,
   }
 }
-

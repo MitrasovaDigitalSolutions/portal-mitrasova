@@ -14,6 +14,8 @@ export function useProductsManagement() {
   const [perPage, setPerPage] = useState(15)
   const [searchInput, setSearchInput] = useState("")
   const [statusFilter, setStatusFilter] = useState<ProductStatusFilter>("all")
+  const [sortBy, setSortBy] = useState<string | undefined>("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | undefined>("desc")
 
   // Modal dialog states
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -28,6 +30,8 @@ export function useProductsManagement() {
     per_page: perPage,
     search: debouncedSearch,
     status: statusFilter,
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
 
   // Delete product mutation
@@ -132,5 +136,11 @@ export function useProductsManagement() {
     handleViewDetail,
     handleDeleteClick,
     handleDeleteConfirm,
+
+    // Sorting State
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
   }
 }

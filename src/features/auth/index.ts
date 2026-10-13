@@ -1,4 +1,4 @@
-export * from "./@types/auth"
+export type * from "./@types/auth"
 export * from "./api/auth.api"
 export * from "./api/auth.queries"
 export * from "./components/login-form"

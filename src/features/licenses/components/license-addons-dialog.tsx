@@ -101,16 +101,16 @@ export function LicenseAddonsDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs">
           {isLoadingProduct ? (
             <div className="flex items-center justify-center p-6 text-muted-foreground">
-              <Loader2 size={16} className="animate-spin mr-2" />
+              <Loader2 size={16} className="mr-2 animate-spin" />
               <span>Memuat modul addon produk...</span>
             </div>
           ) : availableAddons.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground border border-dashed border-border rounded-xl">
+            <div className="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">
               <Puzzle size={24} className="mx-auto mb-2 opacity-40" />
               <p>Produk software ini belum memiliki daftar modul addon.</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+            <div className="max-h-[360px] space-y-2 overflow-y-auto pr-1">
               {availableAddons.map((addon) => (
                 <Controller
                   key={addon.id}
@@ -121,23 +121,23 @@ export function LicenseAddonsDialog({
                     return (
                       <div
                         className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border transition-colors",
+                          "flex items-center justify-between rounded-xl border p-3 transition-colors",
                           isChecked
-                            ? "bg-primary/5 border-primary/30"
-                            : "bg-card border-border"
+                            ? "border-primary/30 bg-primary/5"
+                            : "border-border bg-card"
                         )}
                       >
-                        <div className="space-y-0.5 min-w-0 pr-3">
+                        <div className="min-w-0 space-y-0.5 pr-3">
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-foreground">
                               {addon.nama}
                             </span>
-                            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-muted text-muted-foreground">
+                            <span className="py-0.2 rounded bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
                               {addon.code}
                             </span>
                           </div>
                           {addon.description && (
-                            <p className="text-[11px] text-muted-foreground truncate">
+                            <p className="truncate text-[11px] text-muted-foreground">
                               {addon.description}
                             </p>
                           )}
@@ -155,20 +155,20 @@ export function LicenseAddonsDialog({
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={syncMutation.isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={syncMutation.isPending || isLoadingProduct}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {syncMutation.isPending ? (
                 <Loader2 size={14} className="animate-spin" />

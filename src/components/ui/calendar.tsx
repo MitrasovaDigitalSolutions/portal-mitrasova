@@ -44,7 +44,7 @@ function CalendarDropdown({ value, onChange, options }: DropdownProps) {
     <Select value={value?.toString()} onValueChange={handleValueChange}>
       <SelectTrigger
         size="sm"
-        className="h-7 cursor-pointer items-center justify-between gap-1 rounded-md border border-input bg-background/60 px-2 py-0.5 text-xs font-semibold text-foreground transition-colors select-none hover:bg-accent hover:text-accent-foreground shadow-xs focus:ring-0 focus:ring-offset-0 [&_svg]:size-3 [&_svg]:text-muted-foreground/70"
+        className="h-7 cursor-pointer items-center justify-between gap-1 rounded-md border border-input bg-background/60 px-2 py-0.5 text-xs font-semibold text-foreground shadow-xs transition-colors select-none hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:ring-offset-0 [&_svg]:size-3 [&_svg]:text-muted-foreground/70"
       >
         <SelectValue>{selectedOption?.label}</SelectValue>
       </SelectTrigger>
@@ -104,7 +104,7 @@ function CalendarMonthCaption({
   return (
     <div
       className={cn(
-        "flex h-8 w-full items-center justify-between gap-1 mb-2 select-none",
+        "mb-2 flex h-8 w-full items-center justify-between gap-1 select-none",
         className
       )}
       {...props}
@@ -117,7 +117,7 @@ function CalendarMonthCaption({
           onClick={handlePrev}
           className={cn(
             buttonVariants({ variant: "outline", size: "icon" }),
-            "h-7 w-7 shrink-0 rounded-md border border-input bg-background/60 p-0 text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30 cursor-pointer"
+            "h-7 w-7 shrink-0 cursor-pointer rounded-md border border-input bg-background/60 p-0 text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
           )}
         >
           <ChevronLeftIcon className="h-4 w-4" />
@@ -126,7 +126,7 @@ function CalendarMonthCaption({
         <div className="h-7 w-7 shrink-0" />
       ) : null}
 
-      <div className="flex flex-1 items-center justify-center gap-1.5 min-w-0">
+      <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
         {children}
       </div>
 
@@ -138,7 +138,7 @@ function CalendarMonthCaption({
           onClick={handleNext}
           className={cn(
             buttonVariants({ variant: "outline", size: "icon" }),
-            "h-7 w-7 shrink-0 rounded-md border border-input bg-background/60 p-0 text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30 cursor-pointer"
+            "h-7 w-7 shrink-0 cursor-pointer rounded-md border border-input bg-background/60 p-0 text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
           )}
         >
           <ChevronRightIcon className="h-4 w-4" />
@@ -184,12 +184,13 @@ function Calendar({
         ),
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 rounded-lg p-0 font-normal text-xs transition-colors aria-selected:opacity-100 cursor-pointer hover:bg-accent hover:text-accent-foreground"
+          "h-8 w-8 cursor-pointer rounded-lg p-0 text-xs font-normal transition-colors hover:bg-accent hover:text-accent-foreground aria-selected:opacity-100"
         ),
         range_end: "day-range-end",
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-lg font-semibold shadow-xs",
-        today: "bg-muted font-bold text-foreground rounded-lg border border-primary/40",
+        today:
+          "bg-muted font-bold text-foreground rounded-lg border border-primary/40",
         outside:
           "day-outside text-muted-foreground/40 opacity-40 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground/30 opacity-30 pointer-events-none",

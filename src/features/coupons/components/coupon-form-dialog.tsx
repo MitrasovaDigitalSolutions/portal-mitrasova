@@ -147,8 +147,12 @@ export function CouponFormDialog({
       className="sm:max-w-xl"
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-4"
+        >
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormInput
               name="code"
               label="Kode Kupon Promo"
@@ -164,11 +168,12 @@ export function CouponFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormSelect
               name="discount_type"
               label="Tipe Diskon"
               options={discountTypeOptions}
+              required
             />
 
             {isPercentage ? (
@@ -190,7 +195,7 @@ export function CouponFormDialog({
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             {isPercentage ? (
               <FormNominalInput
                 name="max_discount_amount"
@@ -207,11 +212,12 @@ export function CouponFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormSelect
               name="applicable_period"
               label="Berlaku Untuk Periode"
               options={periodOptions}
+              required
             />
             <FormNumberInput
               name="max_uses_per_client"
@@ -221,7 +227,7 @@ export function CouponFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormNumberInput
               name="max_uses"
               label="Total Kuota Kupon (Global)"
@@ -231,7 +237,7 @@ export function CouponFormDialog({
             <div />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <FormDatePicker
               name="starts_at"
               label="Mulai Berlaku"
@@ -265,14 +271,14 @@ export function CouponFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="h-9 px-4 text-xs font-semibold cursor-pointer rounded-xl"
+              className="h-9 cursor-pointer rounded-xl px-4 text-xs font-semibold"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={isPending}
-              className="h-9 px-4 gap-2 text-xs font-semibold cursor-pointer rounded-xl shadow-xs"
+              className="h-9 cursor-pointer gap-2 rounded-xl px-4 text-xs font-semibold shadow-xs"
             >
               {isPending && <Loader2 size={14} className="animate-spin" />}
               <span>{isEdit ? "Simpan Perubahan" : "Terbitkan Kupon"}</span>

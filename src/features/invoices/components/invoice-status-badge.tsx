@@ -53,15 +53,14 @@ export function InvoiceStatusBadge({
   const normalized = (status || "").toLowerCase().trim()
   const config = STATUS_CONFIGS[normalized] ?? {
     label: status || "—",
-    bgClass:
-      "bg-secondary text-secondary-foreground border-border",
+    bgClass: "bg-secondary text-secondary-foreground border-border",
     dotClass: "bg-muted-foreground",
   }
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold select-none transition-colors",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors select-none",
         config.bgClass,
         className
       )}
@@ -77,7 +76,10 @@ export function InvoiceStatusBadge({
             />
           )}
           <span
-            className={cn("relative inline-flex h-1.5 w-1.5 rounded-full", config.dotClass)}
+            className={cn(
+              "relative inline-flex h-1.5 w-1.5 rounded-full",
+              config.dotClass
+            )}
           />
         </span>
       )}

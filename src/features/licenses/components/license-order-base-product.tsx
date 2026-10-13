@@ -20,7 +20,6 @@ export function LicenseOrderBaseProduct({
   isAnnual,
   price = 0,
 }: LicenseOrderBaseProductProps): JSX.Element {
-
   return (
     <div className="space-y-1.5">
       <label className="text-xs font-semibold text-foreground">
@@ -33,17 +32,20 @@ export function LicenseOrderBaseProduct({
             <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-foreground">
               <Package size={13} />
             </div>
-            <span className="font-semibold text-xs text-foreground truncate">
+            <span className="truncate text-xs font-semibold text-foreground">
               {productName}
             </span>
-            <Badge variant="outline" className="text-[10px] font-mono shrink-0">
+            <Badge variant="outline" className="shrink-0 font-mono text-[10px]">
               {isAnnual ? "+12 Bulan" : "+1 Bulan"}
             </Badge>
           </div>
         }
         description={
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-0.5">
-            <CalendarClock size={12} className="text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-1.5 pt-0.5 text-[11px] text-muted-foreground">
+            <CalendarClock
+              size={12}
+              className="shrink-0 text-muted-foreground"
+            />
             <span>Masa aktif:</span>
             <span className="font-mono font-medium text-foreground">
               {currentExpiryText}
@@ -52,7 +54,7 @@ export function LicenseOrderBaseProduct({
         }
         rightElement={
           <div className="text-right">
-            <div className="font-bold text-xs text-primary font-mono">
+            <div className="font-mono text-xs font-bold text-primary">
               {price > 0 ? formatCurrency(price) : "Rp 0"}
             </div>
             <div className="text-[10px] text-muted-foreground">
@@ -60,7 +62,7 @@ export function LicenseOrderBaseProduct({
             </div>
           </div>
         }
-        className="bg-card hover:bg-muted/30 transition-colors"
+        className="bg-card transition-colors hover:bg-muted/30"
       />
     </div>
   )

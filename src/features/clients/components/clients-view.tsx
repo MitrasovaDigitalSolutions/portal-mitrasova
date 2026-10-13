@@ -38,6 +38,10 @@ export function ClientsView(): JSX.Element {
     handleOpenEdit,
     handleDeleteConfirm,
     refetch,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
   } = useClientsManagement()
 
   const handleNavigateDetail = (client: Client) => {
@@ -64,13 +68,14 @@ export function ClientsView(): JSX.Element {
       className="space-y-3.5 sm:space-y-4"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground">
             Klien & Pelanggan
           </h1>
           <p className="text-xs text-muted-foreground">
-            Kelola data mitra, pelanggan, dan keterikatan lisensi software Portal Mitrasova.
+            Kelola data mitra, pelanggan, dan keterikatan lisensi software
+            Portal Mitrasova.
           </p>
         </div>
       </div>
@@ -114,6 +119,13 @@ export function ClientsView(): JSX.Element {
           setPerPage(newPerPage)
           setPage(1)
         }}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={(col, order) => {
+          setSortBy(col)
+          setSortOrder(order)
+          setPage(1)
+        }}
         meta={meta}
       />
 
@@ -139,8 +151,8 @@ export function ClientsView(): JSX.Element {
             <strong className="text-foreground">
               {clientToDelete?.nama_pemilik}
             </strong>{" "}
-            ({clientToDelete?.nama_perusahaan})? Semua lisensi yang terkait dengan
-            klien ini juga akan terhapus.
+            ({clientToDelete?.nama_perusahaan})? Semua lisensi yang terkait
+            dengan klien ini juga akan terhapus.
           </span>
         }
         confirmText="Hapus Klien"

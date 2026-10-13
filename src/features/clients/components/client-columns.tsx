@@ -38,8 +38,8 @@ export function getClientColumns(
 
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-2.5 max-w-[240px]">
-              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-[11px] border border-primary/20 shadow-2xs">
+            <div className="flex max-w-[240px] items-center gap-2.5">
+              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-[11px] font-bold text-primary shadow-2xs">
                 {initials}
               </div>
               <div className="min-w-0 flex-1 space-y-0.5">
@@ -48,18 +48,20 @@ export function getClientColumns(
                     <button
                       type="button"
                       onClick={() => actions?.onViewDetail?.(client)}
-                      className="font-semibold text-xs text-foreground hover:text-primary hover:underline text-left cursor-pointer transition-colors block truncate max-w-full"
+                      className="block max-w-full cursor-pointer truncate text-left text-xs font-semibold text-foreground transition-colors hover:text-primary hover:underline"
                     >
                       {client.nama_pemilik}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs text-xs">
                     <p className="font-semibold">{client.nama_pemilik}</p>
-                    <p className="text-zinc-400 font-mono text-[11px]">{client.email}</p>
+                    <p className="font-mono text-[11px] text-zinc-400">
+                      {client.email}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
 
-                <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono truncate">
+                <div className="flex items-center gap-1 truncate font-mono text-[11px] text-muted-foreground">
                   <Mail size={11} className="shrink-0 opacity-70" />
                   <span className="truncate">{client.email}</span>
                 </div>
@@ -77,12 +79,15 @@ export function getClientColumns(
         const client = row.original
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="space-y-0.5 max-w-[200px]">
+            <div className="max-w-[200px] space-y-0.5">
               <div className="flex items-center gap-1.5">
-                <Building2 size={12} className="shrink-0 text-muted-foreground opacity-80" />
+                <Building2
+                  size={12}
+                  className="shrink-0 text-muted-foreground opacity-80"
+                />
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="text-xs font-medium text-foreground truncate cursor-default block">
+                    <span className="block cursor-default truncate text-xs font-medium text-foreground">
                       {client.nama_perusahaan || "—"}
                     </span>
                   </TooltipTrigger>
@@ -92,7 +97,7 @@ export function getClientColumns(
                 </Tooltip>
               </div>
               {client.telepon && (
-                <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
+                <div className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                   <Phone size={11} className="shrink-0 opacity-70" />
                   <span className="truncate">{client.telepon}</span>
                 </div>
@@ -105,6 +110,7 @@ export function getClientColumns(
     {
       id: "licenses",
       header: "Lisensi",
+      enableSorting: false,
       size: 160,
       cell: ({ row }) => {
         const client = row.original
@@ -115,7 +121,7 @@ export function getClientColumns(
           return (
             <Badge
               variant="outline"
-              className="text-[10px] font-mono text-muted-foreground px-2 py-0.5"
+              className="px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
             >
               Belum Ada
             </Badge>
@@ -126,18 +132,18 @@ export function getClientColumns(
           <div className="flex items-center gap-1.5">
             <Badge
               variant="secondary"
-              className="text-[10px] gap-1 font-mono font-medium px-2 py-0.5"
+              className="gap-1 px-2 py-0.5 font-mono text-[10px] font-medium"
             >
               <KeyRound size={11} className="text-muted-foreground" />
               <span>{total} Lisensi</span>
             </Badge>
             {active > 0 ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 dark:border-emerald-500/20 font-mono">
+              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-emerald-700 dark:border-emerald-500/20 dark:text-emerald-400">
                 <span className="size-1 rounded-full bg-emerald-500" />
                 <span>{active} Aktif</span>
               </span>
             ) : (
-              <span className="text-[9px] text-muted-foreground font-mono">
+              <span className="font-mono text-[9px] text-muted-foreground">
                 (0 Aktif)
               </span>
             )}
@@ -152,13 +158,13 @@ export function getClientColumns(
       cell: ({ row }) => {
         const alamat = row.original.alamat
         if (!alamat) {
-          return <span className="text-muted-foreground text-xs">—</span>
+          return <span className="text-xs text-muted-foreground">—</span>
         }
         return (
           <TooltipProvider delayDuration={200}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <p className="text-xs text-muted-foreground line-clamp-1 truncate max-w-[200px] cursor-default">
+                <p className="line-clamp-1 max-w-[200px] cursor-default truncate text-xs text-muted-foreground">
                   {alamat}
                 </p>
               </TooltipTrigger>
@@ -177,14 +183,18 @@ export function getClientColumns(
       cell: ({ row }) => {
         const dateStr = row.original.created_at
         if (!dateStr) {
-          return <span className="text-muted-foreground text-xs">—</span>
+          return <span className="text-xs text-muted-foreground">—</span>
         }
         const formatted = new Date(dateStr).toLocaleDateString("id-ID", {
           day: "2-digit",
           month: "short",
           year: "numeric",
         })
-        return <span className="text-[11px] text-muted-foreground font-mono">{formatted}</span>
+        return (
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {formatted}
+          </span>
+        )
       },
     },
   ]

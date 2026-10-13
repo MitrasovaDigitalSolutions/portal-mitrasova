@@ -25,6 +25,9 @@ export interface MultiSelectOption {
 export interface FormMultiSelectProps<T extends FieldValues> {
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   options: (MultiSelectOption | CommandOption)[]
   placeholder?: string
   searchPlaceholder?: string
@@ -44,6 +47,9 @@ export interface FormMultiSelectProps<T extends FieldValues> {
 export function FormMultiSelect<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   options,
   placeholder = "Pilih opsi...",
   searchPlaceholder = "Cari opsi...",
@@ -105,6 +111,10 @@ export function FormMultiSelect<T extends FieldValues>({
   }
 
   const error = getNestedValue(errors, name)
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    error?.message
 
   return (
     <div className={cn("w-full space-y-1.5", wrapperClassName)}>
@@ -114,6 +124,7 @@ export function FormMultiSelect<T extends FieldValues>({
           className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase"
         >
           {label}
+          {required && <span className="text-destructive"> *</span>}
         </label>
       )}
 
@@ -349,9 +360,9 @@ export function FormMultiSelect<T extends FieldValues>({
           )
         }}
       />
-      {error && (
+      {displayError && (
         <p className="text-[10px] font-medium text-destructive">
-          {error.message}
+          {displayError}
         </p>
       )}
     </div>

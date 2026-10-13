@@ -110,17 +110,18 @@ export function ExpiringLicensesTable({
       <Card className="overflow-hidden rounded-xl border border-border bg-card shadow-2xs">
         {/* Header with Title & Filter Tabs */}
         <div className="flex flex-col gap-3 border-b border-border/60 p-3.5 sm:p-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="flex flex-col justify-between gap-2.5 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2.5">
               <div className="flex size-7.5 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-400">
                 <Clock size={15} />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-foreground">
+                <h3 className="text-xs font-bold text-foreground sm:text-sm">
                   Renewal Pipeline & Expiring Subscriptions
                 </h3>
-                <p className="text-[10px] sm:text-[11px] text-muted-foreground">
-                  Antrean instansi & endpoint domain mendekati jatuh tempo atau masa tenggang
+                <p className="text-[10px] text-muted-foreground sm:text-[11px]">
+                  Antrean instansi & endpoint domain mendekati jatuh tempo atau
+                  masa tenggang
                 </p>
               </div>
             </div>
@@ -141,15 +142,15 @@ export function ExpiringLicensesTable({
 
           {/* Quick Filter Tabs */}
           {licenses.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1 pt-1 border-t border-border/40">
+            <div className="flex flex-wrap items-center gap-1 border-t border-border/40 pt-1">
               <button
                 type="button"
                 onClick={() => setFilter("all")}
                 className={cn(
-                  "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold transition-all select-none",
+                  "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] font-semibold transition-all select-none sm:text-[11px]",
                   filter === "all"
-                    ? "bg-card text-foreground shadow-2xs font-bold border border-border"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent"
+                    ? "border border-border bg-card font-bold text-foreground shadow-2xs"
+                    : "border border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 Semua ({counts.all})
@@ -160,10 +161,10 @@ export function ExpiringLicensesTable({
                   type="button"
                   onClick={() => setFilter("critical")}
                   className={cn(
-                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold transition-all select-none",
+                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] font-semibold transition-all select-none sm:text-[11px]",
                     filter === "critical"
-                      ? "bg-rose-500/15 text-rose-700 dark:text-rose-400 font-bold border border-rose-500/30"
-                      : "text-rose-700/80 dark:text-rose-400/80 hover:bg-rose-500/10 border border-transparent"
+                      ? "border border-rose-500/30 bg-rose-500/15 font-bold text-rose-700 dark:text-rose-400"
+                      : "border border-transparent text-rose-700/80 hover:bg-rose-500/10 dark:text-rose-400/80"
                   )}
                 >
                   Kritis ≤ 3 Hari ({counts.critical})
@@ -175,10 +176,10 @@ export function ExpiringLicensesTable({
                   type="button"
                   onClick={() => setFilter("upcoming")}
                   className={cn(
-                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold transition-all select-none",
+                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] font-semibold transition-all select-none sm:text-[11px]",
                     filter === "upcoming"
-                      ? "bg-amber-500/15 text-amber-800 dark:text-amber-400 font-bold border border-amber-500/30"
-                      : "text-amber-800/80 dark:text-amber-400/80 hover:bg-amber-500/10 border border-transparent"
+                      ? "border border-amber-500/30 bg-amber-500/15 font-bold text-amber-800 dark:text-amber-400"
+                      : "border border-transparent text-amber-800/80 hover:bg-amber-500/10 dark:text-amber-400/80"
                   )}
                 >
                   Mendekati ≤ 7 Hari ({counts.upcoming})
@@ -190,10 +191,10 @@ export function ExpiringLicensesTable({
                   type="button"
                   onClick={() => setFilter("expired")}
                   className={cn(
-                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold transition-all select-none",
+                    "cursor-pointer rounded-lg px-2.5 py-1 text-[10px] font-semibold transition-all select-none sm:text-[11px]",
                     filter === "expired"
-                      ? "bg-zinc-500/15 text-zinc-800 dark:text-zinc-200 font-bold border border-zinc-500/30"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent"
+                      ? "border border-zinc-500/30 bg-zinc-500/15 font-bold text-zinc-800 dark:text-zinc-200"
+                      : "border border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   Grace / Expired ({counts.expired})
@@ -205,15 +206,16 @@ export function ExpiringLicensesTable({
 
         {/* Content Table / Empty State */}
         {licenses.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-6 sm:p-10 text-center">
+          <div className="flex flex-col items-center justify-center p-6 text-center sm:p-10">
             <div className="mb-2.5 flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
               <ShieldCheck size={20} />
             </div>
             <h4 className="text-xs font-bold text-foreground">
               Semua Lisensi Dalam Kondisi Sehat (Optimal)
             </h4>
-            <p className="mt-1 max-w-sm text-[11px] text-muted-foreground leading-relaxed">
-              Tidak ada langganan mitra yang memerlukan perpanjangan mendesak atau berada dalam masa tenggang.
+            <p className="mt-1 max-w-sm text-[11px] leading-relaxed text-muted-foreground">
+              Tidak ada langganan mitra yang memerlukan perpanjangan mendesak
+              atau berada dalam masa tenggang.
             </p>
           </div>
         ) : filteredLicenses.length === 0 ? (
@@ -222,15 +224,15 @@ export function ExpiringLicensesTable({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-border/60 bg-muted/40 text-[10px] font-bold text-muted-foreground tracking-wider uppercase">
-                  <th className="py-2 px-3.5">Instance & Endpoint</th>
-                  <th className="py-2 px-3.5">License Key</th>
-                  <th className="py-2 px-3.5">Deployment Tier</th>
-                  <th className="py-2 px-3.5">Renewal Countdown</th>
-                  <th className="py-2 px-3.5 text-center">Status</th>
-                  <th className="py-2 px-3.5 text-right">Aksi</th>
+                <tr className="border-b border-border/60 bg-muted/40 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                  <th className="px-3.5 py-2">Instance & Endpoint</th>
+                  <th className="px-3.5 py-2">License Key</th>
+                  <th className="px-3.5 py-2">Deployment Tier</th>
+                  <th className="px-3.5 py-2">Renewal Countdown</th>
+                  <th className="px-3.5 py-2 text-center">Status</th>
+                  <th className="px-3.5 py-2 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60 text-xs">
@@ -244,16 +246,16 @@ export function ExpiringLicensesTable({
                       className="group transition-colors hover:bg-muted/40"
                     >
                       {/* Instance & Domain */}
-                      <td className="py-2.5 px-3.5">
+                      <td className="px-3.5 py-2.5">
                         <Link
                           href="/licenses"
-                          className="font-bold text-xs text-foreground group-hover:text-primary transition-colors block truncate max-w-[200px]"
+                          className="block max-w-[200px] truncate text-xs font-bold text-foreground transition-colors group-hover:text-primary"
                         >
                           {item.nama_instance || "Instance Tanpa Nama"}
                         </Link>
                         <div className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
                           <Globe size={10} className="shrink-0" />
-                          <span className="truncate max-w-[170px] font-mono">
+                          <span className="max-w-[170px] truncate font-mono">
                             {item.domain_instance || "Belum terikat"}
                           </span>
                           {item.domain_instance && (
@@ -271,10 +273,13 @@ export function ExpiringLicensesTable({
                       </td>
 
                       {/* License Key */}
-                      <td className="py-2.5 px-3.5">
+                      <td className="px-3.5 py-2.5">
                         <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-foreground shadow-2xs">
-                          <KeyRound size={11} className="text-muted-foreground shrink-0" />
-                          <span className="truncate max-w-[120px]">
+                          <KeyRound
+                            size={11}
+                            className="shrink-0 text-muted-foreground"
+                          />
+                          <span className="max-w-[120px] truncate">
                             {item.license_key
                               ? `${item.license_key.slice(0, 8)}••••`
                               : "—"}
@@ -283,7 +288,7 @@ export function ExpiringLicensesTable({
                             <button
                               type="button"
                               onClick={() => handleCopy(item.license_key)}
-                              className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors ml-0.5 p-0.5"
+                              className="ml-0.5 cursor-pointer p-0.5 text-muted-foreground transition-colors hover:text-foreground"
                               title="Salin License Key"
                             >
                               {isCopied ? (
@@ -297,19 +302,19 @@ export function ExpiringLicensesTable({
                       </td>
 
                       {/* Subscription & Server Type */}
-                      <td className="py-2.5 px-3.5">
+                      <td className="px-3.5 py-2.5">
                         <div className="flex flex-wrap items-center gap-1">
-                          <span className="rounded-md border border-border bg-muted/60 px-1.5 py-0.2 text-[9px] font-semibold text-foreground capitalize">
+                          <span className="py-0.2 rounded-md border border-border bg-muted/60 px-1.5 text-[9px] font-semibold text-foreground capitalize">
                             {item.subscription_type || "Standard"}
                           </span>
-                          <span className="rounded-md border border-primary/20 bg-primary/10 px-1.5 py-0.2 text-[9px] font-bold text-primary uppercase">
+                          <span className="py-0.2 rounded-md border border-primary/20 bg-primary/10 px-1.5 text-[9px] font-bold text-primary uppercase">
                             {item.server_type || "Cloud"}
                           </span>
                         </div>
                       </td>
 
                       {/* Expiration Date & Countdown Badge */}
-                      <td className="py-2.5 px-3.5">
+                      <td className="px-3.5 py-2.5">
                         <div className="font-mono text-xs font-semibold text-foreground">
                           {formatDate(item.expires_at, "dd MMM yyyy")}
                         </div>
@@ -317,26 +322,26 @@ export function ExpiringLicensesTable({
                           {daysRemaining !== null && (
                             <span
                               className={cn(
-                                "inline-block rounded-md px-1.5 py-0.2 text-[9px] font-bold border",
+                                "py-0.2 inline-block rounded-md border px-1.5 text-[9px] font-bold",
                                 daysRemaining <= 0
-                                  ? "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30"
+                                  ? "border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-400"
                                   : daysRemaining <= 3
-                                  ? "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30"
-                                  : "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/30"
+                                    ? "border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-400"
+                                    : "border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-400"
                               )}
                             >
                               {daysRemaining <= 0
                                 ? "Masa Tenggang"
                                 : daysRemaining === 1
-                                ? "Jatuh Tempo Besok"
-                                : `${daysRemaining} hari lagi`}
+                                  ? "Jatuh Tempo Besok"
+                                  : `${daysRemaining} hari lagi`}
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Status Badge */}
-                      <td className="py-2.5 px-3.5 text-center">
+                      <td className="px-3.5 py-2.5 text-center">
                         <StatusBadge
                           status={item.status || "active"}
                           className="mx-auto text-[10px]"
@@ -344,10 +349,10 @@ export function ExpiringLicensesTable({
                       </td>
 
                       {/* Action */}
-                      <td className="py-2.5 px-3.5 text-right">
+                      <td className="px-3.5 py-2.5 text-right">
                         <Link
                           href="/licenses"
-                          className="inline-flex size-7 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-2xs transition-all hover:bg-muted hover:text-foreground hover:border-primary/40 cursor-pointer"
+                          className="inline-flex size-7 cursor-pointer items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-2xs transition-all hover:border-primary/40 hover:bg-muted hover:text-foreground"
                           title="Buka rincian lisensi"
                         >
                           <ArrowRight size={13} />

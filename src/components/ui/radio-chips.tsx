@@ -25,6 +25,7 @@ export interface RadioChipsProps {
   value?: string
   onChange?: (value: string) => void
   label?: string
+  required?: boolean
   className?: string
   wrapperClassName?: string
   disabled?: boolean
@@ -38,6 +39,7 @@ export function RadioChips({
   value,
   onChange,
   label,
+  required,
   className,
   wrapperClassName,
   disabled = false,
@@ -64,6 +66,7 @@ export function RadioChips({
       {label && (
         <label className="block text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
           {label}
+          {required && <span className="text-destructive"> *</span>}
         </label>
       )}
 

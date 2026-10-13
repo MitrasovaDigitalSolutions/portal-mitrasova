@@ -12,7 +12,10 @@ import {
   User,
 } from "lucide-react"
 import { toast } from "sonner"
-import type { InvoiceClientRelation, InvoiceLicenseRelation } from "../@types/invoice"
+import type {
+  InvoiceClientRelation,
+  InvoiceLicenseRelation,
+} from "../@types/invoice"
 
 interface InvoiceDetailClientInfoProps {
   client?: InvoiceClientRelation
@@ -33,33 +36,33 @@ export function InvoiceDetailClientInfo({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {/* Client Info Card */}
-      <div className="rounded-xl border border-border/80 bg-card p-3 sm:p-3.5 space-y-2 shadow-2xs">
-        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-1.5 text-xs">
+      <div className="space-y-2 rounded-xl border border-border/80 bg-card p-3 shadow-2xs sm:p-3.5">
+        <div className="flex items-center gap-2 border-b border-border/60 pb-1.5 text-xs font-semibold text-foreground">
           <Building className="size-3.5 text-primary" />
           Informasi Pelanggan
         </div>
         <div className="space-y-1.5 text-xs">
-          <div className="flex items-center gap-2 text-foreground font-medium">
-            <User className="size-3 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 font-medium text-foreground">
+            <User className="size-3 shrink-0 text-muted-foreground" />
             <span>{client?.nama_pemilik || "—"}</span>
           </div>
           {client?.nama_usaha && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Building className="size-3 text-muted-foreground shrink-0" />
+              <Building className="size-3 shrink-0 text-muted-foreground" />
               <span>{client.nama_usaha}</span>
             </div>
           )}
           {client?.email && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Mail className="size-3 text-muted-foreground shrink-0" />
+              <Mail className="size-3 shrink-0 text-muted-foreground" />
               <span className="truncate">{client.email}</span>
             </div>
           )}
           {client?.no_telepon && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Phone className="size-3 text-muted-foreground shrink-0" />
+              <Phone className="size-3 shrink-0 text-muted-foreground" />
               <span>{client.no_telepon}</span>
             </div>
           )}
@@ -67,8 +70,8 @@ export function InvoiceDetailClientInfo({
       </div>
 
       {/* License Info Card */}
-      <div className="rounded-xl border border-border/80 bg-card p-3 sm:p-3.5 space-y-2 shadow-2xs">
-        <div className="flex items-center gap-2 font-semibold text-foreground border-b border-border/60 pb-1.5 text-xs">
+      <div className="space-y-2 rounded-xl border border-border/80 bg-card p-3 shadow-2xs sm:p-3.5">
+        <div className="flex items-center gap-2 border-b border-border/60 pb-1.5 text-xs font-semibold text-foreground">
           <Server className="size-3.5 text-emerald-500" />
           Lisensi / Produk Terkait
         </div>
@@ -77,14 +80,14 @@ export function InvoiceDetailClientInfo({
             <div className="font-semibold text-foreground">
               {license.product?.name || "Produk Mitrasova"}
             </div>
-            <div className="text-muted-foreground flex items-center justify-between">
+            <div className="flex items-center justify-between text-muted-foreground">
               <span>Instance:</span>
               <span className="font-medium text-foreground">
                 {license.nama_instance || "—"}
               </span>
             </div>
             {license.domain_instance && (
-              <div className="text-muted-foreground flex items-center justify-between">
+              <div className="flex items-center justify-between text-muted-foreground">
                 <span>Domain:</span>
                 <span className="font-mono text-foreground">
                   {license.domain_instance}
@@ -92,8 +95,8 @@ export function InvoiceDetailClientInfo({
               </div>
             )}
             {license.license_key && (
-              <div className="flex items-center justify-between pt-1 border-t border-border/60">
-                <span className="text-muted-foreground flex items-center gap-1">
+              <div className="flex items-center justify-between border-t border-border/60 pt-1">
+                <span className="flex items-center gap-1 text-muted-foreground">
                   <KeyRound className="size-3" /> Key:
                 </span>
                 <div className="flex items-center gap-1 font-mono text-[11px] text-foreground">
@@ -101,7 +104,7 @@ export function InvoiceDetailClientInfo({
                   <button
                     type="button"
                     onClick={() => copyLicenseKey(license.license_key || "")}
-                    className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
+                    className="cursor-pointer rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                     title="Salin License Key"
                   >
                     {copiedKey ? (
@@ -115,7 +118,7 @@ export function InvoiceDetailClientInfo({
             )}
           </div>
         ) : (
-          <div className="flex items-center justify-center h-16 text-muted-foreground italic">
+          <div className="flex h-16 items-center justify-center text-muted-foreground italic">
             Layanan Umum / Tidak Terikat Lisensi
           </div>
         )}

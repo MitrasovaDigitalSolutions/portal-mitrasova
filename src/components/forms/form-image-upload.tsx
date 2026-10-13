@@ -14,6 +14,9 @@ import { cn, getImageUrl } from "@/lib/utils"
 interface FormImageUploadProps<T extends FieldValues> {
   name: FieldPath<T>
   label?: string
+  required?: boolean
+  errorMessage?: string
+  error?: string
   disabled?: boolean
   className?: string
   dropzoneClassName?: string
@@ -23,6 +26,9 @@ interface FormImageUploadProps<T extends FieldValues> {
 export function FormImageUpload<T extends FieldValues>({
   name,
   label,
+  required,
+  errorMessage,
+  error: errorProp,
   disabled = false,
   className,
   dropzoneClassName,
@@ -35,6 +41,10 @@ export function FormImageUpload<T extends FieldValues>({
   } = useFormContext<T>()
 
   const error = errors[name]
+  const displayError =
+    errorMessage ??
+    (typeof errorProp === "string" ? errorProp : undefined) ??
+    (error?.message as string | undefined)
   const fieldValue = watch(name)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -134,6 +144,7 @@ export function FormImageUpload<T extends FieldValues>({
       {label && (
         <label className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
           {label}
+          {required && <span className="text-destructive"> *</span>}
         </label>
       )}
 
@@ -150,7 +161,7 @@ export function FormImageUpload<T extends FieldValues>({
               "relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed p-4 transition-all duration-200",
               isDragOver
                 ? "border-primary bg-primary/10"
-                : error
+                : displayError
                   ? "border-destructive/60 bg-destructive/5 hover:border-destructive"
                   : "border-border bg-muted/20 hover:border-primary hover:bg-muted/40",
               disabled && "cursor-not-allowed opacity-50",
@@ -209,10 +220,10 @@ export function FormImageUpload<T extends FieldValues>({
         )}
       />
 
-      {error && (
+      {displayError && (
         <p className="flex items-center gap-1 text-[10px] font-medium text-destructive">
           <AlertCircle size={12} />
-          {error.message as string}
+          {displayError}
         </p>
       )}
     </div>

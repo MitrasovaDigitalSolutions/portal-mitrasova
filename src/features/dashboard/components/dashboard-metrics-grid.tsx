@@ -97,17 +97,17 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 sm:gap-3"
+      className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4"
     >
       {cards.map((card, index) => {
         const Icon = card.icon
         return (
           <motion.div key={index} variants={itemVariants}>
             <Link href={card.href} className="block h-full outline-none">
-              <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3 sm:p-3.5 shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs cursor-pointer">
+              <Card className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-3 shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs sm:p-3.5">
                 {/* Top Row: Title + Icon with arrow affordance */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-medium text-muted-foreground truncate">
+                  <span className="truncate text-[11px] font-medium text-muted-foreground">
                     {card.title}
                   </span>
                   <div className="flex items-center gap-1">
@@ -121,14 +121,14 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
                     </div>
                     <ArrowUpRight
                       size={13}
-                      className="text-muted-foreground/50 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0"
+                      className="shrink-0 text-muted-foreground/50 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
                     />
                   </div>
                 </div>
 
                 {/* Middle Row: Main Metric Value */}
                 <div className="mt-2">
-                  <h3 className="font-mono text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
+                  <h3 className="truncate font-mono text-lg font-bold tracking-tight text-foreground sm:text-xl">
                     {card.value}
                   </h3>
                 </div>
@@ -140,7 +140,7 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
                   </span>
                   <span
                     className={cn(
-                      "shrink-0 rounded-full border px-1.5 py-0.2 font-bold leading-none tracking-tight",
+                      "py-0.2 shrink-0 rounded-full border px-1.5 leading-none font-bold tracking-tight",
                       card.badgeColor
                     )}
                   >

@@ -19,16 +19,31 @@ import type { ServerPackage } from "../@types/server-package"
 
 export function ServerPackagesView(): JSX.Element {
   const [search, setSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all")
+  const [sortBy, setSortBy] = useState<
+    "nama" | "code" | "harga_bulanan" | "harga_tahunan" | "created_at" | undefined
+  >("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | undefined>("desc")
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [selectedForEdit, setSelectedForEdit] = useState<ServerPackage | null>(null)
-  const [selectedForDelete, setSelectedForDelete] = useState<ServerPackage | null>(null)
+  const [selectedForEdit, setSelectedForEdit] = useState<ServerPackage | null>(
+    null
+  )
+  const [selectedForDelete, setSelectedForDelete] =
+    useState<ServerPackage | null>(null)
 
   const debouncedSearch = useDebounce(search, 400)
 
-  const { data: response, isLoading, isFetching } = useServerPackages({
+  const {
+    data: response,
+    isLoading,
+    isFetching,
+  } = useServerPackages({
     search: debouncedSearch.trim() || undefined,
     is_active: statusFilter === "all" ? undefined : statusFilter === "active",
+    sort_by: sortBy,
+    sort_order: sortOrder,
   })
   const deleteMutation = useDeleteServerPackage()
 
@@ -43,7 +58,9 @@ export function ServerPackagesView(): JSX.Element {
   const columns = useMemo(() => getServerPackageColumns(), [])
 
   const handleDelete = async () => {
-    if (!selectedForDelete) {return}
+    if (!selectedForDelete) {
+      return
+    }
     try {
       await deleteMutation.mutateAsync(selectedForDelete.id)
       setSelectedForDelete(null)
@@ -59,9 +76,9 @@ export function ServerPackagesView(): JSX.Element {
       className="space-y-4"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
             <Server size={20} />
           </div>
           <div>
@@ -74,7 +91,8 @@ export function ServerPackagesView(): JSX.Element {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground">
-              Kelola spesifikasi hardware server cloud, VPS, dan biaya sewa hosting untuk lisensi klien.
+              Kelola spesifikasi hardware server cloud, VPS, dan biaya sewa
+              hosting untuk lisensi klien.
             </p>
           </div>
         </div>
@@ -82,7 +100,7 @@ export function ServerPackagesView(): JSX.Element {
         <Button
           type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="h-9 px-4 gap-1.5 text-xs font-semibold cursor-pointer rounded-xl shadow-xs shrink-0"
+          className="h-9 shrink-0 cursor-pointer gap-1.5 rounded-xl px-4 text-xs font-semibold shadow-xs"
         >
           <Plus size={14} />
           <span>Tambah Paket Server</span>
@@ -90,25 +108,25 @@ export function ServerPackagesView(): JSX.Element {
       </div>
 
       {/* Table Container & Filter Toolbar */}
-      <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="space-y-3.5 rounded-xl border border-border bg-card p-4 shadow-xs">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           {/* Search Input */}
           <div className="relative w-full sm:w-64">
             <Search
               size={13}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground"
             />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari kode, nama, deskripsi..."
-              className="pl-8 pr-7 h-8 text-xs rounded-lg bg-background"
+              className="h-8 rounded-lg bg-background pr-7 pl-8 text-xs"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
                 title="Hapus pencarian"
               >
                 <X size={12} />
@@ -117,11 +135,11 @@ export function ServerPackagesView(): JSX.Element {
           </div>
 
           {/* Status Tabs */}
-          <div className="flex items-center gap-1.5 bg-muted/50 p-0.5 rounded-lg border border-border text-xs">
+          <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/50 p-0.5 text-xs">
             <button
               type="button"
               onClick={() => setStatusFilter("all")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "all"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -132,7 +150,7 @@ export function ServerPackagesView(): JSX.Element {
             <button
               type="button"
               onClick={() => setStatusFilter("active")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "active"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -143,7 +161,7 @@ export function ServerPackagesView(): JSX.Element {
             <button
               type="button"
               onClick={() => setStatusFilter("inactive")}
-              className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors ${
                 statusFilter === "inactive"
                   ? "bg-background text-foreground shadow-2xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -160,6 +178,20 @@ export function ServerPackagesView(): JSX.Element {
           data={packages}
           isLoading={isLoading}
           isFetching={isFetching}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={(col, order) => {
+            setSortBy(
+              col as
+                | "nama"
+                | "code"
+                | "harga_bulanan"
+                | "harga_tahunan"
+                | "created_at"
+                | undefined
+            )
+            setSortOrder(order)
+          }}
           maxActionButtons={5}
           onEdit={(pkg) => setSelectedForEdit(pkg)}
           onDelete={(pkg) => setSelectedForDelete(pkg)}

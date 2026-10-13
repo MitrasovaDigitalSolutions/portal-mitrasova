@@ -1,6 +1,7 @@
 export * from "./filter-form"
 export * from "./form-chips-select"
 export * from "./form-date-picker"
+export * from "./form-date-range-picker"
 export * from "./form-image-upload"
 export * from "./form-input"
 export * from "./form-multi-select"

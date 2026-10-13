@@ -22,7 +22,7 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
         const coupon = row.original
         return (
           <div className="flex items-center gap-1.5">
-            <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 whitespace-nowrap shadow-2xs">
+            <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 font-mono text-xs font-bold whitespace-nowrap text-amber-600 shadow-2xs dark:text-amber-400">
               {coupon.code}
             </span>
           </div>
@@ -37,21 +37,21 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
         const coupon = row.original
         return (
           <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-2.5 max-w-[290px]">
-              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
+            <div className="flex max-w-[290px] items-center gap-2.5">
+              <div className="flex size-7.5 shrink-0 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-600 shadow-2xs dark:text-amber-400">
                 <Tag size={14} />
               </div>
               <div className="min-w-0 flex-1 space-y-0.5">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="font-semibold text-xs text-foreground block truncate max-w-full">
+                    <span className="block max-w-full truncate text-xs font-semibold text-foreground">
                       {coupon.name}
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs text-xs">
                     <p className="font-semibold">{coupon.name}</p>
                     {coupon.description && (
-                      <p className="text-zinc-400 text-[11px] leading-relaxed mt-0.5">
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-zinc-400">
                         {coupon.description}
                       </p>
                     )}
@@ -59,7 +59,7 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
                 </Tooltip>
 
                 {coupon.description ? (
-                  <div className="text-[11px] text-muted-foreground truncate leading-tight">
+                  <div className="truncate text-[11px] leading-tight text-muted-foreground">
                     {coupon.description}
                   </div>
                 ) : (
@@ -76,13 +76,15 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
     {
       id: "discount",
       header: "Nilai Diskon",
+      enableSorting: false,
       size: 160,
       cell: ({ row }) => {
-        const { discount_type, discount_value, max_discount_amount } = row.original
+        const { discount_type, discount_value, max_discount_amount } =
+          row.original
         const isPercent = discount_type === "percentage"
 
         return (
-          <div className="space-y-0.5 text-xs font-mono">
+          <div className="space-y-0.5 font-mono text-xs">
             <div className="flex items-center gap-1 font-semibold text-foreground">
               {isPercent ? (
                 <>
@@ -105,6 +107,7 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
     {
       id: "terms",
       header: "Ketentuan Berlaku",
+      enableSorting: false,
       size: 170,
       cell: ({ row }) => {
         const { min_order_amount, applicable_period } = row.original
@@ -117,11 +120,12 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
 
         return (
           <div className="space-y-0.5 text-xs">
-            <div className="text-foreground text-[11px] font-medium">
+            <div className="text-[11px] font-medium text-foreground">
               {periodText}
             </div>
-            <div className="text-[10px] text-muted-foreground font-mono">
-              Min: {min_order_amount ? formatCurrency(min_order_amount) : "Rp 0"}
+            <div className="font-mono text-[10px] text-muted-foreground">
+              Min:{" "}
+              {min_order_amount ? formatCurrency(min_order_amount) : "Rp 0"}
             </div>
           </div>
         )
@@ -130,14 +134,18 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
     {
       id: "usage",
       header: "Penggunaan",
+      enableSorting: false,
       size: 130,
       cell: ({ row }) => {
         const used = row.original.usages_count ?? 0
         const max = row.original.max_uses
         return (
-          <div className="text-xs font-mono">
+          <div className="font-mono text-xs">
             <span className="font-semibold text-foreground">{used}</span>
-            <span className="text-muted-foreground"> / {max ? `${max}x` : "∞"}</span>
+            <span className="text-muted-foreground">
+              {" "}
+              / {max ? `${max}x` : "∞"}
+            </span>
           </div>
         )
       },
@@ -145,25 +153,34 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
     {
       id: "validity",
       header: "Masa Berlaku",
+      enableSorting: false,
       size: 160,
       cell: ({ row }) => {
         const { starts_at, expires_at } = row.original
         if (!starts_at && !expires_at) {
-          return <span className="text-xs text-muted-foreground">Selamanya</span>
+          return (
+            <span className="text-xs text-muted-foreground">Selamanya</span>
+          )
         }
         return (
           <div className="space-y-0.5 text-[11px]">
             {starts_at && (
               <div className="text-muted-foreground">
-                Mulai: <span className="text-foreground">{formatDate(starts_at)}</span>
+                Mulai:{" "}
+                <span className="text-foreground">{formatDate(starts_at)}</span>
               </div>
             )}
             {expires_at ? (
               <div className="text-muted-foreground">
-                S/d: <span className="text-foreground font-medium">{formatDate(expires_at)}</span>
+                S/d:{" "}
+                <span className="font-medium text-foreground">
+                  {formatDate(expires_at)}
+                </span>
               </div>
             ) : (
-              <div className="text-muted-foreground italic">Tanpa batas akhir</div>
+              <div className="text-muted-foreground italic">
+                Tanpa batas akhir
+              </div>
             )}
           </div>
         )
@@ -176,12 +193,18 @@ export function getCouponColumns(): ColumnDef<Coupon>[] {
       cell: ({ row }) => {
         const isActive = row.original.is_active
         return isActive ? (
-          <Badge variant="success" className="gap-1 whitespace-nowrap text-[10px]">
+          <Badge
+            variant="success"
+            className="gap-1 text-[10px] whitespace-nowrap"
+          >
             <CheckCircle2 className="size-3" />
             Aktif
           </Badge>
         ) : (
-          <Badge variant="outline" className="gap-1 text-muted-foreground whitespace-nowrap text-[10px]">
+          <Badge
+            variant="outline"
+            className="gap-1 text-[10px] whitespace-nowrap text-muted-foreground"
+          >
             <XCircle className="size-3" />
             Non-Aktif
           </Badge>
