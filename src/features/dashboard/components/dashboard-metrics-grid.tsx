@@ -32,7 +32,7 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
       badge: "Paid Invoices",
       badgeColor:
         "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:border-emerald-500/20 dark:text-emerald-400",
-      description: "Realisasi pembayaran terverifikasi",
+      description: "Pembayaran berhasil",
       icon: CreditCard,
       iconWrapper:
         "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:border-emerald-500/20 dark:text-emerald-400",
@@ -44,7 +44,7 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
       badge: `${overview.unpaid_invoices_count} Terbuka`,
       badgeColor:
         "bg-amber-500/10 text-amber-800 border-amber-500/30 dark:border-amber-500/20 dark:text-amber-400",
-      description: "Piutang menunggu pelunasan",
+      description: "Menunggu pelunasan",
       icon: AlertTriangle,
       iconWrapper:
         "bg-amber-500/10 text-amber-800 border-amber-500/30 dark:border-amber-500/20 dark:text-amber-400",
@@ -69,7 +69,7 @@ export function DashboardMetricsGrid({ overview }: DashboardMetricsGridProps) {
       badge: `${overview.total_products} SKU Produk`,
       badgeColor:
         "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:border-sky-500/20 dark:text-sky-400",
-      description: "Entitas ekosistem aktif",
+      description: "Client aktif",
       icon: Users2,
       iconWrapper:
         "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:border-sky-500/20 dark:text-sky-400",

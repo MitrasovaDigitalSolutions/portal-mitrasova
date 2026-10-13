@@ -68,7 +68,7 @@ export function DashboardView() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Pantau kinerja operasional, utilisasi lisensi, dan arus kas langganan secara real-time.
+            Statistik operasional, utilisasi lisensi, dan arus kas langganan.
           </p>
         </div>
 
@@ -82,9 +82,8 @@ export function DashboardView() {
         >
           <RotateCw
             size={12}
-            className={`mr-1.5 ${
-              isFetching || isManualRefreshing ? "animate-spin text-primary" : ""
-            }`}
+            className={`mr-1.5 ${isFetching || isManualRefreshing ? "animate-spin text-primary" : ""
+              }`}
           />
           <span>Segarkan Data</span>
         </Button>

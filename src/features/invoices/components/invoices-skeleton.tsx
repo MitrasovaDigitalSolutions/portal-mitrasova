@@ -12,20 +12,20 @@ export function InvoicesSkeleton(): React.JSX.Element {
         <Skeleton className="h-3.5 w-80 rounded-lg" />
       </div>
 
-      {/* Metric cards skeleton (2-col mobile, 4-col desktop) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        {Array.from({ length: 4 }).map((_, i) => (
+      {/* Metric cards skeleton (1-col mobile, 3-col desktop) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2.5"
+            className="rounded-xl border border-border bg-card p-3 sm:p-3.5 space-y-2"
           >
             <div className="flex items-center justify-between">
-              <Skeleton className="h-3.5 w-24 rounded-md" />
-              <Skeleton className="h-7 w-7 rounded-lg" />
+              <Skeleton className="h-3.5 w-20 rounded" />
+              <Skeleton className="size-7 rounded-lg" />
             </div>
-            <div className="space-y-1 pt-1">
-              <Skeleton className="h-6 w-28 rounded-md" />
-              <Skeleton className="h-2.5 w-32 rounded-md" />
+            <div className="flex items-baseline justify-between pt-1">
+              <Skeleton className="h-5 w-12 rounded" />
+              <Skeleton className="h-3 w-16 rounded" />
             </div>
           </div>
         ))}

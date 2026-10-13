@@ -98,10 +98,6 @@ export function InvoicesView(): React.JSX.Element {
   const invoicesList = data?.data ?? []
   const unpaidCount = invoicesList.filter((inv) => inv.status === "unpaid").length
   const paidCount = invoicesList.filter((inv) => inv.status === "paid").length
-  const totalAmountSum = invoicesList.reduce(
-    (acc, inv) => acc + (Number(inv.total_amount) || 0),
-    0
-  )
 
   if (isLoading && !data) {
     return <InvoicesSkeleton />
@@ -130,7 +126,6 @@ export function InvoicesView(): React.JSX.Element {
         totalInvoices={data?.meta?.total ?? invoicesList.length}
         unpaidCount={unpaidCount}
         paidCount={paidCount}
-        pageAmountTotal={totalAmountSum}
       />
 
       {/* Filter and Actions Toolbar (Placed below summary cards, directly above DataTable) */}
