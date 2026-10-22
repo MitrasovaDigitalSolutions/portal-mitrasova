@@ -89,7 +89,7 @@ export const licenseApi = {
   getBusinessTypes: async (): Promise<BusinessTypeItem[]> => {
     try {
       const response = await apiClient.get<ApiResponse<BusinessTypeItem[]>>(
-        "/api/v1/business-types"
+        "/api/v1/admin/business-types"
       )
       return response.data?.data ?? []
     } catch {
