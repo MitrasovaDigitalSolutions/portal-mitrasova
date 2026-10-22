@@ -27,7 +27,6 @@ export interface BusinessTypeItem {
   id: string
   name: string
   description?: string
-  badge?: "default" | "primary" | "info" | "secondary" | "warning" | "destructive" | (string & {})
   key?: string
   is_default?: boolean
   [key: string]: unknown

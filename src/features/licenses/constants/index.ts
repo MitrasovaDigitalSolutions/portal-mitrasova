@@ -242,21 +242,18 @@ export const STATIC_BUSINESS_TYPE_OPTIONS = [
     label: "Retail / Toko Umum",
     description:
       "Minimarket, toko kelontong, toko pakaian, dan usaha dagang umum.",
-    badge: "default",
   },
   {
     value: "confectionery",
     label: "Konveksi / Manufaktur",
     description:
       "Pabrik pakaian, konveksi baju, penjahit, sablon, SPK, dan alur produksi.",
-    badge: "primary",
   },
   {
     value: "pharmacy",
     label: "Apotek / Farmasi",
     description:
       "Apotek, toko obat, resep dokter, racikan, dan kontrol kadaluarsa batch.",
-    badge: "info",
   },
 ]
 
@@ -298,21 +295,11 @@ export function getBusinessTypeBadge(type?: string | null) {
   if (!type) {
     return BUSINESS_TYPE_BADGES.retail
   }
-  if (BUSINESS_TYPE_BADGES[type]) {
-    return BUSINESS_TYPE_BADGES[type]
-  }
-  if (type === "default") {
-    return BUSINESS_TYPE_BADGES.retail
-  }
-  if (type === "primary") {
-    return BUSINESS_TYPE_BADGES.confectionery
-  }
-  if (type === "info") {
-    return BUSINESS_TYPE_BADGES.pharmacy
-  }
-  return {
-    label: formatCodeToTitle(type),
-    variant: "outline" as const,
-    className: "bg-muted text-muted-foreground border-border",
-  }
+  return (
+    BUSINESS_TYPE_BADGES[type] ?? {
+      label: formatCodeToTitle(type),
+      variant: "outline" as const,
+      className: "bg-muted text-muted-foreground border-border",
+    }
+  )
 }
