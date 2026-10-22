@@ -91,13 +91,19 @@ export const licenseApi = {
       const response = await apiClient.get<ApiResponse<BusinessTypeItem[]>>(
         "/api/v1/admin/business-types"
       )
-      return response.data?.data ?? []
+      return (response.data?.data ?? []).map((item) => ({
+        ...item,
+        key: item.id ?? item.key,
+      }))
     } catch {
       try {
         const fallback = await apiClient.get<ApiResponse<BusinessTypeItem[]>>(
-          "/api/v1/admin/business-types"
+          "/api/v1/business-types"
         )
-        return fallback.data?.data ?? []
+        return (fallback.data?.data ?? []).map((item) => ({
+          ...item,
+          key: item.id ?? item.key,
+        }))
       } catch {
         return []
       }

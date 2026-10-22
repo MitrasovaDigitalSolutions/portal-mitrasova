@@ -239,18 +239,24 @@ export function getSubscriptionBadgeVariant(
 export const STATIC_BUSINESS_TYPE_OPTIONS = [
   {
     value: "retail",
-    label: "Retail & Toko (Default)",
-    description: "POS Retail standar: produk jadi, inventori, kasir",
+    label: "Retail / Toko Umum",
+    description:
+      "Minimarket, toko kelontong, toko pakaian, dan usaha dagang umum.",
+    badge: "default",
   },
   {
     value: "confectionery",
-    label: "Konfeksi & Manufaktur",
-    description: "BOM/Resep, Surat Perintah Kerja (SPK), Konsinyasi",
+    label: "Konveksi / Manufaktur",
+    description:
+      "Pabrik pakaian, konveksi baju, penjahit, sablon, SPK, dan alur produksi.",
+    badge: "primary",
   },
   {
     value: "pharmacy",
-    label: "Apotek & Farmasi",
-    description: "Nomor Batch, Tanggal Kadaluwarsa, Resep Dokter",
+    label: "Apotek / Farmasi",
+    description:
+      "Apotek, toko obat, resep dokter, racikan, dan kontrol kadaluarsa batch.",
+    badge: "info",
   },
 ]
 
@@ -272,7 +278,7 @@ export const BUSINESS_TYPE_BADGES: Record<
       "bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400",
   },
   confectionery: {
-    label: "Konfeksi",
+    label: "Konveksi",
     variant: "secondary",
     className:
       "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
@@ -292,11 +298,21 @@ export function getBusinessTypeBadge(type?: string | null) {
   if (!type) {
     return BUSINESS_TYPE_BADGES.retail
   }
-  return (
-    BUSINESS_TYPE_BADGES[type] ?? {
-      label: formatCodeToTitle(type),
-      variant: "outline" as const,
-      className: "bg-muted text-muted-foreground border-border",
-    }
-  )
+  if (BUSINESS_TYPE_BADGES[type]) {
+    return BUSINESS_TYPE_BADGES[type]
+  }
+  if (type === "default") {
+    return BUSINESS_TYPE_BADGES.retail
+  }
+  if (type === "primary") {
+    return BUSINESS_TYPE_BADGES.confectionery
+  }
+  if (type === "info") {
+    return BUSINESS_TYPE_BADGES.pharmacy
+  }
+  return {
+    label: formatCodeToTitle(type),
+    variant: "outline" as const,
+    className: "bg-muted text-muted-foreground border-border",
+  }
 }

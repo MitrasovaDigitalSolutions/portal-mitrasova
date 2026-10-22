@@ -151,10 +151,10 @@ export function LicenseDetailOverviewCard({
           </div>
           <p className="text-[11px] text-muted-foreground">
             {license.business_type === "confectionery"
-              ? "Modul Manufaktur & Konsinyasi"
+              ? "Pabrik pakaian, konveksi baju, SPK & alur produksi"
               : license.business_type === "pharmacy"
-                ? "Modul Resep, Batch & Expired"
-                : "Standar POS Retail & Kasir"}
+                ? "Apotek, resep dokter, racikan & kontrol batch"
+                : "Minimarket, toko kelontong & usaha dagang umum"}
           </p>
         </div>
 

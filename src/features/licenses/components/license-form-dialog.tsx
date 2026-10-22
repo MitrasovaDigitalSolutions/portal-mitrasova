@@ -103,13 +103,17 @@ export function LicenseFormDialog({
   const businessTypeOptions = useMemo(() => {
     if (serverBusinessTypes && serverBusinessTypes.length > 0) {
       return serverBusinessTypes.map((bt) => ({
-        value: bt.key,
+        value: bt.id ?? bt.key ?? "",
         label: bt.name,
+        description: bt.description,
+        badge: bt.badge,
       }))
     }
     return STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
       value: opt.value,
       label: opt.label,
+      description: opt.description,
+      badge: opt.badge,
     }))
   }, [serverBusinessTypes])
 
