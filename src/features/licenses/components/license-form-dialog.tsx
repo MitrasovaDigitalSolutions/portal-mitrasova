@@ -39,7 +39,7 @@ const defaultValues: LicenseFormValues = {
   product_id: "",
   nama_instance: "",
   domain_instance: "",
-  business_type: "retail",
+  business_type: "",
   subscription_type: "annual",
   server_package_id: "",
   server_notes: "",
@@ -101,18 +101,25 @@ export function LicenseFormDialog({
     useBusinessTypesQuery()
 
   const businessTypeOptions = useMemo(() => {
-    if (serverBusinessTypes && serverBusinessTypes.length > 0) {
-      return serverBusinessTypes.map((bt) => ({
-        value: bt.id ?? bt.key ?? "",
-        label: bt.name,
-        description: bt.description,
-      }))
+    const emptyOption = {
+      value: "",
+      label: "Tanpa Preset / Umum",
+      description: "Konfigurasi umum tanpa preset khusus sektor bisnis",
     }
-    return STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
-      value: opt.value,
-      label: opt.label,
-      description: opt.description,
-    }))
+    const dynamicOptions =
+      serverBusinessTypes && serverBusinessTypes.length > 0
+        ? serverBusinessTypes.map((bt) => ({
+            value: bt.id ?? bt.key ?? "",
+            label: bt.name,
+            description: bt.description,
+          }))
+        : STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+            description: opt.description,
+          }))
+
+    return [emptyOption, ...dynamicOptions]
   }, [serverBusinessTypes])
 
   const statusOptions = useMemo(
@@ -144,7 +151,7 @@ export function LicenseFormDialog({
           product_id: license.product_id,
           nama_instance: license.nama_instance,
           domain_instance: license.domain_instance ?? "",
-          business_type: license.business_type ?? "retail",
+          business_type: license.business_type ?? "",
           subscription_type: license.subscription_type,
           server_package_id: license.server_package_id ?? "",
           server_notes: license.server_notes ?? "",
@@ -167,7 +174,7 @@ export function LicenseFormDialog({
         const updatePayload: UpdateLicensePayload = {
           nama_instance: values.nama_instance,
           domain_instance: values.domain_instance || null,
-          business_type: values.business_type,
+          business_type: values.business_type || null,
           subscription_type: values.subscription_type,
           server_package_id: values.server_package_id,
           server_notes: values.server_notes || null,
@@ -182,6 +189,7 @@ export function LicenseFormDialog({
       } else {
         const createPayload: CreateLicensePayload = {
           ...values,
+          business_type: values.business_type || null,
           expires_at: isLifetime ? null : values.expires_at || null,
         }
         await createMutation.mutateAsync(createPayload)
@@ -241,7 +249,7 @@ export function LicenseFormDialog({
             <FormInput
               name="nama_instance"
               label="Nama Instance / Cabang"
-              placeholder="Contoh: POS Cabang Utama"
+              placeholder="Contoh: Instance Cabang Utama / Server Produksi"
               required
             />
           </div>
@@ -250,7 +258,7 @@ export function LicenseFormDialog({
             <FormInput
               name="domain_instance"
               label="Domain / IP Instance"
-              placeholder="Contoh: pos.mitrasova.com atau IP"
+              placeholder="Contoh: app.mitrasova.com atau IP"
             />
             <FormSelect
               name="server_package_id"
@@ -265,11 +273,10 @@ export function LicenseFormDialog({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormSelect
               name="business_type"
-              label="Jenis Bisnis / Preset Toko"
-              placeholder="Pilih jenis bisnis..."
+              label="Jenis Bisnis / Preset (Opsional)"
+              placeholder="Pilih jenis bisnis (opsional)..."
               options={businessTypeOptions}
               isLoading={isLoadingBusinessTypes}
-              required
             />
             <FormSelect
               name="subscription_type"

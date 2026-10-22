@@ -292,8 +292,12 @@ export const BUSINESS_TYPE_BADGES: Record<
  * Mengambil informasi visual badge untuk jenis bisnis tertentu
  */
 export function getBusinessTypeBadge(type?: string | null) {
-  if (!type) {
-    return BUSINESS_TYPE_BADGES.retail
+  if (!type || type.trim() === "") {
+    return {
+      label: "Umum",
+      variant: "outline" as const,
+      className: "bg-muted/50 text-muted-foreground border-border/60",
+    }
   }
   return (
     BUSINESS_TYPE_BADGES[type] ?? {

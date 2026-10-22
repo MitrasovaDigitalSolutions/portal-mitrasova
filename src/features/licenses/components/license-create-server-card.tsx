@@ -49,14 +49,14 @@ export function LicenseCreateServerCard({
         <FormInput
           name="nama_instance"
           label="Nama Instance / Cabang"
-          placeholder="Contoh: POS Pusat Bandung"
+          placeholder="Contoh: Instance Pusat / Server Produksi"
           required
         />
 
         <FormInput
           name="domain_instance"
           label="Domain / IP Instance (Opsional)"
-          placeholder="Contoh: pos.mitrasova.com atau 192.168.1.1"
+          placeholder="Contoh: app.mitrasova.com atau 192.168.1.1"
         />
       </div>
 

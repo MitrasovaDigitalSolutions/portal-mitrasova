@@ -154,7 +154,9 @@ export function LicenseDetailOverviewCard({
               ? "Pabrik pakaian, konveksi baju, SPK & alur produksi"
               : license.business_type === "pharmacy"
                 ? "Apotek, resep dokter, racikan & kontrol batch"
-                : "Minimarket, toko kelontong & usaha dagang umum"}
+                : license.business_type === "retail"
+                  ? "Minimarket, toko kelontong & usaha dagang umum"
+                  : "Konfigurasi umum tanpa preset khusus sektor bisnis"}
           </p>
         </div>
 

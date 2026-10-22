@@ -56,7 +56,7 @@ export function useCreateLicenseForm() {
       product_id: "",
       nama_instance: "",
       domain_instance: "",
-      business_type: "retail",
+      business_type: "",
       subscription_type: "annual",
       server_package_id: "",
       server_notes: "",
@@ -452,6 +452,7 @@ export function useCreateLicenseForm() {
     try {
       const payload: CreateLicensePayload = {
         ...values,
+        business_type: values.business_type?.trim() || null,
         grace_period_days: Number(values.grace_period_days) || 0,
         domain_instance: values.domain_instance?.trim() || null,
         server_notes: values.server_notes?.trim() || null,
@@ -485,7 +486,7 @@ export function useCreateLicenseForm() {
     product_id: "Produk Software",
     nama_instance: "Nama Instance / Cabang",
     domain_instance: "Domain / IP Instance",
-    business_type: "Jenis Bisnis / Preset Toko",
+    business_type: "Jenis Bisnis / Preset (Opsional)",
     subscription_type: "Tipe Langganan",
     server_package_id: "Paket Hosting Server",
     status: "Status Lisensi",

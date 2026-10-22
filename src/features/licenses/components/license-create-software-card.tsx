@@ -58,18 +58,25 @@ export function LicenseCreateSoftwareCard({
     useBusinessTypesQuery()
 
   const businessTypeOptions = useMemo(() => {
-    if (serverBusinessTypes && serverBusinessTypes.length > 0) {
-      return serverBusinessTypes.map((bt) => ({
-        value: bt.id ?? bt.key ?? "",
-        label: bt.name,
-        description: bt.description,
-      }))
+    const emptyOption = {
+      value: "",
+      label: "Tanpa Preset / Umum",
+      description: "Konfigurasi umum tanpa preset khusus sektor bisnis",
     }
-    return STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
-      value: opt.value,
-      label: opt.label,
-      description: opt.description,
-    }))
+    const dynamicOptions =
+      serverBusinessTypes && serverBusinessTypes.length > 0
+        ? serverBusinessTypes.map((bt) => ({
+            value: bt.id ?? bt.key ?? "",
+            label: bt.name,
+            description: bt.description,
+          }))
+        : STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+            description: opt.description,
+          }))
+
+    return [emptyOption, ...dynamicOptions]
   }, [serverBusinessTypes])
 
   const statusOptions = useMemo(
@@ -165,8 +172,8 @@ export function LicenseCreateSoftwareCard({
         <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2">
           <FormSelect
             name="business_type"
-            label="Jenis Bisnis / Preset Toko *"
-            placeholder="Pilih jenis bisnis..."
+            label="Jenis Bisnis / Preset (Opsional)"
+            placeholder="Pilih jenis bisnis (opsional)..."
             options={businessTypeOptions}
             isLoading={isLoadingBusinessTypes}
           />

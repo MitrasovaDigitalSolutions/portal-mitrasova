@@ -148,7 +148,7 @@ export function getLicenseColumns(): ColumnDef<License>[] {
       header: "Jenis Bisnis",
       size: 130,
       cell: ({ row }) => {
-        const type = row.original.business_type ?? "retail"
+        const type = row.original.business_type
         const badgeInfo = getBusinessTypeBadge(type)
         return (
           <Badge

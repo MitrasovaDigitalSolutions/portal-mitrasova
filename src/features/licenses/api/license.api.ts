@@ -120,9 +120,13 @@ export const licenseApi = {
 
   /** Create a new license */
   createLicense: async (payload: CreateLicensePayload): Promise<License> => {
+    const cleanPayload = {
+      ...payload,
+      business_type: payload.business_type || null,
+    }
     const response = await apiClient.post<ApiResponse<License>>(
       "/api/v1/admin/licenses",
-      payload
+      cleanPayload
     )
     return response.data.data
   },
@@ -132,9 +136,16 @@ export const licenseApi = {
     id: string,
     payload: UpdateLicensePayload
   ): Promise<License> => {
+    const cleanPayload = {
+      ...payload,
+      business_type:
+        payload.business_type !== undefined
+          ? payload.business_type || null
+          : undefined,
+    }
     const response = await apiClient.put<ApiResponse<License>>(
       `/api/v1/admin/licenses/${id}`,
-      payload
+      cleanPayload
     )
     return response.data.data
   },

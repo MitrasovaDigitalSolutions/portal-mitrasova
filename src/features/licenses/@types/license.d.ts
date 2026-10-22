@@ -89,7 +89,7 @@ export interface License {
   license_key: string
   license_secret?: string
   subscription_type: LicenseSubscriptionType
-  business_type?: BusinessType
+  business_type?: BusinessType | null
   server_package_id?: string | null
   server_notes?: string | null
   server_type?: LicenseServerType
@@ -136,6 +136,7 @@ export interface CreateLicensePayload {
   nama_instance: string
   domain_instance?: string | null
   subscription_type: LicenseSubscriptionType
+  business_type?: BusinessType | string | null
   server_package_id: string
   server_notes?: string | null
   server_type?: string
@@ -156,7 +157,7 @@ export interface UpdateLicensePayload {
   nama_instance?: string
   domain_instance?: string | null
   subscription_type?: LicenseSubscriptionType
-  business_type?: BusinessType
+  business_type?: BusinessType | string | null
   server_package_id?: string
   server_notes?: string | null
   server_type?: LicenseServerType
