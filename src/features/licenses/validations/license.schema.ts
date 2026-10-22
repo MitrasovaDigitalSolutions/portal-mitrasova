@@ -12,6 +12,7 @@ export const licenseFormSchema = z.object({
     .max(255, "Domain instance maksimal 255 karakter")
     .optional()
     .nullable(),
+  business_type: z.string().min(1, "Jenis bisnis wajib dipilih"),
   subscription_type: z.enum(
     ["monthly", "annual", "lifetime", "yearly", "trial"],
     { error: "Tipe berlangganan wajib dipilih" }
@@ -48,6 +49,7 @@ export const licenseEditSchema = z.object({
     .max(255, "Domain instance maksimal 255 karakter")
     .optional()
     .nullable(),
+  business_type: z.string().optional(),
   subscription_type: z.enum([
     "monthly",
     "annual",

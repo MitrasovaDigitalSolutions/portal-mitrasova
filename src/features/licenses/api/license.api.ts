@@ -4,6 +4,7 @@ import type { Invoice } from "@/features/invoices/@types/invoice"
 import type {
   License,
   LicenseQueryParams,
+  BusinessTypeItem,
   CreateLicensePayload,
   UpdateLicensePayload,
   ExtendLicensePayload,
@@ -70,6 +71,9 @@ export const licenseApi = {
     if (params?.status && params.status !== "all") {
       cleanParams.status = params.status
     }
+    if (params?.business_type && params.business_type !== "all") {
+      cleanParams.business_type = params.business_type
+    }
     if (params?.subscription_type && params.subscription_type !== "all") {
       cleanParams.subscription_type = params.subscription_type
     }
@@ -79,6 +83,25 @@ export const licenseApi = {
       { params: cleanParams }
     )
     return response.data
+  },
+
+  /** Fetch available business types / presets from backend */
+  getBusinessTypes: async (): Promise<BusinessTypeItem[]> => {
+    try {
+      const response = await apiClient.get<ApiResponse<BusinessTypeItem[]>>(
+        "/api/v1/business-types"
+      )
+      return response.data?.data ?? []
+    } catch {
+      try {
+        const fallback = await apiClient.get<ApiResponse<BusinessTypeItem[]>>(
+          "/api/v1/admin/business-types"
+        )
+        return fallback.data?.data ?? []
+      } catch {
+        return []
+      }
+    }
   },
 
   /** Fetch single license detail by ID */

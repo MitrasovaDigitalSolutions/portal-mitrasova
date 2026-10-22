@@ -17,6 +17,20 @@ export type LicenseServerType =
   | "on_premise"
   | (string & {})
 
+export type BusinessType =
+  | "retail"
+  | "confectionery"
+  | "pharmacy"
+  | (string & {})
+
+export interface BusinessTypeItem {
+  key: string
+  name: string
+  description?: string
+  is_default?: boolean
+  [key: string]: unknown
+}
+
 export type LicenseStatus = "active" | "suspended" | "expired" | "trial"
 
 export type LicenseAddonStatus = "active" | "inactive" | "disabled" | "expired"
@@ -74,6 +88,7 @@ export interface License {
   license_key: string
   license_secret?: string
   subscription_type: LicenseSubscriptionType
+  business_type?: BusinessType
   server_package_id?: string | null
   server_notes?: string | null
   server_type?: LicenseServerType
@@ -101,6 +116,7 @@ export interface LicenseQueryParams extends PaginationParams {
   product_code?: string
   status?: LicenseStatus | "all"
   subscription_type?: LicenseSubscriptionType | "all"
+  business_type?: BusinessType | "all"
   server_package_id?: string
   addon_code?: string
   expiring_days?: number
@@ -139,6 +155,7 @@ export interface UpdateLicensePayload {
   nama_instance?: string
   domain_instance?: string | null
   subscription_type?: LicenseSubscriptionType
+  business_type?: BusinessType
   server_package_id?: string
   server_notes?: string | null
   server_type?: LicenseServerType

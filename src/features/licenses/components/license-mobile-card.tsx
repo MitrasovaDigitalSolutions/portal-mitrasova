@@ -22,7 +22,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SUBSCRIPTION_TYPES, formatCodeToTitle } from "../constants"
+import { SUBSCRIPTION_TYPES, formatCodeToTitle, getBusinessTypeBadge } from "../constants"
+import { cn } from "@/lib/utils"
 import type { License } from "../@types/license"
 import type { LicenseColumnActions } from "./license-columns"
 
@@ -123,6 +124,17 @@ export function LicenseMobileCard({
             {subConfig?.label.split(" ")[0] ??
               formatCodeToTitle(license.subscription_type)}
           </Badge>
+          {(() => {
+            const badgeInfo = getBusinessTypeBadge(license.business_type)
+            return (
+              <Badge
+                variant="outline"
+                className={cn("border text-[10px]", badgeInfo.className)}
+              >
+                {badgeInfo.label}
+              </Badge>
+            )
+          })()}
           {count > 0 && (
             <Badge variant="outline" className="gap-1 font-mono text-[10px]">
               <Puzzle size={10} />

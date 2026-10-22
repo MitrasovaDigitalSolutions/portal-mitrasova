@@ -6,7 +6,8 @@ import { FormDatePicker, FormNumberInput, FormSelect } from "@/components/forms"
 import type { Client } from "@/features/clients/@types/client"
 import type { Product } from "@/features/products/@types/product"
 import { formatCurrency } from "@/utils"
-import { LICENSE_STATUSES, SUBSCRIPTION_TYPES } from "../constants"
+import { useBusinessTypesQuery } from "../api/license.queries"
+import { LICENSE_STATUSES, SUBSCRIPTION_TYPES, STATIC_BUSINESS_TYPE_OPTIONS } from "../constants"
 
 interface LicenseCreateSoftwareCardProps {
   clients: Client[]
@@ -52,6 +53,22 @@ export function LicenseCreateSoftwareCard({
     ],
     []
   )
+
+  const { data: serverBusinessTypes, isLoading: isLoadingBusinessTypes } =
+    useBusinessTypesQuery()
+
+  const businessTypeOptions = useMemo(() => {
+    if (serverBusinessTypes && serverBusinessTypes.length > 0) {
+      return serverBusinessTypes.map((bt) => ({
+        value: bt.key,
+        label: bt.name,
+      }))
+    }
+    return STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
+      value: opt.value,
+      label: opt.label,
+    }))
+  }, [serverBusinessTypes])
 
   const statusOptions = useMemo(
     () =>
@@ -141,12 +158,19 @@ export function LicenseCreateSoftwareCard({
       {/* Row 2: Subscription & Expiry (4-cols) */}
       <div className="space-y-1.5 border-t border-border/60 pt-3">
         <span className="block text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-          Masa Aktif & Ketentuan Langganan
+          Preset Bisnis & Ketentuan Langganan
         </span>
         <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2">
           <FormSelect
+            name="business_type"
+            label="Jenis Bisnis / Preset Toko *"
+            placeholder="Pilih jenis bisnis..."
+            options={businessTypeOptions}
+            isLoading={isLoadingBusinessTypes}
+          />
+          <FormSelect
             name="subscription_type"
-            label="Tipe Langganan"
+            label="Tipe Langganan *"
             options={subscriptionOptions}
           />
 

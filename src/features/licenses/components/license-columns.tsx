@@ -6,6 +6,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { StatusBadge } from "@/components/ui/status-badge"
+import { cn } from "@/lib/utils"
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +17,7 @@ import {
   SUBSCRIPTION_TYPES,
   SERVER_TYPES,
   formatCodeToTitle,
+  getBusinessTypeBadge,
 } from "../constants"
 import type { License } from "../@types/license"
 
@@ -140,6 +142,26 @@ export function getLicenseColumns(): ColumnDef<License>[] {
       cell: ({ row }) => (
         <LicenseKeyCell licenseKey={row.original.license_key} />
       ),
+    },
+    {
+      accessorKey: "business_type",
+      header: "Jenis Bisnis",
+      size: 130,
+      cell: ({ row }) => {
+        const type = row.original.business_type ?? "retail"
+        const badgeInfo = getBusinessTypeBadge(type)
+        return (
+          <Badge
+            variant="outline"
+            className={cn(
+              "border px-2 py-0.5 text-[10px] font-medium",
+              badgeInfo.className
+            )}
+          >
+            {badgeInfo.label}
+          </Badge>
+        )
+      },
     },
     {
       id: "subscription_server",

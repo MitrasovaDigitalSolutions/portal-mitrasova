@@ -1,11 +1,14 @@
 import type { JSX } from "react"
-import { Calendar, Globe, Layers, Radio, Server } from "lucide-react"
+import { Calendar, Globe, Layers, Radio, Server, Store } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { formatDate } from "@/utils"
 import type { License } from "../@types/license"
 import {
   SERVER_TYPES,
   SUBSCRIPTION_TYPES,
   formatCodeToTitle,
+  getBusinessTypeBadge,
 } from "../constants"
 
 interface LicenseDetailOverviewCardProps {
@@ -121,6 +124,37 @@ export function LicenseDetailOverviewCard({
               ? `${license.serverPackage.cpu || ""} ${license.serverPackage.ram || ""} ${license.serverPackage.storage || ""}`.trim() ||
                 license.serverPackage.code
               : (serverConfig?.description ?? "Verifikasi instance otomatis")}
+          </p>
+        </div>
+
+
+        {/* 7. Jenis Bisnis / Preset */}
+        <div className="space-y-1 rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+            <Store size={11} /> Jenis Bisnis / Preset
+          </span>
+          <div className="pt-0.5">
+            {(() => {
+              const badgeInfo = getBusinessTypeBadge(license.business_type)
+              return (
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "border px-2 py-0.5 text-xs font-semibold",
+                    badgeInfo.className
+                  )}
+                >
+                  {badgeInfo.label}
+                </Badge>
+              )
+            })()}
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            {license.business_type === "confectionery"
+              ? "Modul Manufaktur & Konsinyasi"
+              : license.business_type === "pharmacy"
+                ? "Modul Resep, Batch & Expired"
+                : "Standar POS Retail & Kasir"}
           </p>
         </div>
 

@@ -15,12 +15,12 @@ import {
 } from "@/components/forms"
 import { useProducts } from "@/features/products"
 import { useServerPackages } from "@/features/server-packages"
-import { useCreateLicense, useUpdateLicense } from "../api/license.queries"
+import { useCreateLicense, useUpdateLicense, useBusinessTypesQuery } from "../api/license.queries"
 import {
   licenseFormSchema,
   type LicenseFormValues,
 } from "../validations/license.schema"
-import { SUBSCRIPTION_TYPES, LICENSE_STATUSES } from "../constants"
+import { SUBSCRIPTION_TYPES, LICENSE_STATUSES, STATIC_BUSINESS_TYPE_OPTIONS } from "../constants"
 import type {
   CreateLicensePayload,
   License,
@@ -39,6 +39,7 @@ const defaultValues: LicenseFormValues = {
   product_id: "",
   nama_instance: "",
   domain_instance: "",
+  business_type: "retail",
   subscription_type: "annual",
   server_package_id: "",
   server_notes: "",
@@ -96,6 +97,22 @@ export function LicenseFormDialog({
     []
   )
 
+  const { data: serverBusinessTypes, isLoading: isLoadingBusinessTypes } =
+    useBusinessTypesQuery()
+
+  const businessTypeOptions = useMemo(() => {
+    if (serverBusinessTypes && serverBusinessTypes.length > 0) {
+      return serverBusinessTypes.map((bt) => ({
+        value: bt.key,
+        label: bt.name,
+      }))
+    }
+    return STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
+      value: opt.value,
+      label: opt.label,
+    }))
+  }, [serverBusinessTypes])
+
   const statusOptions = useMemo(
     () =>
       Object.entries(LICENSE_STATUSES).map(([val, conf]) => ({
@@ -125,6 +142,7 @@ export function LicenseFormDialog({
           product_id: license.product_id,
           nama_instance: license.nama_instance,
           domain_instance: license.domain_instance ?? "",
+          business_type: license.business_type ?? "retail",
           subscription_type: license.subscription_type,
           server_package_id: license.server_package_id ?? "",
           server_notes: license.server_notes ?? "",
@@ -147,6 +165,7 @@ export function LicenseFormDialog({
         const updatePayload: UpdateLicensePayload = {
           nama_instance: values.nama_instance,
           domain_instance: values.domain_instance || null,
+          business_type: values.business_type,
           subscription_type: values.subscription_type,
           server_package_id: values.server_package_id,
           server_notes: values.server_notes || null,
@@ -243,16 +262,36 @@ export function LicenseFormDialog({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormSelect
+              name="business_type"
+              label="Jenis Bisnis / Preset Toko"
+              placeholder="Pilih jenis bisnis..."
+              options={businessTypeOptions}
+              isLoading={isLoadingBusinessTypes}
+              required
+            />
+            <FormSelect
               name="subscription_type"
               label="Tipe Berlangganan"
               options={subscriptionOptions}
               required
             />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormSelect
               name="status"
               label="Status Lisensi"
               options={statusOptions}
               required
+            />
+            <FormNumberInput
+              name="grace_period_days"
+              label="Grace Period (Hari)"
+              placeholder="7"
+              min={0}
+              max={90}
+              allowNegative={false}
+              allowDecimal={false}
             />
           </div>
 
@@ -273,15 +312,6 @@ export function LicenseFormDialog({
                 </div>
               </div>
             )}
-            <FormNumberInput
-              name="grace_period_days"
-              label="Grace Period (Hari)"
-              placeholder="7"
-              min={0}
-              max={90}
-              allowNegative={false}
-              allowDecimal={false}
-            />
           </div>
 
           <FormTextarea

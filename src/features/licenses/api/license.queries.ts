@@ -8,6 +8,7 @@ import { licenseApi } from "./license.api"
 import type {
   License,
   LicenseQueryParams,
+  BusinessTypeItem,
   CreateLicensePayload,
   UpdateLicensePayload,
   ExtendLicensePayload,
@@ -23,6 +24,7 @@ export const licenseKeys = {
   list: (params?: LicenseQueryParams) =>
     [...licenseKeys.lists(), params ?? {}] as const,
   details: () => [...licenseKeys.all, "detail"] as const,
+  businessTypes: () => [...licenseKeys.all, "business-types"] as const,
   detail: (id: string) => [...licenseKeys.details(), id] as const,
 }
 
@@ -40,6 +42,16 @@ export function useLicense(id: string, enabled = true) {
     queryKey: licenseKeys.detail(id),
     queryFn: () => licenseApi.getLicenseById(id),
     enabled: Boolean(id) && enabled,
+  })
+}
+
+
+/** Hook to fetch available business types / presets */
+export function useBusinessTypesQuery() {
+  return useQuery<BusinessTypeItem[]>({
+    queryKey: licenseKeys.businessTypes(),
+    queryFn: () => licenseApi.getBusinessTypes(),
+    staleTime: 1000 * 60 * 60, // 1 hour cache
   })
 }
 

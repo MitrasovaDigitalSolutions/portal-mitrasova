@@ -24,7 +24,9 @@ import {
   useRegenerateLicenseSecret,
   useResetLicenseDomain,
 } from "../api/license.queries"
-import { SUBSCRIPTION_TYPES } from "../constants"
+import { SUBSCRIPTION_TYPES, STATIC_BUSINESS_TYPE_OPTIONS } from "../constants"
+import { useBusinessTypesQuery } from "../api/license.queries"
+import type { BusinessType } from "../@types/license"
 import type {
   License,
   LicenseStatus,
@@ -33,6 +35,7 @@ import type {
 
 interface LicenseFilterFormValues {
   subscription: LicenseSubscriptionType | "all"
+  business_type?: string | "all"
 }
 
 const SUBSCRIPTION_FILTER_OPTIONS: CommandOption[] = [
@@ -49,6 +52,7 @@ export function LicensesView(): JSX.Element {
   const [perPage, setPerPage] = useState(15)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<LicenseStatus | "all">("all")
+  const [businessTypeFilter, setBusinessTypeFilter] = useState<BusinessType | "all">("all")
   const [subscriptionFilter, setSubscriptionFilter] = useState<
     LicenseSubscriptionType | "all"
   >("all")
@@ -70,6 +74,13 @@ export function LicensesView(): JSX.Element {
     setPage(1)
   }
 
+  const handleBusinessTypeFilterChange = (
+    type: BusinessType | "all"
+  ) => {
+    setBusinessTypeFilter(type)
+    setPage(1)
+  }
+
   const handleSubscriptionFilterChange = (
     sub: LicenseSubscriptionType | "all"
   ) => {
@@ -77,16 +88,38 @@ export function LicensesView(): JSX.Element {
     setPage(1)
   }
 
+  const { data: serverBusinessTypes } = useBusinessTypesQuery()
+
+  const businessTypeFilterOptions = useMemo(() => {
+    const baseOptions =
+      serverBusinessTypes && serverBusinessTypes.length > 0
+        ? serverBusinessTypes.map((bt) => ({
+            value: bt.key,
+            label: bt.name,
+          }))
+        : STATIC_BUSINESS_TYPE_OPTIONS.map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+          }))
+
+    return [
+      { value: "all", label: "Semua Jenis Bisnis" },
+      ...baseOptions,
+    ]
+  }, [serverBusinessTypes])
+
   const filterMethods = useForm<LicenseFilterFormValues>({
     defaultValues: {
       subscription: subscriptionFilter,
+      business_type: businessTypeFilter,
     },
   })
 
   // Synchronize form when state changes
   useEffect(() => {
     filterMethods.setValue("subscription", subscriptionFilter)
-  }, [subscriptionFilter, filterMethods])
+    filterMethods.setValue("business_type", businessTypeFilter)
+  }, [subscriptionFilter, businessTypeFilter, filterMethods])
 
   const [selectedForEdit, setSelectedForEdit] = useState<License | null>(null)
   const [selectedForOrder, setSelectedForOrder] = useState<License | null>(null)
@@ -109,6 +142,8 @@ export function LicensesView(): JSX.Element {
     status: statusFilter === "all" ? undefined : statusFilter,
     subscription_type:
       subscriptionFilter === "all" ? undefined : subscriptionFilter,
+    business_type:
+      businessTypeFilter === "all" ? undefined : businessTypeFilter,
     sort_by: sortBy,
     sort_order: sortOrder,
   })
@@ -230,6 +265,21 @@ export function LicensesView(): JSX.Element {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <FormProvider {...filterMethods}>
+              <div className="w-36 sm:w-40">
+                <FormSelect<LicenseFilterFormValues>
+                  name="business_type"
+                  options={businessTypeFilterOptions}
+                  placeholder="Semua Bisnis"
+                  size="sm"
+                  onChange={(val) =>
+                    handleBusinessTypeFilterChange(
+                      val as BusinessType | "all"
+                    )
+                  }
+                />
+              </div>
+            </FormProvider>
             {/* Subscription Filter */}
             <FormProvider {...filterMethods}>
               <div className="w-40 sm:w-44">

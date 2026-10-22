@@ -232,3 +232,71 @@ export function getSubscriptionBadgeVariant(
     )[type]?.badgeVariant ?? "secondary"
   )
 }
+
+/**
+ * Opsi default preset bisnis untuk formulir lisensi (fallback jika API offline)
+ */
+export const STATIC_BUSINESS_TYPE_OPTIONS = [
+  {
+    value: "retail",
+    label: "Retail & Toko (Default)",
+    description: "POS Retail standar: produk jadi, inventori, kasir",
+  },
+  {
+    value: "confectionery",
+    label: "Konfeksi & Manufaktur",
+    description: "BOM/Resep, Surat Perintah Kerja (SPK), Konsinyasi",
+  },
+  {
+    value: "pharmacy",
+    label: "Apotek & Farmasi",
+    description: "Nomor Batch, Tanggal Kadaluwarsa, Resep Dokter",
+  },
+]
+
+/**
+ * Konfigurasi badge dan styling visual untuk preset jenis bisnis
+ */
+export const BUSINESS_TYPE_BADGES: Record<
+  string,
+  {
+    label: string
+    variant: "default" | "secondary" | "outline"
+    className?: string
+  }
+> = {
+  retail: {
+    label: "Retail",
+    variant: "secondary",
+    className:
+      "bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400",
+  },
+  confectionery: {
+    label: "Konfeksi",
+    variant: "secondary",
+    className:
+      "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
+  },
+  pharmacy: {
+    label: "Apotek",
+    variant: "secondary",
+    className:
+      "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400",
+  },
+}
+
+/**
+ * Mengambil informasi visual badge untuk jenis bisnis tertentu
+ */
+export function getBusinessTypeBadge(type?: string | null) {
+  if (!type) {
+    return BUSINESS_TYPE_BADGES.retail
+  }
+  return (
+    BUSINESS_TYPE_BADGES[type] ?? {
+      label: formatCodeToTitle(type),
+      variant: "outline" as const,
+      className: "bg-muted text-muted-foreground border-border",
+    }
+  )
+}
